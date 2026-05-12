@@ -7,6 +7,26 @@ Context is the most critical resource in a Claude Code session. Manage it active
 **The file is the memory, not the conversation.** Conversations are ephemeral and
 will be compacted or lost. Files on disk persist across compactions and session crashes.
 
+## Context Router (Default Startup)
+
+Before reading broad design, production, QA, or role documents, ask the router
+for a minimal read list:
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "current task/request"
+```
+
+The router prints recommended files, reasons, recent commits, and bounded read
+commands. Use its output as the Phase 0 starting set, then read deeper only when
+the task requires it. Project-specific route rules can be added in either:
+
+- `.ccgs-core/context-router-rules.json`
+- `CCGS-Data/production/context-router-rules.json`
+
+Each rule is a JSON object with `name`, `terms`, `paths`, and optional `roles`.
+This keeps project-specific keywords out of the universal framework while still
+allowing teams to tune routing.
+
 ### Session State File
 
 Maintain `production/session-state/active.md` as a living checkpoint. Update it
@@ -39,6 +59,19 @@ Task: Implement hitbox detection
 - Remove or empty the block when no active work focus exists
 
 After any disruption (compaction, crash, `/clear`), read the state file first.
+
+### Session State Archive
+
+Keep `active.md` small. When it accumulates old top-level sections, preview an
+archive pass:
+
+```bash
+python3 .ccgs-core/scripts/workflow/archive-session-state.py --keep 10 --dry-run --brief
+```
+
+If the preview is correct, rerun without `--dry-run`. Older sections are appended
+to `CCGS-Data/production/session-state/archive/YYYY-MM.md`; the newest sections
+remain in `active.md`.
 
 ### Incremental File Writing
 

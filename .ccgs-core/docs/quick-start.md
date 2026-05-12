@@ -282,3 +282,20 @@ CLAUDE.md                          -- Master config (read this first, ~60 lines)
     settings-local-template.md     -- Personal settings.local.json guide
     templates/                     -- 37 document templates
 ```
+
+## Low-Context Startup
+
+For Codex or any tool without native CCGS slash-command indexing, start each task
+with the context router instead of reading every framework and project document:
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "current task/request"
+```
+
+Then read only the recommended files. If
+`CCGS-Data/production/session-state/active.md` has become large, preview a safe
+archive pass:
+
+```bash
+python3 .ccgs-core/scripts/workflow/archive-session-state.py --keep 10 --dry-run --brief
+```

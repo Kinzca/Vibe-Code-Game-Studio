@@ -291,7 +291,6 @@ ENTRY_EOF
             echo "  ✅ 已生成 .cursorrules（pipeline-core + AI 自举协议）"
             ;;
         codex)
-            local BOOTSTRAP="$PROJECT_ROOT/$CORE_DIR/docs/ai-bootstrap.md"
             {
                 echo "# CCGS Framework — Codex Configuration"
                 echo ""
@@ -307,6 +306,18 @@ ENTRY_EOF
                 echo "- Read \`.ccgs-core/docs/technical-preferences.md\` before code changes."
                 echo "- Read \`.ccgs-core/docs/coding-standards.md\` before code changes."
                 echo "- Read \`.ccgs-core/ccgs.env\` for \`DATA_DIR\` instead of hard-coding the project data directory."
+                echo ""
+                echo "## Context Routing"
+                echo ""
+                echo "Before broad document reads, run:"
+                echo ""
+                echo "\`\`\`bash"
+                echo "python3 .ccgs-core/scripts/workflow/ccgs-context-router.py \"<task/request>\""
+                echo "\`\`\`"
+                echo ""
+                echo "- Read only the recommended files unless the task clearly requires deeper context."
+                echo "- Use \`python3 .ccgs-core/scripts/workflow/archive-session-state.py --keep 10 --dry-run --brief\` to check whether \`active.md\` should be compacted."
+                echo "- Prefer \`tail -n 120 CCGS-Data/production/session-state/active.md\` over reading the full historical session log."
                 echo ""
                 echo "## Output Language"
                 echo ""
@@ -335,20 +346,16 @@ ENTRY_EOF
                 echo ""
                 echo "- \`.agents/workflows\` links to \`.ccgs-core/workflows\`."
                 echo "- \`.agents/hooks\` links to \`.ccgs-core/hooks\`."
+                echo "- \`.agents/scripts\` links to \`.ccgs-core/scripts\`."
                 echo ""
-                echo "---"
-                echo ""
-                if [ -f "$BOOTSTRAP" ]; then
-                    cat "$BOOTSTRAP"
-                fi
             } > "$PROJECT_ROOT/AGENTS.md"
-            echo "  ✅ 已生成 AGENTS.md（Codex 项目入口 + AI 自举协议）"
+            echo "  ✅ 已生成 AGENTS.md（Codex 轻量入口 + 上下文路由）"
 
             # --- 生成 .agents/ 符号链接桥接层 ---
             echo "  🔗 构建 .agents/ 符号链接桥接层..."
             mkdir -p "$PROJECT_ROOT/.agents"
 
-            for bridge_name in workflows hooks; do
+            for bridge_name in workflows hooks scripts; do
                 local bridge_path="$PROJECT_ROOT/.agents/$bridge_name"
                 local bridge_target="../$CORE_DIR/$bridge_name"
                 if [ -L "$bridge_path" ]; then
