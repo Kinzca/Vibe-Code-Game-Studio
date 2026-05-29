@@ -340,8 +340,8 @@ If yes, edit the story file:
    > **CRITICAL**: Never bulk-check all criteria without verification. Each
    > `- [x]` must correspond to a specific passing result from Phase 3. A
    > checked box is a factual assertion that the criterion was verified and
-   > passed — not a hopeful estimate. The STORY ACCEPTANCE MATRIX on the
-   > Dashboard reads these checkboxes directly to render ✅/❌ status.
+   > passed — not a hopeful estimate. Sprint and story status tools read these
+   > checkboxes as completion evidence.
 
 3. Add a `## Completion Notes` section at the bottom:
 

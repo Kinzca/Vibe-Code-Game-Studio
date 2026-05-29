@@ -11,7 +11,6 @@
 | `/project-stage-detect` | Full project audit — detect phase, identify existence gaps, recommend next steps |
 | `/setup-engine` | Configure engine + version, detect knowledge gaps, populate version-aware reference docs |
 | `/adopt` | Brownfield format audit — checks internal structure of existing GDDs/ADRs/stories, produces migration plan |
-| `/dashboard` | Start a local project status dashboard for global progress, burndown, and health |
 
 ## Game Design
 

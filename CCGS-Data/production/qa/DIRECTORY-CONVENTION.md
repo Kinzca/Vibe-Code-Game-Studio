@@ -2,7 +2,7 @@
 
 > 本文件定义了 `CCGS-Data/production/qa/` 目录的标准结构。
 > 所有 CCGS Skill 输出的 QA 相关文档必须遵循此规范放置。
-> **此规范是 CCGS 可视化仪表盘 (Dashboard) 的数据源约定——变更前须评估仪表盘影响。**
+> 此规范用于保持 QA 产物路径稳定，便于各 Skill 和自动化检查读取。
 
 ## 目录结构
 
@@ -42,7 +42,7 @@ CCGS-Data/production/qa/
 2. **Sprint 结束后**，旧的 Plan 和 Sign-off 移入 `archive/` 归档。
 3. **Bug 报告**始终保留在 `bugs/` 中，直到被 `/bug-report close` 关闭。
 4. **根目录不放任何文档**（除本规范文件外），所有输出必须落入子目录。
-5. **Dashboard 读取约定**：仪表盘通过 glob 各子目录来聚合数据，路径变更需同步更新仪表盘配置。
+5. **自动化读取约定**：相关 Skill 通过固定子目录读取 QA 产物，路径变更需同步更新对应 Skill 文档。
 
 ## 受影响的 Skill 列表
 
