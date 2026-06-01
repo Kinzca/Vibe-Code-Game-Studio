@@ -146,6 +146,24 @@ Concept → Systems Design → Technical Setup → Pre-Production → Production
 | `/story-done` | Story 完成审查——逐条验证验收标准 |
 | `/gate-check` | 阶段门禁验证（PASS / CONCERNS / FAIL） |
 
+### 4.4.1 低消耗上下文工具
+
+长项目建议先生成上下文缓存，再执行 Story/ADR/QA 工作流：
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
+python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/<epic>/<story>.md --write
+```
+
+| 命令 | 用途 |
+|:---|:---|
+| `ccgs-context-index.py --write` | 建立 `production/context/ccgs-index.json`，记录 ADR/GDD/Story/QA 路径、状态、引用和行数 |
+| `ccgs-current-context.py --write` | 生成 `production/context/current-context.md`，作为新会话低成本启动摘要 |
+| `ccgs-story-context.py <story> --write` | 生成 Story 专属 context pack，减少 readiness/dev/done 前的大范围读取 |
+
+默认不加 `--write` 时只输出到终端，适合临时查看。
+
 ### 4.5 质量保证
 
 | 命令 | 用途 |

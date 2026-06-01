@@ -29,6 +29,10 @@ bash .ccgs-core/init.sh --link-codex-skills
 
 # 5. （可选）重命名数据层目录
 bash .ccgs-core/init.sh --rename-data GameData  # 将 CCGS-Data 重命名为 GameData
+
+# 6. （推荐）为长项目生成低消耗上下文缓存
+python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
+python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
 ```
 
 ## 编辑器初始化矩阵
@@ -65,6 +69,7 @@ bash .ccgs-core/init.sh --link-codex-skills
 │   ├── rules/                     # 代码规则分发源（11 个）
 │   ├── hooks/                     # 自动化钩子脚本
 │   ├── docs/                      # 框架元文档与配置模板
+│   ├── scripts/workflow/          # 上下文路由、缓存、会话归档脚本
 │   └── tests/                     # 框架自测套件
 │
 ├── CCGS-Data/                     # 项目数据层（可重命名）
@@ -80,6 +85,24 @@ bash .ccgs-core/init.sh --link-codex-skills
 
 > Codex Skill 映射由 `bash .ccgs-core/init.sh --link-codex-skills` 创建。
 > 它会在 `$CODEX_HOME/skills`（默认 `~/.codex/skills`）创建真实 Skill 目录：74 个标准 CCGS Skills 会复制原始 `SKILL.md`，49 个 Agent 角色与 `pipeline-core.md` 会生成包装 `SKILL.md`，调用时再读取原始 workflow 文档。重启 Codex 后生效；如果上游 workflow 内容更新，请重新运行该命令刷新映射。
+
+## 低消耗上下文工具
+
+长会话或大型 Sprint 建议先生成缓存，减少 AI 每次全量读取 GDD、ADR、Story、QA 证据的成本：
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
+python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
+python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "当前任务"
+```
+
+执行 Story 前可生成专属 context pack：
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/<epic>/<story>.md --write
+```
+
+生成文件位于 `CCGS-Data/production/context/`，默认不加 `--write` 时只输出到终端。
 
 ## 与原版的核心差异
 

@@ -13,6 +13,29 @@ The router returns a short list of recommended files, reasons, and read
 commands. Prefer this before broad reads of GDDs, epics, QA evidence, or role
 documents.
 
+## Context Cache
+
+Build a compact machine-readable index:
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
+```
+
+Generate the current low-cost startup memo:
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
+```
+
+Generate a story-specific context pack before readiness/dev/done work:
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/example/story-001-example.md --write
+```
+
+Default behavior prints to stdout. Add `--write` only when you want to persist
+the generated cache under `CCGS-Data/production/context/`.
+
 ## Session-State Archive
 
 ```bash

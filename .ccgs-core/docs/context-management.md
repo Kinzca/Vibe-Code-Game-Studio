@@ -27,6 +27,62 @@ Each rule is a JSON object with `name`, `terms`, `paths`, and optional `roles`.
 This keeps project-specific keywords out of the universal framework while still
 allowing teams to tune routing.
 
+## Context Cache (Low-Cost Reads)
+
+For long-running CCGS projects, generate cache files so agents can start from a
+small index instead of scanning every GDD, ADR, Story, QA plan, and evidence file.
+
+### Build the index
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
+```
+
+Writes:
+
+- `CCGS-Data/production/context/ccgs-index.json`
+
+The index stores document type, path, title, status, references, line count, and
+mtime. It is not a replacement for source documents; it is a routing map.
+
+### Build the current context memo
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
+```
+
+Writes:
+
+- `CCGS-Data/production/context/current-context.md`
+
+Read this file at the beginning of a new session or after a task handoff. It
+summarizes current sprint status, recent ADRs, recent stories, and the preferred
+read policy.
+
+### Build a story context pack
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/<epic>/<story>.md --write
+```
+
+Writes:
+
+- `CCGS-Data/production/context/story/<story>-context.md`
+
+Use the story pack before `/story-readiness`, `/dev-story`, `/code-review`, or
+`/story-done`. It extracts story metadata, acceptance criteria, ADR/TR/GDD
+references, and minimal read commands.
+
+### Suggested low-cost startup sequence
+
+```bash
+python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
+python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
+python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "current task"
+```
+
+Only open full source documents when the cache or router points to them.
+
 ### Session State File
 
 Maintain `production/session-state/active.md` as a living checkpoint. Update it

@@ -93,7 +93,12 @@ DEFAULT_ROUTES = [
         "terms": ["context", "上下文", "token", "额度", "消耗", "压缩", "compact"],
         "paths": [
             ".ccgs-core/docs/context-management.md",
+            "{data_dir}/production/context/current-context.md",
+            "{data_dir}/production/context/ccgs-index.json",
             ".ccgs-core/scripts/workflow/archive-session-state.py",
+            ".ccgs-core/scripts/workflow/ccgs-context-index.py",
+            ".ccgs-core/scripts/workflow/ccgs-current-context.py",
+            ".ccgs-core/scripts/workflow/ccgs-story-context.py",
         ],
         "roles": ["producer", "tools-programmer"],
     },
@@ -359,6 +364,8 @@ def build_recommendations(
 
     add_rec(recs, root, f"{core_dir}/workflows/pipeline-core.md", "CCGS 入口；确认 Phase 0/模式即可", 0)
     add_rec(recs, root, f"{core_dir}/ccgs.env", "读取 DATA_DIR/CORE_DIR，避免硬编码项目数据目录", 1)
+    add_rec(recs, root, f"{data_dir}/production/context/current-context.md", "低消耗当前上下文摘要；优先替代广泛读取", 1, include_missing=False)
+    add_rec(recs, root, f"{data_dir}/production/context/ccgs-index.json", "机器可读文档索引；先查索引再打开原文", 1, include_missing=False)
     add_rec(recs, root, f"{data_dir}/production/session-state/active.md", "会话真源；优先读最近状态而非全部历史", 2)
 
     lowered = query.lower()
