@@ -5,14 +5,14 @@ argument-hint: "[new|update|status] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task
 context: |
-  !ls CCGS-Data/production/sprints/ 2>/dev/null
+  !ls ccgs-data/production/sprints/ 2>/dev/null
 ---
 
 ## Phase 0: Parse Arguments
 
 Extract the mode argument (`new`, `update`, or `status`) and resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
@@ -21,12 +21,12 @@ See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 
 ## Phase 1: Gather Context
 
-1. **Read the current milestone** from `CCGS-Data/production/milestones/`.
+1. **Read the current milestone** from `ccgs-data/production/milestones/`.
 
-2. **Read the previous sprint** (if any) from `CCGS-Data/production/sprints/` to
+2. **Read the previous sprint** (if any) from `ccgs-data/production/sprints/` to
    understand velocity and carryover.
 
-3. **Scan design documents** in `CCGS-Data/design/gdd/` for features tagged as ready
+3. **Scan design documents** in `ccgs-data/design/gdd/` for features tagged as ready
    for implementation.
 
 4. **Check the risk register** at `production/risk-register/`.
@@ -90,7 +90,7 @@ stories: []
 ## Definition of Done for this Sprint
 - [ ] All Must Have tasks completed
 - [ ] All tasks pass acceptance criteria
-- [ ] QA plan exists (`CCGS-Data/production/qa/plans/qa-plan-sprint-[N].md`)
+- [ ] QA plan exists (`ccgs-data/production/qa/plans/qa-plan-sprint-[N].md`)
 - [ ] All Logic/Integration stories have passing unit/integration tests
 - [ ] Smoke check passed (`/smoke-check sprint`)
 - [ ] QA sign-off report: APPROVED or APPROVED WITH CONDITIONS (`/team-qa sprint`)
@@ -137,11 +137,11 @@ Markdown 编号列表`
 
 ## Phase 3: Write Sprint Status File
 
-After generating a new sprint plan, also write `CCGS-Data/production/sprint-status.yaml`.
+After generating a new sprint plan, also write `ccgs-data/production/sprint-status.yaml`.
 This is the machine-readable source of truth for story status — read by
 `/sprint-status`, `/story-done`, and `/help` without markdown parsing.
 
-Ask: "May I also write `CCGS-Data/production/sprint-status.yaml` to track story status?"
+Ask: "May I also write `ccgs-data/production/sprint-status.yaml` to track story status?"
 
 Format:
 
@@ -159,7 +159,7 @@ updated: "[YYYY-MM-DD]"
 stories:
   - id: "[epic-story, e.g. 1-1]"
     name: "[story name]"
-    file: "[CCGS-Data/production/stories/path.md]"
+    file: "[ccgs-data/production/stories/path.md]"
     priority: must-have        # must-have | should-have | nice-to-have
     status: ready-for-dev      # backlog | ready-for-dev | in-progress | review | done | blocked
     owner: ""
@@ -191,7 +191,7 @@ Pass: proposed story list (titles, estimates, dependencies), total team capacity
 
 Present the producer's assessment. If UNREALISTIC, revise the story selection (defer stories to Should Have or Nice to Have) before asking for write approval. If CONCERNS, surface them and let the user decide whether to adjust.
 
-After handling the producer's verdict, ask: "May I write this sprint plan to `CCGS-Data/production/sprints/sprint-[N].md`?" If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — sprint plan created. If no: Verdict: **BLOCKED** — user declined write.
+After handling the producer's verdict, ask: "May I write this sprint plan to `ccgs-data/production/sprints/sprint-[N].md`?" If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — sprint plan created. If no: Verdict: **BLOCKED** — user declined write.
 
 After writing, add:
 
@@ -203,7 +203,7 @@ After writing, add:
 
 Before closing the sprint plan, check whether a QA plan exists for this sprint.
 
-Use `Glob` to look for `CCGS-Data/production/qa/plans/qa-plan-sprint-[N].md` or any file in `CCGS-Data/production/qa/plans/` referencing this sprint number.
+Use `Glob` to look for `ccgs-data/production/qa/plans/qa-plan-sprint-[N].md` or any file in `ccgs-data/production/qa/plans/` referencing this sprint number.
 
 **If a QA plan is found**: note it in the sprint plan output — "QA Plan: `[path]`" — and proceed.
 

@@ -79,7 +79,7 @@ Before writing any code:
   6. **Developer Commentary**: optional context for major changes
 - Use clear, jargon-free language
 - Include before/after values for balance changes
-- Patch notes go in `CCGS-Data/production/releases/[version]/patch-notes.md`
+- Patch notes go in `ccgs-data/production/releases/[version]/patch-notes.md`
 
 ### Dev Blogs / Community Updates
 - Regular cadence (weekly or bi-weekly during active development)
@@ -141,7 +141,7 @@ Before writing any code:
 - Track community growth metrics: member count, active users, engagement rate
 
 ## Output Documents
-- `CCGS-Data/production/releases/[version]/patch-notes.md` — Patch notes per release
+- `ccgs-data/production/releases/[version]/patch-notes.md` — Patch notes per release
 - `production/community/dev-blogs/` — Dev blog posts
 - `production/community/feedback-digests/` — Weekly feedback summaries
 - `production/community/guidelines.md` — Community guidelines

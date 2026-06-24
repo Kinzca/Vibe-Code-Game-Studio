@@ -36,18 +36,18 @@ Extract:
 Read all source material **before** asking the user anything.
 
 ### Required reads:
-- **Art bible**: Read `CCGS-Data/design/art/art-bible.md` — fail if missing:
+- **Art bible**: Read `ccgs-data/design/art/art-bible.md` — fail if missing:
   > "No art bible found. Run `/art-bible` first — asset specs are anchored to the art bible's visual rules and asset standards."
   Extract: Visual Identity Statement, Color System (semantic colors), Shape Language, Asset Standards (Section 8 — dimensions, formats, polycount budgets, texture resolution tiers).
 
 - **Technical preferences**: Read `.ccgs-core/docs/technical-preferences.md` — extract performance budgets and naming conventions.
 
 ### Source doc reads (by target type):
-- **system**: Read `CCGS-Data/design/gdd/[target-name].md`. Extract the **Visual/Audio Requirements** section. If it doesn't exist or reads `[To be designed]`:
-  > "The Visual/Audio section of `CCGS-Data/design/gdd/[target-name].md` is empty. Either run `/design-system [target-name]` to complete the GDD, or describe the visual needs manually."
+- **system**: Read `ccgs-data/design/gdd/[target-name].md`. Extract the **Visual/Audio Requirements** section. If it doesn't exist or reads `[To be designed]`:
+  > "The Visual/Audio section of `ccgs-data/design/gdd/[target-name].md` is empty. Either run `/design-system [target-name]` to complete the GDD, or describe the visual needs manually."
   向用户呈现选项（使用 Markdown 编号列表）: `[A] Describe needs manually` / `[B] Stop — complete the GDD first`
-- **level**: Read `CCGS-Data/design/levels/[target-name].md`. Extract art requirements, asset list, VFX needs, and the art-director's production concept specs from Step 4.
-- **character**: Read `CCGS-Data/design/narrative/characters/[target-name].md` or search `CCGS-Data/design/narrative/` for the character profile. Extract visual description, role, and any specified distinguishing features.
+- **level**: Read `ccgs-data/design/levels/[target-name].md`. Extract art requirements, asset list, VFX needs, and the art-director's production concept specs from Step 4.
+- **character**: Read `ccgs-data/design/narrative/characters/[target-name].md` or search `ccgs-data/design/narrative/` for the character profile. Extract visual description, role, and any specified distinguishing features.
 
 ### Optional reads:
 - **Existing manifest**: Read `design/assets/asset-manifest.md` if it exists — extract already-specced assets for this target to avoid duplicates.
@@ -160,7 +160,7 @@ Markdown 编号列表`markdown
 # Asset Specs — [Target Type]: [Target Name]
 
 > **Source**: [path to source GDD/level/character doc]
-> **Art Bible**: CCGS-Data/design/art/art-bible.md
+> **Art Bible**: ccgs-data/design/art/art-bible.md
 > **Generated**: [date]
 > **Status**: [N] assets specced / [N] approved / [N] in production / [N] done
 

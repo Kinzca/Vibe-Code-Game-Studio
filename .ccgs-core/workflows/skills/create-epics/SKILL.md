@@ -17,7 +17,7 @@ does not prescribe implementation steps — that is the job of stories.
 Do not create Feature layer epics until Core is nearly complete — the design
 will have changed.
 
-**Output:** `CCGS-Data/production/epics/[epic-slug]/EPIC.md` + `CCGS-Data/production/epics/index.md`
+**Output:** `ccgs-data/production/epics/[epic-slug]/EPIC.md` + `ccgs-data/production/epics/index.md`
 
 **Next step after each epic:** `/create-stories [epic-slug]`
 
@@ -29,7 +29,7 @@ will have changed.
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
@@ -52,7 +52,7 @@ See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 Grep all GDDs for their `## Summary` sections before reading anything fully:
 
 Markdown 编号列表`
-Grep pattern="## Summary" glob="CCGS-Data/design/gdd/*.md" output_mode="content" -A 5
+Grep pattern="## Summary" glob="ccgs-data/design/gdd/*.md" output_mode="content" -A 5
 Markdown 编号列表`
 
 For `layer:` or `[system-name]` modes: filter to only in-scope GDDs based on
@@ -64,13 +64,13 @@ Using the Step 2a grep results, identify which systems are in scope. Read full d
 
 Read for in-scope systems:
 
-- `CCGS-Data/design/gdd/systems-index.md` — authoritative system list, layers, priority
+- `ccgs-data/design/gdd/systems-index.md` — authoritative system list, layers, priority
 - In-scope GDDs only (Approved or Designed status, filtered by Step 2a results)
-- `CCGS-Data/project-docs/architecture/architecture.md` — module ownership and API boundaries
+- `ccgs-data/project-docs/architecture/architecture.md` — module ownership and API boundaries
 - Accepted ADRs **whose domains cover in-scope systems only** — read the "GDD Requirements Addressed", "Decision", and "Engine Compatibility" sections; skip ADRs for unrelated domains
-- `CCGS-Data/project-docs/architecture/control-manifest.md` — manifest version date from header
-- `CCGS-Data/project-docs/architecture/tr-registry.yaml` — for tracing requirements to ADR coverage
-- `CCGS-Data/project-docs/engine-reference/[engine]/VERSION.md` — engine name, version, risk levels
+- `ccgs-data/project-docs/architecture/control-manifest.md` — manifest version date from header
+- `ccgs-data/project-docs/architecture/tr-registry.yaml` — for tracing requirements to ADR coverage
+- `ccgs-data/project-docs/engine-reference/[engine]/VERSION.md` — engine name, version, risk levels
 
 Report: "Loaded [N] GDDs, [M] ADRs, engine: [name + version]."
 
@@ -102,7 +102,7 @@ Markdown 编号列表`
 ## Epic: [System Name]
 
 **Layer**: [Foundation / Core / Feature / Presentation]
-**GDD**: CCGS-Data/design/gdd/[filename].md
+**GDD**: ccgs-data/design/gdd/[filename].md
 **Architecture Module**: [module name from architecture.md]
 **Governing ADRs**: [ADR-NNNN, ADR-MMMM]
 **Engine Risk**: [LOW / MEDIUM / HIGH — highest risk among governing ADRs]
@@ -137,11 +137,11 @@ Present the producer's assessment. If UNREALISTIC, offer to revise epic boundari
 
 ## 5. Write Epic Files
 
-After approval, ask: "May I write the epic file to `CCGS-Data/production/epics/[epic-slug]/EPIC.md`?"
+After approval, ask: "May I write the epic file to `ccgs-data/production/epics/[epic-slug]/EPIC.md`?"
 
-After user confirms, write the files. After writing all epic files, you MUST run `.ccgs-core/hooks/verify-schema.sh CCGS-Data/production/epics/[epic-slug]/EPIC.md epic` for each epic. If the script fails, immediately fix the file based on the error.
+After user confirms, write the files. After writing all epic files, you MUST run `.ccgs-core/hooks/verify-schema.sh ccgs-data/production/epics/[epic-slug]/EPIC.md epic` for each epic. If the script fails, immediately fix the file based on the error.
 
-### `CCGS-Data/production/epics/[epic-slug]/EPIC.md`
+### `ccgs-data/production/epics/[epic-slug]/EPIC.md`
 
 Markdown 编号列表`markdown
 ---
@@ -151,7 +151,7 @@ status: "Todo"
 layer: "[Foundation / Core / Feature / Presentation]"
 owner: "Technical Director"
 phase: "P1"
-gdd: "CCGS-Data/design/gdd/[filename].md"
+gdd: "ccgs-data/design/gdd/[filename].md"
 architecture_module: "[module name]"
 ---
 # Epic: [System Name]
@@ -191,16 +191,16 @@ and the architecture module's stated responsibilities]
 
 This epic is complete when:
 - All stories are implemented, reviewed, and closed via `/story-done`
-- All acceptance criteria from `CCGS-Data/design/gdd/[filename].md` are verified
+- All acceptance criteria from `ccgs-data/design/gdd/[filename].md` are verified
 - All Logic and Integration stories have passing test files in `tests/`
-- All Visual/Feel and UI stories have evidence docs with sign-off in `CCGS-Data/production/qa/evidence/`
+- All Visual/Feel and UI stories have evidence docs with sign-off in `ccgs-data/production/qa/evidence/`
 
 ## Next Step
 
 Run `/create-stories [epic-slug]` to break this epic into implementable stories.
 Markdown 编号列表`
 
-### Update `CCGS-Data/production/epics/index.md`
+### Update `ccgs-data/production/epics/index.md`
 
 Create or update the master index:
 

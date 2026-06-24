@@ -18,7 +18,7 @@ commit_message:
 # --- GDD 文档完整性校验 ---
 gdd_validation:
   # GDD 文件所在路径（相对项目根目录）
-  path: "CCGS-Data/design/gdd/"
+  path: "ccgs-data/design/gdd/"
   # 必要章节标题列表（可按项目增减）
   required_sections:
     - "Overview"
@@ -63,13 +63,13 @@ rules_mapping:
   - source: "engine-code.md"
     target: "[TO BE CONFIGURED — e.g., src/engine/]"
   - source: "design-docs.md"
-    target: "CCGS-Data/design/gdd"
+    target: "ccgs-data/design/gdd"
 
 # --- Workspace Status 探针配置（供 workspace-status.sh 使用）---
 workspace_status:
-  bug_tracker: "CCGS-Data/production/tracking/bug-tracker.md"
-  tech_debt: "CCGS-Data/production/tracking/tech-debt.md"
-  sprint_glob: "CCGS-Data/production/sprints/sprint-*.md"
-  session_state: "CCGS-Data/production/session-state/active.md"
+  bug_tracker: "ccgs-data/production/tracking/bug-tracker.md"
+  tech_debt: "ccgs-data/production/tracking/tech-debt.md"
+  sprint_glob: "ccgs-data/production/sprints/sprint-*.md"
+  session_state: "ccgs-data/production/session-state/active.md"
   # Bug/债务计数时匹配的状态标记（emoji）
   status_markers: "🔴|🟡"

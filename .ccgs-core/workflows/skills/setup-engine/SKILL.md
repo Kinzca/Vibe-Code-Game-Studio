@@ -25,7 +25,7 @@ Four modes:
 If no engine is specified, run an interactive engine selection process:
 
 ### Check for existing game concept
-- Read `CCGS-Data/design/gdd/game-concept.md` if it exists — extract genre, scope, platform
+- Read `ccgs-data/design/gdd/game-concept.md` if it exists — extract genre, scope, platform
   targets, art style, team size, and any engine recommendation from `/brainstorm`
 - If no concept exists, inform the user:
   > "No game concept found. Consider running `/brainstorm` first to discover what
@@ -325,7 +325,7 @@ Inform the user which category they're in and why.
 
 ### If WITHIN training data (LOW RISK):
 
-Create a minimal `CCGS-Data/project-docs/engine-reference/<engine>/VERSION.md`:
+Create a minimal `ccgs-data/project-docs/engine-reference/<engine>/VERSION.md`:
 
 Markdown 编号列表`markdown
 # [Engine] — Version Reference
@@ -363,13 +363,13 @@ Create the full reference doc set by searching the web:
    - Deprecated APIs with replacements
    - New features and best practices
 
-Ask: "May I create the engine reference docs under `CCGS-Data/project-docs/engine-reference/<engine>/`?"
+Ask: "May I create the engine reference docs under `ccgs-data/project-docs/engine-reference/<engine>/`?"
 
 Wait for confirmation before writing any files.
 
 3. **Create the full reference directory**:
    Markdown 编号列表`
-   CCGS-Data/project-docs/engine-reference/<engine>/
+   ccgs-data/project-docs/engine-reference/<engine>/
    ├── VERSION.md              # Version pin + knowledge gap analysis
    ├── breaking-changes.md     # Version-by-version breaking changes
    ├── deprecated-apis.md      # "Don't use X → Use Y" tables
@@ -396,7 +396,7 @@ correct engine:
 Markdown 编号列表`markdown
 ## Engine Version Reference
 
-@CCGS-Data/project-docs/engine-reference/<engine>/VERSION.md
+@ccgs-data/project-docs/engine-reference/<engine>/VERSION.md
 Markdown 编号列表`
 
 If the previous import pointed to a different engine (e.g., switching from
@@ -413,7 +413,7 @@ For the chosen engine's specialist agents, verify they have a
 the existing Godot specialist agents.
 
 The section should instruct the agent to:
-1. Read `CCGS-Data/project-docs/engine-reference/<engine>/VERSION.md`
+1. Read `ccgs-data/project-docs/engine-reference/<engine>/VERSION.md`
 2. Check deprecated APIs before suggesting code
 3. Check breaking changes for relevant version transitions
 4. Use WebSearch to verify uncertain APIs
@@ -424,7 +424,7 @@ The section should instruct the agent to:
 
 If invoked as `/setup-engine refresh`:
 
-1. Read the existing `CCGS-Data/project-docs/engine-reference/<engine>/VERSION.md` to get
+1. Read the existing `ccgs-data/project-docs/engine-reference/<engine>/VERSION.md` to get
    the current engine and version
 2. Use WebSearch to check for:
    - New engine releases since last verification
@@ -442,7 +442,7 @@ If invoked as `/setup-engine upgrade [old-version] [new-version]`:
 
 ### Step 1 — Read Current Version State
 
-Read `CCGS-Data/project-docs/engine-reference/<engine>/VERSION.md` to confirm the current pinned
+Read `ccgs-data/project-docs/engine-reference/<engine>/VERSION.md` to confirm the current pinned
 version, risk level, and any migration note URLs already recorded. If
 `old-version` was not provided as an argument, use the pinned version from this
 file.
@@ -509,7 +509,7 @@ Wait for explicit confirmation before continuing.
 
 After confirmation:
 
-1. Update `CCGS-Data/project-docs/engine-reference/<engine>/VERSION.md`:
+1. Update `ccgs-data/project-docs/engine-reference/<engine>/VERSION.md`:
    - `Engine Version` → `[new-version]`
    - `Project Pinned` → today's date
    - `Last Docs Verified` → today's date
@@ -557,7 +557,7 @@ Tech Prefs:      [created/updated]
 Agent Config:    [verified]
 
 Next Steps:
-1. Review CCGS-Data/project-docs/engine-reference/<engine>/VERSION.md
+1. Review ccgs-data/project-docs/engine-reference/<engine>/VERSION.md
 2. [If from /brainstorm] Run /map-systems to decompose your concept into individual systems
 3. [If from /brainstorm] Run /design-system to author per-system GDDs (guided, section-by-section)
 4. [If from /brainstorm] Run /prototype [core-mechanic] to test the core loop

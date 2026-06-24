@@ -5,7 +5,7 @@
 > **Last Updated**: [Date]
 > **Screen / Flow Name**: [Short identifier used in code and tickets — e.g., `InventoryScreen`, `NewGameFlow`]
 > **Platform Target**: [PC | Console | Mobile | All — list all that this spec covers]
-> **Related GDDs**: [Links to the GDD sections that generated this UI requirement — e.g., `CCGS-Data/design/gdd/inventory.md § UI Requirements`]
+> **Related GDDs**: [Links to the GDD sections that generated this UI requirement — e.g., `ccgs-data/design/gdd/inventory.md § UI Requirements`]
 > **Related ADRs**: [Any architectural decisions that constrain this screen — e.g., `ADR-0012: UI Framework Selection`]
 > **Related UX Specs**: [Sibling and parent screens — e.g., `ux-spec-pause-menu.md`, `ux-spec-settings.md`]
 > **Accessibility Tier**: Basic | Standard | Comprehensive | Exemplary

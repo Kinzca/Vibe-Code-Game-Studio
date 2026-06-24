@@ -22,18 +22,18 @@ forgotten, and the story file reflects actual completion status.
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 
-**If a file path is provided** (e.g., `/story-done CCGS-Data/production/epics/core/story-damage-calculator.md`):
+**If a file path is provided** (e.g., `/story-done ccgs-data/production/epics/core/story-damage-calculator.md`):
 read that file directly.
 
 **If no argument is provided:**
 
-1. Check `CCGS-Data/production/session-state/active.md` for the currently active story.
-2. If not found there, read the most recent file in `CCGS-Data/production/sprints/` and
+1. Check `ccgs-data/production/session-state/active.md` for the currently active story.
+2. If not found there, read the most recent file in `ccgs-data/production/sprints/` and
    look for stories marked IN PROGRESS.
 3. If multiple in-progress stories are found, 向用户呈现选项（使用 Markdown 编号列表）:
    - "Which story are we completing?"
@@ -58,14 +58,14 @@ Read the full story file. Extract and hold in context:
 - **Estimated vs actual scope** — if an estimate was noted
 
 Also read:
-- `CCGS-Data/project-docs/architecture/tr-registry.yaml` — look up each TR-ID in the story.
+- `ccgs-data/project-docs/architecture/tr-registry.yaml` — look up each TR-ID in the story.
   Read the *current* `requirement` text from the registry entry. This is the
   source of truth for what the GDD required — do not use any requirement text
   that may be quoted inline in the story (it may be stale).
 - The referenced GDD section — just the acceptance criteria and key rules, not
   the full document. Use this to cross-check the registry text is still accurate.
 - The referenced ADR(s) — just the Decision and Consequences sections
-- `CCGS-Data/project-docs/architecture/control-manifest.md` header — extract the current
+- `ccgs-data/project-docs/architecture/control-manifest.md` header — extract the current
   `Manifest Version:` date (used in Phase 4 staleness check)
 
 ---
@@ -149,9 +149,9 @@ Based on the Story Type extracted in Phase 2, check for required evidence:
 |---|---|---|
 | **Logic** | Automated unit test in `tests/unit/[system]/` — must exist and pass | BLOCKING |
 | **Integration** | Integration test in `tests/integration/[system]/` OR playtest doc | BLOCKING |
-| **Visual/Feel** | Screenshot + sign-off in `CCGS-Data/production/qa/evidence/` | ADVISORY |
-| **UI** | Manual walkthrough doc OR interaction test in `CCGS-Data/production/qa/evidence/` | ADVISORY |
-| **Config/Data** | Smoke check pass report in `CCGS-Data/production/qa/smoke/smoke-*.md` | ADVISORY |
+| **Visual/Feel** | Screenshot + sign-off in `ccgs-data/production/qa/evidence/` | ADVISORY |
+| **UI** | Manual walkthrough doc OR interaction test in `ccgs-data/production/qa/evidence/` | ADVISORY |
+| **Config/Data** | Smoke check pass report in `ccgs-data/production/qa/smoke/smoke-*.md` | ADVISORY |
 
 **For Logic stories**: first read the story's **Test Evidence** section to extract the
 exact required file path. Use `Glob` to check that exact path. If the exact path is not
@@ -163,16 +163,16 @@ slightly different location). If no test file is found at either location:
 
 **For Integration stories**: read the story's **Test Evidence** section for the exact
 required path. Use `Glob` to check that exact path first, then search
-`tests/integration/[system]/` broadly, then check `CCGS-Data/production/session-logs/` for a
+`tests/integration/[system]/` broadly, then check `ccgs-data/production/session-logs/` for a
 playtest record referencing this story.
 If none found: flag as **BLOCKING** (same rule as Logic).
 
-**For Visual/Feel and UI stories**: glob `CCGS-Data/production/qa/evidence/` for a file
+**For Visual/Feel and UI stories**: glob `ccgs-data/production/qa/evidence/` for a file
 referencing this story. If none: flag as **ADVISORY** —
-"No manual test evidence found. Create `CCGS-Data/production/qa/evidence/[story-slug]-evidence.md`
+"No manual test evidence found. Create `ccgs-data/production/qa/evidence/[story-slug]-evidence.md`
 using the test-evidence template and obtain sign-off before final closure."
 
-**For Config/Data stories**: check for any `CCGS-Data/production/qa/smoke/smoke-*.md` file.
+**For Config/Data stories**: check for any `ccgs-data/production/qa/smoke/smoke-*.md` file.
 If none: flag as **ADVISORY** — "No smoke check report found. Run `/smoke-check`."
 
 **If no Story Type is set**: flag as **ADVISORY** —
@@ -197,7 +197,7 @@ Run these checks automatically:
 
 2. **Manifest version staleness check**: Compare the `Manifest Version:` date
    embedded in the story header against the `Manifest Version:` date in the
-   current `CCGS-Data/project-docs/architecture/control-manifest.md` header.
+   current `ccgs-data/project-docs/architecture/control-manifest.md` header.
    - If they match → pass silently.
    - If the story's version is older → flag as ADVISORY:
      `ADVISORY: Story was written against manifest v[story-date]; current manifest
@@ -205,7 +205,7 @@ Run these checks automatically:
    - If control-manifest.md does not exist → skip this check.
 
 3. **ADR constraints check**: Read the referenced ADR's Decision section. Check
-   for forbidden patterns from `CCGS-Data/project-docs/architecture/control-manifest.md` (if it
+   for forbidden patterns from `ccgs-data/project-docs/architecture/control-manifest.md` (if it
    exists). `Grep` for patterns explicitly forbidden in the ADR.
 
 4. **Hardcoded values check**: `Grep` the implemented files for numeric literals
@@ -358,7 +358,7 @@ Markdown 编号列表`
 4. If advisory deviations exist, ask: "Should I log these as tech debt in
    `docs/tech-debt-register.md`?"
 
-5. **Update `CCGS-Data/production/sprint-status.yaml`** (if it exists):
+5. **Update `ccgs-data/production/sprint-status.yaml`** (if it exists):
    - Find the entry matching this story's file path or ID
    - Set `status: done` and `completed: [today's date]`
    - Update the top-level `updated` field
@@ -367,7 +367,7 @@ Markdown 编号列表`
 ### Session State Update
 
 After updating the story file, silently append to
-`CCGS-Data/production/session-state/active.md`:
+`ccgs-data/production/session-state/active.md`:
 
     ## Session Extract — /story-done [date]
     - Verdict: [COMPLETE / COMPLETE WITH NOTES / BLOCKED]
@@ -384,7 +384,7 @@ Confirm in conversation: "Session state updated."
 
 After completion, help the developer keep momentum:
 
-1. Read the current sprint plan from `CCGS-Data/production/sprints/`.
+1. Read the current sprint plan from `ccgs-data/production/sprints/`.
 2. Find stories that are:
    - Status: READY or NOT STARTED
    - Not blocked by other incomplete stories

@@ -19,7 +19,7 @@ Determine whether this is a sprint retrospective (`sprint-N`) or a milestone ret
 Before loading any data, glob for an existing retrospective file:
 
 - For sprint retrospectives: `production/retrospectives/retro-[sprint-slug]-*.md`
-  (also check `CCGS-Data/production/sprints/sprint-[N]-retrospective.md` as an alternate location)
+  (also check `ccgs-data/production/sprints/sprint-[N]-retrospective.md` as an alternate location)
 - For milestone retrospectives: `production/retrospectives/retro-[milestone-name]-*.md`
 
 If a matching file is found, present the user with:
@@ -40,8 +40,8 @@ carry its content forward into the generation phase, revising sections with new 
 
 Read the sprint or milestone plan from the appropriate location:
 
-- Sprint plans: `CCGS-Data/production/sprints/`
-- Milestone definitions: `CCGS-Data/production/milestones/`
+- Sprint plans: `ccgs-data/production/sprints/`
+- Milestone definitions: `ccgs-data/production/milestones/`
 
 **If the file does not exist or is empty**, output:
 
@@ -79,7 +79,7 @@ Scan the codebase for TODO/FIXME trends:
 - Compare to previous sprint counts if available (check previous retrospectives)
 - Note whether technical debt is growing or shrinking
 
-Read previous retrospectives (if any) from `CCGS-Data/production/sprints/` or `CCGS-Data/production/milestones/` to check:
+Read previous retrospectives (if any) from `ccgs-data/production/sprints/` or `ccgs-data/production/milestones/` to check:
 
 - Were previous action items addressed?
 - Are the same problems recurring?
@@ -187,7 +187,7 @@ Markdown 编号列表`
 
 Present the retrospective and top findings to the user (completion rate, velocity trend, top blocker, most important action item).
 
-Ask: "May I write this to `CCGS-Data/production/sprints/sprint-[N]-retrospective.md`?" (or the milestone path if applicable)
+Ask: "May I write this to `ccgs-data/production/sprints/sprint-[N]-retrospective.md`?" (or the milestone path if applicable)
 
 If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — retrospective saved.
 

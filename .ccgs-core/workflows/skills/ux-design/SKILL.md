@@ -15,9 +15,9 @@ Three authoring modes exist based on the argument:
 
 | Argument | Mode | Output file |
 |----------|------|-------------|
-| `hud` | HUD design | `CCGS-Data/design/ux/hud.md` |
-| `patterns` | Interaction pattern library | `CCGS-Data/design/ux/interaction-patterns.md` |
-| Any other value (e.g., `main-menu`, `inventory`) | UX spec for a screen or flow | `CCGS-Data/design/ux/[argument].md` |
+| `hud` | HUD design | `ccgs-data/design/ux/hud.md` |
+| `patterns` | Interaction pattern library | `ccgs-data/design/ux/interaction-patterns.md` |
+| Any other value (e.g., `main-menu`, `inventory`) | UX spec for a screen or flow | `ccgs-data/design/ux/[argument].md` |
 | No argument | Ask the user | (see below) |
 
 **If no argument is provided**, do not fail — ask instead. 向用户呈现选项（使用 Markdown 编号列表）:
@@ -36,7 +36,7 @@ comes from arriving informed.
 
 ### 2a: Required Reads
 
-- **Game concept**: Read `CCGS-Data/design/gdd/game-concept.md` — if missing, warn:
+- **Game concept**: Read `ccgs-data/design/gdd/game-concept.md` — if missing, warn:
   > "No game concept found. Run `/brainstorm` first to establish the game's
   > foundation before designing UX."
   > Continue anyway if the user asks.
@@ -56,7 +56,7 @@ If the player journey file does not exist, note the gap and proceed:
 
 ### 2c: GDD UI Requirements
 
-Glob `CCGS-Data/design/gdd/*.md` and grep for `UI Requirements` sections. Read any GDD whose
+Glob `ccgs-data/design/gdd/*.md` and grep for `UI Requirements` sections. Read any GDD whose
 UI Requirements section references this screen by name or category.
 
 These GDD UI Requirements are the **requirements input** to this spec. Collect them
@@ -67,20 +67,20 @@ requirements from every system.
 
 ### 2d: Existing UX Specs
 
-Glob `CCGS-Data/design/ux/*.md` and note which screens already have specs. For screens that
+Glob `ccgs-data/design/ux/*.md` and note which screens already have specs. For screens that
 will link to or from the current screen, read their navigation/flow sections to
 find the entry and exit points this spec must match.
 
 ### 2e: Interaction Pattern Library
 
-If `CCGS-Data/design/ux/interaction-patterns.md` exists, read the pattern catalog index
+If `ccgs-data/design/ux/interaction-patterns.md` exists, read the pattern catalog index
 (the list of pattern names and their one-line descriptions). Do not read full
 pattern details — just the catalog. This tells you which patterns already exist
 so you can reference them rather than reinvent them.
 
 ### 2f: Art Bible
 
-Check for `CCGS-Data/design/art/art-bible.md`. If found, read the visual direction
+Check for `ccgs-data/design/art/art-bible.md`. If found, read the visual direction
 section. UX layout must align with the aesthetic commitments already made.
 
 ### 2g: Accessibility Requirements
@@ -130,14 +130,14 @@ Then ask: "Anything else I should read before we start, or shall we proceed?"
 
 Before creating a skeleton, check if the target output file already exists.
 
-Glob `CCGS-Data/design/ux/[filename].md` (where `[filename]` is the resolved output path from Phase 1).
+Glob `ccgs-data/design/ux/[filename].md` (where `[filename]` is the resolved output path from Phase 1).
 
 **If the file exists — retrofit mode:**
 - Read the file in full
 - For each expected section, check whether the body has real content (more than a `[To be designed]` placeholder) or is empty/placeholder
 - Present a section status summary to the user:
 
-> "Found existing UX spec at `CCGS-Data/design/ux/[filename].md`. Here's what's already done:
+> "Found existing UX spec at `ccgs-data/design/ux/[filename].md`. Here's what's already done:
 >
 > | Section | Status |
 > |---------|--------|
@@ -166,7 +166,7 @@ Proceed to Phase 3 (Create File Skeleton) as normal.
 Once the user confirms, **immediately** create the output file with empty section
 headers. This ensures incremental writes have a target and work survives interruptions.
 
-Ask: "May I create the skeleton file at `CCGS-Data/design/ux/[filename].md`?"
+Ask: "May I create the skeleton file at `ccgs-data/design/ux/[filename].md`?"
 
 ---
 
@@ -392,10 +392,10 @@ Markdown 编号列表`
 
 ---
 
-After writing the skeleton, update `CCGS-Data/production/session-state/active.md` with:
+After writing the skeleton, update `ccgs-data/production/session-state/active.md` with:
 - Task: Designing [screen/flow name] UX spec
 - Current section: Starting (skeleton created)
-- File: CCGS-Data/design/ux/[filename].md
+- File: ccgs-data/design/ux/[filename].md
 
 ---
 
@@ -420,7 +420,7 @@ Markdown 编号列表`
 7. **Write**: Use `Edit` to replace the `[To be designed]` placeholder with approved
    content. Confirm the write.
 
-After writing each section, update `CCGS-Data/production/session-state/active.md`.
+After writing each section, update `ccgs-data/production/session-state/active.md`.
 
 ---
 
@@ -774,7 +774,7 @@ Pattern library authoring is additive and catalog-driven, not linear.
 
 #### Phase 1: Catalog Existing Patterns
 
-Glob `CCGS-Data/design/ux/*.md` (excluding `interaction-patterns.md`) and read the Component
+Glob `ccgs-data/design/ux/*.md` (excluding `interaction-patterns.md`) and read the Component
 Inventory and Interaction Map sections of each spec. Extract every interaction
 pattern used.
 
@@ -867,10 +867,10 @@ When all sections are approved and written:
 
 ### 6a: Update Session State
 
-Update `CCGS-Data/production/session-state/active.md` with:
+Update `ccgs-data/production/session-state/active.md` with:
 - Task: [screen-name] UX spec
 - Status: Complete (or In Review)
-- File: CCGS-Data/design/ux/[filename].md
+- File: ccgs-data/design/ux/[filename].md
 - Sections: All written
 - Next: [suggestion]
 
@@ -904,9 +904,9 @@ this spec. Do not edit those files without asking — just name them.
 
 If the session is interrupted (compaction, crash, new session):
 
-1. Read `CCGS-Data/production/session-state/active.md` — it records the current screen
+1. Read `ccgs-data/production/session-state/active.md` — it records the current screen
    and which sections are complete.
-2. Read `CCGS-Data/design/ux/[filename].md` — sections with real content are done;
+2. Read `ccgs-data/design/ux/[filename].md` — sections with real content are done;
    sections with `[To be designed]` still need work.
 3. Resume from the next incomplete section — no need to re-discuss completed ones.
 

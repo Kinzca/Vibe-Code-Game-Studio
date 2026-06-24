@@ -20,8 +20,8 @@ The user must approve before moving to the next step.
    `main menu`, `forest biome`, `boss encounter`).
 
 2. **Gather context**:
-   - Read relevant design docs in `CCGS-Data/design/gdd/` for the feature
-   - Read the sound bible at `CCGS-Data/design/gdd/sound-bible.md` if it exists
+   - Read relevant design docs in `ccgs-data/design/gdd/` for the feature
+   - Read the sound bible at `ccgs-data/design/gdd/sound-bible.md` if it exists
    - Read existing audio asset lists in `assets/audio/`
    - Read any existing sound design docs for this area
 
@@ -87,7 +87,7 @@ Spawn the `gameplay-programmer` agent to:
 
 4. **Compile the audio design document** combining all team outputs.
 
-5. **Save to** `CCGS-Data/design/gdd/audio-[feature].md`.
+5. **Save to** `ccgs-data/design/gdd/audio-[feature].md`.
 
 6. **Output a summary** with: audio event count, estimated asset count,
    implementation tasks, and any open questions between team members.

@@ -1,13 +1,13 @@
 # QA 目录规范
 
-> 本文件定义了 `CCGS-Data/production/qa/` 目录的标准结构。
+> 本文件定义了 `ccgs-data/production/qa/` 目录的标准结构。
 > 所有 CCGS Skill 输出的 QA 相关文档必须遵循此规范放置。
 > 此规范用于保持 QA 产物路径稳定，便于各 Skill 和自动化检查读取。
 
 ## 目录结构
 
 ```
-CCGS-Data/production/qa/
+ccgs-data/production/qa/
 ├── DIRECTORY-CONVENTION.md   # 本文件 — 目录规范说明
 ├── plans/                    # 测试计划
 ├── signoffs/                 # QA 签字报告

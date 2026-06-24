@@ -27,7 +27,7 @@ The project progresses through these stages:
 6. **Polish** — Performance, playtesting, bug fixing
 7. **Release** — Launch prep, certification
 
-**When a gate passes**, write the new stage name to `CCGS-Data/production/stage.txt`
+**When a gate passes**, write the new stage name to `ccgs-data/production/stage.txt`
 (single line, e.g. `Production`). This updates the status line immediately.
 
 ---
@@ -38,7 +38,7 @@ The project progresses through these stages:
 
 Also resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE) are skipped — gate-check becomes artifact-existence checks only. In `lean` mode, all four directors still run (phase gates are the purpose of lean mode).
@@ -62,9 +62,9 @@ Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GA
 ### Gate: Concept → Systems Design
 
 **Required Artifacts:**
-- [ ] `CCGS-Data/design/gdd/game-concept.md` exists and has content
-- [ ] Game pillars defined (in concept doc or `CCGS-Data/design/gdd/game-pillars.md`)
-- [ ] Visual Identity Anchor section exists in `CCGS-Data/design/gdd/game-concept.md` (from brainstorm Phase 4 art-director output)
+- [ ] `ccgs-data/design/gdd/game-concept.md` exists and has content
+- [ ] Game pillars defined (in concept doc or `ccgs-data/design/gdd/game-pillars.md`)
+- [ ] Visual Identity Anchor section exists in `ccgs-data/design/gdd/game-concept.md` (from brainstorm Phase 4 art-director output)
 
 **Quality Checks:**
 - [ ] Game concept has been reviewed (`/design-review` verdict not MAJOR REVISION NEEDED)
@@ -77,9 +77,9 @@ Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GA
 ### Gate: Systems Design → Technical Setup
 
 **Required Artifacts:**
-- [ ] Systems index exists at `CCGS-Data/design/gdd/systems-index.md` with at least MVP systems enumerated
-- [ ] All MVP-tier GDDs exist in `CCGS-Data/design/gdd/` and individually pass `/design-review`
-- [ ] A cross-GDD review report exists in `CCGS-Data/design/gdd/` (from `/review-all-gdds`)
+- [ ] Systems index exists at `ccgs-data/design/gdd/systems-index.md` with at least MVP systems enumerated
+- [ ] All MVP-tier GDDs exist in `ccgs-data/design/gdd/` and individually pass `/design-review`
+- [ ] A cross-GDD review report exists in `ccgs-data/design/gdd/` (from `/review-all-gdds`)
 
 **Quality Checks:**
 - [ ] All MVP GDDs pass individual design review (8 required sections, no MAJOR REVISION NEEDED verdict)
@@ -96,18 +96,18 @@ Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GA
 **Required Artifacts:**
 - [ ] Engine chosen (CLAUDE.md Technology Stack is not `[CHOOSE]`)
 - [ ] Technical preferences configured (`.ccgs-core/docs/technical-preferences.md` populated)
-- [ ] Art bible exists at `CCGS-Data/design/art/art-bible.md` with at least Sections 1–4 (Visual Identity Foundation)
-- [ ] At least 3 Architecture Decision Records in `CCGS-Data/project-docs/architecture/` covering
+- [ ] Art bible exists at `ccgs-data/design/art/art-bible.md` with at least Sections 1–4 (Visual Identity Foundation)
+- [ ] At least 3 Architecture Decision Records in `ccgs-data/project-docs/architecture/` covering
       Foundation-layer systems (scene management, event architecture, save/load)
-- [ ] Engine reference docs exist in `CCGS-Data/project-docs/engine-reference/[engine]/`
+- [ ] Engine reference docs exist in `ccgs-data/project-docs/engine-reference/[engine]/`
 - [ ] Test framework initialized: `tests/unit/` and `tests/integration/` directories exist
 - [ ] CI/CD test workflow exists at `.github/workflows/tests.yml` (or equivalent)
 - [ ] At least one example test file exists to confirm the framework is functional
-- [ ] Master architecture document exists at `CCGS-Data/project-docs/architecture/architecture.md`
-- [ ] Architecture traceability index exists at `CCGS-Data/project-docs/architecture/architecture-traceability.md`
-- [ ] `/architecture-review` has been run (a review report file exists in `CCGS-Data/project-docs/architecture/`)
+- [ ] Master architecture document exists at `ccgs-data/project-docs/architecture/architecture.md`
+- [ ] Architecture traceability index exists at `ccgs-data/project-docs/architecture/architecture-traceability.md`
+- [ ] `/architecture-review` has been run (a review report file exists in `ccgs-data/project-docs/architecture/`)
 - [ ] `design/accessibility-requirements.md` exists with accessibility tier committed
-- [ ] `CCGS-Data/design/ux/interaction-patterns.md` exists (pattern library initialized, even if minimal)
+- [ ] `ccgs-data/design/ux/interaction-patterns.md` exists (pattern library initialized, even if minimal)
 
 **Quality Checks:**
 - [ ] Architecture decisions cover core systems (rendering, input, state management)
@@ -116,20 +116,20 @@ Note: in `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GA
 - [ ] At least one screen's UX spec started (often the main menu or core HUD is designed during Technical Setup)
 - [ ] All ADRs have an **Engine Compatibility section** with engine version stamped
 - [ ] All ADRs have a **GDD Requirements Addressed section** with explicit GDD linkage
-- [ ] No ADR references APIs listed in `CCGS-Data/project-docs/engine-reference/[engine]/deprecated-apis.md`
+- [ ] No ADR references APIs listed in `ccgs-data/project-docs/engine-reference/[engine]/deprecated-apis.md`
 - [ ] All HIGH RISK engine domains (per VERSION.md) have been explicitly addressed
       in the architecture document or flagged as open questions
 - [ ] Architecture traceability matrix has **zero Foundation layer gaps**
       (all Foundation requirements must have ADR coverage before Pre-Production)
 
-**ADR Circular Dependency Check**: For all ADRs in `CCGS-Data/project-docs/architecture/`, read each ADR's
+**ADR Circular Dependency Check**: For all ADRs in `ccgs-data/project-docs/architecture/`, read each ADR's
 "ADR Dependencies" / "Depends On" section. Build a dependency graph (ADR-A → ADR-B means
 A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 - Flag as **FAIL**: "Circular ADR dependency: [ADR-X] → [ADR-Y] → [ADR-X].
   Neither can reach Accepted while the cycle exists. Remove one 'Depends On' edge to
   break the cycle."
 
-**Engine Validation** (read `CCGS-Data/project-docs/engine-reference/[engine]/VERSION.md` first):
+**Engine Validation** (read `ccgs-data/project-docs/engine-reference/[engine]/VERSION.md` first):
 - [ ] ADRs that touch post-cutoff engine APIs are flagged with Knowledge Risk: HIGH/MEDIUM
 - [ ] `/architecture-review` engine audit shows no deprecated API usage
 - [ ] All ADRs agree on the same engine version (no stale version references)
@@ -140,23 +140,23 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 
 **Required Artifacts:**
 - [ ] At least 1 prototype in `prototypes/` with a README
-- [ ] First sprint plan exists in `CCGS-Data/production/sprints/`
-- [ ] Art bible is complete (all 9 sections) and AD-ART-BIBLE sign-off verdict is recorded in `CCGS-Data/design/art/art-bible.md`
+- [ ] First sprint plan exists in `ccgs-data/production/sprints/`
+- [ ] Art bible is complete (all 9 sections) and AD-ART-BIBLE sign-off verdict is recorded in `ccgs-data/design/art/art-bible.md`
 - [ ] Character visual profiles exist for key characters referenced in narrative docs
 - [ ] All MVP-tier GDDs from systems index are complete
-- [ ] Master architecture document exists at `CCGS-Data/project-docs/architecture/architecture.md`
-- [ ] At least 3 ADRs covering Foundation-layer decisions exist in `CCGS-Data/project-docs/architecture/`
-- [ ] Control manifest exists at `CCGS-Data/project-docs/architecture/control-manifest.md`
+- [ ] Master architecture document exists at `ccgs-data/project-docs/architecture/architecture.md`
+- [ ] At least 3 ADRs covering Foundation-layer decisions exist in `ccgs-data/project-docs/architecture/`
+- [ ] Control manifest exists at `ccgs-data/project-docs/architecture/control-manifest.md`
       (generated by `/create-control-manifest` from Accepted ADRs)
-- [ ] Epics defined in `CCGS-Data/production/epics/` with at least Foundation and Core
+- [ ] Epics defined in `ccgs-data/production/epics/` with at least Foundation and Core
       layer epics present (use `/create-epics layer: foundation` and
       `/create-epics layer: core` to create them, then `/create-stories [epic-slug]`
       for each epic)
 - [ ] Vertical Slice build exists and is playable (not just scope-defined)
 - [ ] Vertical Slice has been playtested with at least 3 sessions (internal OK)
-- [ ] Vertical Slice playtest report exists at `CCGS-Data/production/playtests/` or equivalent
-- [ ] UX specs exist for key screens: main menu, core gameplay HUD (at `CCGS-Data/design/ux/`), pause menu
-- [ ] HUD design document exists at `CCGS-Data/design/ux/hud.md` (if game has in-game HUD)
+- [ ] Vertical Slice playtest report exists at `ccgs-data/production/playtests/` or equivalent
+- [ ] UX specs exist for key screens: main menu, core gameplay HUD (at `ccgs-data/design/ux/`), pause menu
+- [ ] HUD design document exists at `ccgs-data/design/ux/hud.md` (if game has in-game HUD)
 - [ ] All key screen UX specs have passed `/ux-review` (verdict APPROVED or NEEDS REVISION accepted)
 
 **Quality Checks:**
@@ -164,7 +164,7 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 - [ ] UX specs cover all UI Requirements sections from MVP-tier GDDs
 - [ ] Interaction pattern library documents patterns used in key screens
 - [ ] Accessibility tier from `design/accessibility-requirements.md` is addressed in all key screen UX specs
-- [ ] Sprint plan references real story file paths from `CCGS-Data/production/epics/`
+- [ ] Sprint plan references real story file paths from `ccgs-data/production/epics/`
       (not just GDDs — stories must embed GDD req ID + ADR reference)
 - [ ] **Vertical Slice is COMPLETE**, not just scoped — the build demonstrates the full core loop end-to-end. At least one complete [start → challenge → resolution] cycle works.
 - [ ] Architecture document has no unresolved open questions in Foundation or Core layers
@@ -190,14 +190,14 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 
 **Required Artifacts:**
 - [ ] `src/` has active code organized into subsystems
-- [ ] All core mechanics from GDD are implemented (cross-reference `CCGS-Data/design/gdd/` with `src/`)
+- [ ] All core mechanics from GDD are implemented (cross-reference `ccgs-data/design/gdd/` with `src/`)
 - [ ] Main gameplay path is playable end-to-end
 - [ ] Test files exist in `tests/unit/` and `tests/integration/` covering Logic and Integration stories
 - [ ] All Logic stories from this sprint have corresponding unit test files in `tests/unit/`
-- [ ] Smoke check has been run with a PASS or PASS WITH WARNINGS verdict — report exists in `CCGS-Data/production/qa/smoke/`
-- [ ] QA plan exists in `CCGS-Data/production/qa/plans/` (generated by `/qa-plan`) covering this sprint or final production sprint
-- [ ] QA sign-off report exists in `CCGS-Data/production/qa/signoffs/` (generated by `/team-qa`) with verdict APPROVED or APPROVED WITH CONDITIONS
-- [ ] At least 3 distinct playtest sessions documented in `CCGS-Data/production/playtests/`
+- [ ] Smoke check has been run with a PASS or PASS WITH WARNINGS verdict — report exists in `ccgs-data/production/qa/smoke/`
+- [ ] QA plan exists in `ccgs-data/production/qa/plans/` (generated by `/qa-plan`) covering this sprint or final production sprint
+- [ ] QA sign-off report exists in `ccgs-data/production/qa/signoffs/` (generated by `/team-qa`) with verdict APPROVED or APPROVED WITH CONDITIONS
+- [ ] At least 3 distinct playtest sessions documented in `ccgs-data/production/playtests/`
 - [ ] Playtest reports cover: new player experience, mid-game systems, and difficulty curve
 - [ ] Fun hypothesis from Game Concept has been explicitly validated or revised
 
@@ -221,9 +221,9 @@ A depends on B). If any cycle is detected (e.g. A→B→A, or A→B→C→A):
 - [ ] All features from milestone plan are implemented
 - [ ] Content is complete (all levels, assets, dialogue referenced in design docs exist)
 - [ ] Localization strings are externalized (no hardcoded player-facing text in `src/`)
-- [ ] QA test plan exists (`/qa-plan` output in `CCGS-Data/production/qa/plans/`)
-- [ ] QA sign-off report exists (`/team-qa` output in `CCGS-Data/production/qa/signoffs/` — APPROVED or APPROVED WITH CONDITIONS)
-- [ ] All Must Have story test evidence is present (Logic/Integration: test files pass; Visual/Feel/UI: sign-off docs in `CCGS-Data/production/qa/evidence/`)
+- [ ] QA test plan exists (`/qa-plan` output in `ccgs-data/production/qa/plans/`)
+- [ ] QA sign-off report exists (`/team-qa` output in `ccgs-data/production/qa/signoffs/` — APPROVED or APPROVED WITH CONDITIONS)
+- [ ] All Must Have story test evidence is present (Logic/Integration: test files pass; Visual/Feel/UI: sign-off docs in `ccgs-data/production/qa/evidence/`)
 - [ ] Smoke check passes cleanly (PASS verdict) on the release candidate build
 - [ ] No test regressions from previous sprint (test suite passes fully)
 - [ ] Balance data has been reviewed (`/balance-check` run)
@@ -260,9 +260,9 @@ For each item in the target gate:
 - For code checks, verify directory structure and file counts
 
 **Systems Design → Technical Setup gate — cross-GDD review check**:
-Use `Glob('CCGS-Data/design/gdd/gdd-cross-review-*.md')` to find the `/review-all-gdds` report.
+Use `Glob('ccgs-data/design/gdd/gdd-cross-review-*.md')` to find the `/review-all-gdds` report.
 If no file matches, mark the "cross-GDD review report exists" artifact as **FAIL** and
-surface it prominently: "No `/review-all-gdds` report found in `CCGS-Data/design/gdd/`. Run
+surface it prominently: "No `/review-all-gdds` report found in `ccgs-data/design/gdd/`. Run
 `/review-all-gdds` before advancing to Technical Setup."
 If a file is found, read it and check the verdict line: a FAIL verdict means the
 cross-GDD consistency check failed and must be resolved before advancing.
@@ -275,7 +275,7 @@ cross-GDD consistency check failed and must be resolved before advancing.
 - For localization checks: `Grep` for hardcoded strings in `src/`
 
 ### Cross-Reference Checks
-- Compare `CCGS-Data/design/gdd/` documents against `src/` implementations
+- Compare `ccgs-data/design/gdd/` documents against `src/` implementations
 - Check that every system referenced in architecture docs has corresponding code
 - Verify sprint plans reference real work items
 
@@ -340,9 +340,9 @@ Markdown 编号列表`
 **Checked by**: gate-check skill
 
 ### Required Artifacts: [X/Y present]
-- [x] CCGS-Data/design/gdd/game-concept.md — exists, 2.4KB
-- [ ] CCGS-Data/project-docs/architecture/ — MISSING (no ADRs found)
-- [x] CCGS-Data/production/sprints/ — exists, 1 sprint plan
+- [x] ccgs-data/design/gdd/game-concept.md — exists, 2.4KB
+- [ ] ccgs-data/project-docs/architecture/ — MISSING (no ADRs found)
+- [x] ccgs-data/production/sprints/ — exists, 1 sprint plan
 
 ### Quality Checks: [X/Y passing]
 - [x] GDD has 8/8 required sections
@@ -410,15 +410,15 @@ Do NOT reference the draft verdict text — re-check specific files or ask the u
 
 When the verdict is **PASS** and the user confirms they want to advance:
 
-1. Write the new stage name to `CCGS-Data/production/stage.txt` (single line, no trailing newline)
+1. Write the new stage name to `ccgs-data/production/stage.txt` (single line, no trailing newline)
 2. This immediately updates the status line for all future sessions
 
 Example: if passing the "Pre-Production → Production" gate:
 Markdown 编号列表`bash
-echo -n "Production" > CCGS-Data/production/stage.txt
+echo -n "Production" > ccgs-data/production/stage.txt
 Markdown 编号列表`
 
-**Always ask before writing**: "Gate passed. May I update `CCGS-Data/production/stage.txt` to 'Production'?"
+**Always ask before writing**: "Gate passed. May I update `ccgs-data/production/stage.txt` to 'Production'?"
 
 ---
 

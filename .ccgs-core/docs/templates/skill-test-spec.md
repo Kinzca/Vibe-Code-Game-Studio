@@ -46,7 +46,7 @@ systems-index.md exists. All MVP GDDs are present and individually reviewed."]
 ### Case 2: Failure Path — [short description, e.g., "Missing required artifact"]
 
 **Fixture:** [Describe the failure state. E.g., "game-concept.md is missing.
-No files exist in CCGS-Data/design/gdd/."]
+No files exist in ccgs-data/design/gdd/."]
 
 **Input:** `/[skill-name] [args]`
 

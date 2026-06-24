@@ -14,7 +14,7 @@ answers "what do I do?" and "what must I never do?" — organized by architectur
 layer, extracted from all Accepted ADRs, technical preferences, and engine
 reference docs. Where ADRs explain *why*, the manifest tells you *what*.
 
-**Output:** `CCGS-Data/project-docs/architecture/control-manifest.md`
+**Output:** `ccgs-data/project-docs/architecture/control-manifest.md`
 
 **When to run:** After `/architecture-review` passes and ADRs are in Accepted
 status. Re-run whenever new ADRs are accepted or existing ADRs are revised.
@@ -24,7 +24,7 @@ status. Re-run whenever new ADRs are accepted or existing ADRs are revised.
 ## 1. Load All Inputs
 
 ### ADRs
-- Glob `CCGS-Data/project-docs/architecture/adr-*.md` and read every file
+- Glob `ccgs-data/project-docs/architecture/adr-*.md` and read every file
 - Filter to only Accepted ADRs (Status: Accepted) — skip Proposed, Deprecated,
   Superseded
 - Note the ADR number and title for every rule sourced
@@ -35,10 +35,10 @@ status. Re-run whenever new ADRs are accepted or existing ADRs are revised.
   forbidden patterns
 
 ### Engine Reference
-- Read `CCGS-Data/project-docs/engine-reference/[engine]/VERSION.md` for engine + version
-- Read `CCGS-Data/project-docs/engine-reference/[engine]/deprecated-apis.md` — these become
+- Read `ccgs-data/project-docs/engine-reference/[engine]/VERSION.md` for engine + version
+- Read `ccgs-data/project-docs/engine-reference/[engine]/deprecated-apis.md` — these become
   forbidden API entries
-- Read `CCGS-Data/project-docs/engine-reference/[engine]/current-best-practices.md` if it exists
+- Read `ccgs-data/project-docs/engine-reference/[engine]/current-best-practices.md` if it exists
 
 Report: "Loaded [N] Accepted ADRs, engine: [name + version]."
 
@@ -142,7 +142,7 @@ Apply the verdict:
 
 ## 5. Write the Control Manifest
 
-Ask: "May I write this to `CCGS-Data/project-docs/architecture/control-manifest.md`?"
+Ask: "May I write this to `ccgs-data/project-docs/architecture/control-manifest.md`?"
 
 Format:
 
@@ -246,7 +246,7 @@ rule, see the referenced ADR.
 ### Forbidden APIs ([engine version])
 These APIs are deprecated or unverified for [engine + version]:
 - `[api name]` — deprecated since [version] / unverified post-cutoff
-- Source: `CCGS-Data/project-docs/engine-reference/[engine]/deprecated-apis.md`
+- Source: `ccgs-data/project-docs/engine-reference/[engine]/deprecated-apis.md`
 
 ### Cross-Cutting Constraints
 - [constraint that applies everywhere, regardless of layer]

@@ -64,7 +64,7 @@ Do not read test file contents unless needed for name-to-test mapping.
 
 ### Step 2c — Load GDD critical paths
 
-For `audit` mode: read `CCGS-Data/design/gdd/systems-index.md` to get all systems.
+For `audit` mode: read `ccgs-data/design/gdd/systems-index.md` to get all systems.
 For each MVP-tier system, read its GDD and extract:
 - Acceptance Criteria (these define the critical paths)
 - Formulas section (formulas must have regression tests)
@@ -75,7 +75,7 @@ and story files to find stories with Status: Complete this sprint.
 
 ### Step 2d — Load closed bugs
 
-Glob `CCGS-Data/production/qa/bugs/*.md` and filter for bugs with a `Status: Closed`
+Glob `ccgs-data/production/qa/bugs/*.md` and filter for bugs with a `Status: Closed`
 or `Status: Fixed` field. Note:
 - Which story or system the bug was in
 - Whether a regression test was mentioned in the fix description

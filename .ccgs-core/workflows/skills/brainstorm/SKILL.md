@@ -12,14 +12,14 @@ When this skill is invoked:
    `space survival`, `cozy farming`). If `open` or no argument, start from
    scratch. Also resolve the review mode (once, store for all gate spawns this run):
    1. If `--review [full|lean|solo]` was passed → use that
-   2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+   2. Else read `ccgs-data/production/review-mode.txt` → use that value
    3. Else → default to `lean`
 
    See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 
 2. **Check for existing concept work**:
-   - Read `CCGS-Data/design/gdd/game-concept.md` if it exists (resume, don't restart)
-   - Read `CCGS-Data/design/gdd/game-pillars.md` if it exists (build on established pillars)
+   - Read `ccgs-data/design/gdd/game-concept.md` if it exists (resume, don't restart)
+   - Read `ccgs-data/design/gdd/game-pillars.md` if it exists (build on established pillars)
 
 3. **Run through ideation phases** interactively, asking the user questions at
    each phase. Do NOT generate everything silently — the goal is **collaborative
@@ -293,7 +293,7 @@ Present the assessment to the user. If UNREALISTIC, offer to adjust the MVP defi
    move" decision before it can be forgotten between sessions.
 
 5. 向用户呈现选项以 write approval:
-- Prompt: "Game concept is ready. May I write it to `CCGS-Data/design/gdd/game-concept.md`?"
+- Prompt: "Game concept is ready. May I write it to `ccgs-data/design/gdd/game-concept.md`?"
 - Options: `[A] Yes — write it` / `[B] Not yet — revise a section first`
 
 If [B]: ask which section to revise 使用 Markdown 编号列表交互 with options: `Elevator Pitch` / `Core Fantasy & Unique Hook` / `Pillars` / `Core Loop` / `MVP Definition` / `Scope Tiers` / `Risks` / `Something else — I'll describe`
@@ -310,7 +310,7 @@ If yes, generate the document using the template at `.ccgs-core/docs/templates/g
    pre-production pipeline). List ALL steps — do not abbreviate or truncate:
    1. "Run `/setup-engine` to configure the engine and populate version-aware reference docs"
    2. "Run `/art-bible` to create the visual identity specification — do this BEFORE writing GDDs. The art bible gates asset production and shapes technical architecture decisions (rendering, VFX, UI systems)."
-   3. "Use `/design-review CCGS-Data/design/gdd/game-concept.md` to validate concept completeness before going downstream"
+   3. "Use `/design-review ccgs-data/design/gdd/game-concept.md` to validate concept completeness before going downstream"
    4. "Discuss vision with the `creative-director` agent for pillar refinement"
    5. "Decompose the concept into individual systems with `/map-systems` — maps dependencies, assigns priorities, and creates the systems index"
    5. "Author per-system GDDs with `/design-system` — guided, section-by-section GDD writing for each system identified in step 4"
@@ -334,7 +334,7 @@ This is a multi-phase skill. If context reaches or exceeds 70% during any phase,
 append this notice to the current response before continuing:
 
 > **Context is approaching the limit (≥70%).** The game concept document is saved
-> to `CCGS-Data/design/gdd/game-concept.md`. Open a fresh Claude Code session to continue
+> to `ccgs-data/design/gdd/game-concept.md`. Open a fresh Claude Code session to continue
 > if needed — progress is not lost.
 
 ---

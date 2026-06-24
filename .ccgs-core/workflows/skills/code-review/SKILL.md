@@ -28,7 +28,7 @@ If the section reads `[TO BE CONFIGURED]`, no engine is pinned — skip engine s
 
 ## Phase 3: ADR Compliance Check
 
-Search for ADR references in the story file, commit messages, and header comments. Look for patterns like `ADR-NNN` or `CCGS-Data/project-docs/architecture/ADR-`.
+Search for ADR references in the story file, commit messages, and header comments. Look for patterns like `ADR-NNN` or `ccgs-data/project-docs/architecture/ADR-`.
 
 If no ADR references found, note: "No ADR references found — skipping ADR compliance check."
 

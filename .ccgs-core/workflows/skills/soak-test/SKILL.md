@@ -24,7 +24,7 @@ minutes to several hours** to surface:
 **This skill generates the observation protocol and analysis harness — the
 human does the actual playing.**
 
-**Output:** `CCGS-Data/production/qa/reports/soak-test-[date]-[duration].md`
+**Output:** `ccgs-data/production/qa/reports/soak-test-[date]-[duration].md`
 
 **When to run:**
 - Polish phase — before `/gate-check release`
@@ -54,11 +54,11 @@ human does the actual playing.**
 Read:
 - `.ccgs-core/docs/technical-preferences.md` — engine (for engine-specific memory
   monitoring guidance), performance budgets (memory ceiling, target FPS)
-- `CCGS-Data/design/gdd/game-concept.md` — intended session length (for comparison against
+- `ccgs-data/design/gdd/game-concept.md` — intended session length (for comparison against
   soak duration), core loop description
-- Most recent file in `CCGS-Data/production/playtests/` — prior playtest findings
+- Most recent file in `ccgs-data/production/playtests/` — prior playtest findings
   (to avoid re-documenting known issues)
-- Most recent file in `CCGS-Data/production/qa/plans/qa-plan-*.md` — current sprint test coverage
+- Most recent file in `ccgs-data/production/qa/plans/qa-plan-*.md` — current sprint test coverage
   (to understand what has been formally tested vs. what the soak covers)
 
 Note any performance budget targets from technical-preferences.md:
@@ -255,7 +255,7 @@ Markdown 编号列表`
 Present the protocol summary in conversation, then ask:
 
 "May I write this soak test protocol to
-`CCGS-Data/production/qa/reports/soak-test-[date]-[duration].md`?"
+`ccgs-data/production/qa/reports/soak-test-[date]-[duration].md`?"
 
 Write only after approval.
 
@@ -265,7 +265,7 @@ After writing:
 1. Open the file and follow the Pre-Session Setup checklist
 2. Record each checkpoint as you play
 3. Complete the Post-Session Analysis section when done
-4. File bugs from 'Issues Found' to `CCGS-Data/production/qa/bugs/`
+4. File bugs from 'Issues Found' to `ccgs-data/production/qa/bugs/`
 5. Run `/bug-triage sprint` after the session to integrate any S1/S2 issues
 
 If the verdict is FAIL, run `/smoke-check` again after fixing the issues."

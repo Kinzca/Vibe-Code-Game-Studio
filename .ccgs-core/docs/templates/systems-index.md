@@ -3,7 +3,7 @@
 > **Status**: [Draft / Under Review / Approved]
 > **Created**: [Date]
 > **Last Updated**: [Date]
-> **Source Concept**: CCGS-Data/design/gdd/game-concept.md
+> **Source Concept**: ccgs-data/design/gdd/game-concept.md
 
 ---
 
@@ -19,7 +19,7 @@ team member understand the "big picture" of what needs to be designed and built.
 
 | # | System Name | Category | Priority | Status | Design Doc | Depends On |
 |---|-------------|----------|----------|--------|------------|------------|
-| 1 | [e.g., Player Controller] | Core | MVP | [Not Started / In Design / In Review / Approved / Implemented] | [CCGS-Data/design/gdd/player-controller.md or "—"] | [e.g., Input System, Physics] |
+| 1 | [e.g., Player Controller] | Core | MVP | [Not Started / In Design / In Review / Approved / Implemented] | [ccgs-data/design/gdd/player-controller.md or "—"] | [e.g., Input System, Physics] |
 | 2 | [e.g., Camera System] | Core | MVP | Not Started | — | Player Controller |
 
 [Add a row for every identified system. Use the categories and priority tiers

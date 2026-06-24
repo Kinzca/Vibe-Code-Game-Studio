@@ -93,7 +93,7 @@ Markdown 编号列表`
 
 ## Phase 2C: Verify Mode
 
-Read `CCGS-Data/production/qa/bugs/[BUG-ID].md`. Extract the reproduction steps and expected result.
+Read `ccgs-data/production/qa/bugs/[BUG-ID].md`. Extract the reproduction steps and expected result.
 
 1. **Re-run reproduction steps** — use Grep/Glob to check whether the root cause code path still exists as described. If the fix removed or changed it, note the change.
 2. **Run the related test** — if the bug's system has a test file in `tests/`, run it via Bash and report pass/fail.
@@ -105,7 +105,7 @@ Produce a verification verdict:
 - **STILL PRESENT** — bug reproduces as described; fix did not resolve the issue
 - **CANNOT VERIFY** — automated checks inconclusive; manual playtest required
 
-Ask: "May I update `CCGS-Data/production/qa/bugs/[BUG-ID].md` to set Status: Verified Fixed / Still Present / Cannot Verify?"
+Ask: "May I update `ccgs-data/production/qa/bugs/[BUG-ID].md` to set Status: Verified Fixed / Still Present / Cannot Verify?"
 
 If STILL PRESENT: reopen the bug, set Status back to Open, and suggest re-running `/hotfix [BUG-ID]`.
 
@@ -113,7 +113,7 @@ If STILL PRESENT: reopen the bug, set Status back to Open, and suggest re-runnin
 
 ## Phase 2D: Close Mode
 
-Read `CCGS-Data/production/qa/bugs/[BUG-ID].md`. Confirm Status is `Verified Fixed` before closing. If status is anything else, stop: "Bug [ID] must be Verified Fixed before it can be closed. Run `/bug-report verify [BUG-ID]` first."
+Read `ccgs-data/production/qa/bugs/[BUG-ID].md`. Confirm Status is `Verified Fixed` before closing. If status is anything else, stop: "Bug [ID] must be Verified Fixed before it can be closed. Run `/bug-report verify [BUG-ID]` first."
 
 Append a closure record to the bug file:
 
@@ -130,9 +130,9 @@ Markdown 编号列表`
 
 Update the top-level `**Status**: Open` field to `**Status**: Closed`.
 
-Ask: "May I update `CCGS-Data/production/qa/bugs/[BUG-ID].md` to mark it Closed?"
+Ask: "May I update `ccgs-data/production/qa/bugs/[BUG-ID].md` to mark it Closed?"
 
-After closing, check `CCGS-Data/production/qa/bug-triage-*.md` — if the bug appears in an open triage report, note: "Bug [ID] is referenced in the triage report. Run `/bug-triage` to refresh the open bug count."
+After closing, check `ccgs-data/production/qa/bug-triage-*.md` — if the bug appears in an open triage report, note: "Bug [ID] is referenced in the triage report. Run `/bug-triage` to refresh the open bug count."
 
 ---
 
@@ -140,7 +140,7 @@ After closing, check `CCGS-Data/production/qa/bug-triage-*.md` — if the bug ap
 
 Present the completed bug report(s) to the user.
 
-Ask: "May I write this to `CCGS-Data/production/qa/bugs/BUG-[NNNN].md`?"
+Ask: "May I write this to `ccgs-data/production/qa/bugs/BUG-[NNNN].md`?"
 
 If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — bug report filed.
 

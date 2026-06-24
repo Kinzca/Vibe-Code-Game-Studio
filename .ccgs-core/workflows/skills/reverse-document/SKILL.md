@@ -122,8 +122,8 @@ Based on type, use appropriate template:
 
 | Type | Template | Output Path |
 |------|----------|-------------|
-| `design` | `templates/design-doc-from-implementation.md` | `CCGS-Data/design/gdd/[system-name].md` |
-| `architecture` | `templates/architecture-doc-from-code.md` | `CCGS-Data/project-docs/architecture/[decision-name].md` |
+| `design` | `templates/design-doc-from-implementation.md` | `ccgs-data/design/gdd/[system-name].md` |
+| `architecture` | `templates/architecture-doc-from-code.md` | `ccgs-data/project-docs/architecture/[decision-name].md` |
 | `concept` | `templates/concept-doc-from-prototype.md` | `prototypes/[name]/CONCEPT.md` or `design/concepts/[name].md` |
 
 **Draft structure**:
@@ -149,7 +149,7 @@ SECTIONS MARKED AS INCOMPLETE:
 - "[System] interaction with [other-system]" (not fully implemented yet)
 - "[Variant or feature]" (only [subset] implemented so far)
 
-May I write this to CCGS-Data/design/gdd/[system-name].md?
+May I write this to ccgs-data/design/gdd/[system-name].md?
 Markdown 编号列表`
 
 Wait for approval. User may request changes before writing.
@@ -180,7 +180,7 @@ Markdown 编号列表`
 After writing, suggest next steps:
 
 Markdown 编号列表`
-✅ Written to CCGS-Data/design/gdd/combat-system.md
+✅ Written to ccgs-data/design/gdd/combat-system.md
 
 FOLLOW-UP RECOMMENDED:
 1. Run /balance-check on combat formulas (exponential scaling concern)
@@ -230,11 +230,11 @@ User: 1. [Resource] is for pacing, prevent [unwanted behavior]
 Agent: Perfect, that clarifies the vision. Let me draft the design doc.
        [Shows draft with clarified intent]
 
-       May I write this to CCGS-Data/design/gdd/[system-name].md?
+       May I write this to ccgs-data/design/gdd/[system-name].md?
 
 User: Yes, write it.
 
-Agent: ✅ Written to CCGS-Data/design/gdd/[system-name].md
+Agent: ✅ Written to ccgs-data/design/gdd/[system-name].md
        ✅ Marked as [REVERSE-DOCUMENTED]
        ✅ Flagged [value] scaling for rebalancing
 

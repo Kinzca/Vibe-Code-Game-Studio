@@ -17,8 +17,8 @@ Read the argument for the launch date or `dry-run` mode. Dry-run mode generates 
 ## Phase 2: Gather Project Context
 
 - Read `CLAUDE.md` for tech stack, target platforms, and team structure
-- Read the latest milestone in `CCGS-Data/production/milestones/`
-- Read any existing release checklist in `CCGS-Data/production/releases/`
+- Read the latest milestone in `ccgs-data/production/milestones/`
+- Read any existing release checklist in `ccgs-data/production/releases/`
 - Read the content calendar in `design/live-ops/content-calendar.md` if it exists
 
 ---
@@ -227,7 +227,7 @@ Markdown 编号列表`
 
 Present the completed checklist and summary to the user (total items, blocking items count, conditional items count, departments with incomplete sections).
 
-If not in dry-run mode, ask: "May I write this to `CCGS-Data/production/releases/launch-checklist-[date].md`?"
+If not in dry-run mode, ask: "May I write this to `ccgs-data/production/releases/launch-checklist-[date].md`?"
 
 If yes, write the file, creating directories as needed.
 

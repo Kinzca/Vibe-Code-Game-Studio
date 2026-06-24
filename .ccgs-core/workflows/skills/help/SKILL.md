@@ -5,7 +5,7 @@ argument-hint: "[optional: what you just finished, e.g. 'finished design-review'
 user-invocable: true
 allowed-tools: Read, Glob, Grep
 context: |
-  !echo "=== Live Project State ===" && echo "Stage: $(cat CCGS-Data/production/stage.txt 2>/dev/null | tr -d '[:space:]' || echo 'not set')" && echo "Latest sprint: $(ls -t CCGS-Data/production/sprints/*.md 2>/dev/null | head -1 || echo 'none')" && echo "Session state: $(head -5 CCGS-Data/production/session-state/active.md 2>/dev/null || echo 'none')"
+  !echo "=== Live Project State ===" && echo "Stage: $(cat ccgs-data/production/stage.txt 2>/dev/null | tr -d '[:space:]' || echo 'not set')" && echo "Latest sprint: $(ls -t ccgs-data/production/sprints/*.md 2>/dev/null | head -1 || echo 'none')" && echo "Session state: $(head -5 ccgs-data/production/session-state/active.md 2>/dev/null || echo 'none')"
 model: haiku
 ---
 
@@ -54,7 +54,7 @@ skills in production/polish, etc.).
 
 Check in this order:
 
-1. **Read `CCGS-Data/production/stage.txt`** — if it exists and has content, this is the
+1. **Read `ccgs-data/production/stage.txt`** — if it exists and has content, this is the
    authoritative phase name. Map it to a catalog phase key:
    - "Concept" → `concept`
    - "Systems Design" → `systems-design`
@@ -66,17 +66,17 @@ Check in this order:
 
 2. **If stage.txt is missing**, infer phase from artifacts (most-advanced match wins):
    - `src/` has 10+ source files → `production`
-   - `CCGS-Data/production/stories/*.md` exists → `pre-production`
-   - `CCGS-Data/project-docs/architecture/adr-*.md` exists → `technical-setup`
-   - `CCGS-Data/design/gdd/systems-index.md` exists → `systems-design`
-   - `CCGS-Data/design/gdd/game-concept.md` exists → `concept`
+   - `ccgs-data/production/stories/*.md` exists → `pre-production`
+   - `ccgs-data/project-docs/architecture/adr-*.md` exists → `technical-setup`
+   - `ccgs-data/design/gdd/systems-index.md` exists → `systems-design`
+   - `ccgs-data/design/gdd/game-concept.md` exists → `concept`
    - Nothing → `concept` (fresh project)
 
 ---
 
 ## Step 3: Read Session Context
 
-Read `CCGS-Data/production/session-state/active.md` if it exists. Extract:
+Read `ccgs-data/production/session-state/active.md` if it exists. Extract:
 - What was most recently worked on
 - Any in-progress tasks or open questions
 - Current epic/feature/task from STATUS block (if present)
@@ -107,7 +107,7 @@ If the step has no `artifact` field:
 
 ### Special case: production phase — read `sprint-status.yaml`
 
-When the current phase is `production`, check for `CCGS-Data/production/sprint-status.yaml`
+When the current phase is `production`, check for `ccgs-data/production/sprint-status.yaml`
 before doing any glob-based story checks. If it exists, read it directly:
 
 - Stories with `status: in-progress` → surface as "currently active"

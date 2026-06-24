@@ -23,7 +23,7 @@ and Pre-Production.
 - **`single-gdd [path]`**: Review architecture coverage for one specific GDD
 - **`rtm`**: Requirements Traceability Matrix — extends the standard matrix
   to include story file paths and test file paths; outputs
-  `CCGS-Data/project-docs/architecture/requirements-traceability.md` with the full
+  `ccgs-data/project-docs/architecture/requirements-traceability.md` with the full
   GDD requirement → ADR → Story → Test chain. Use in Production phase when
   stories and tests exist.
 
@@ -37,8 +37,8 @@ Before reading any full document, use Grep to extract `## Summary` sections
 from all GDDs and ADRs:
 
 Markdown 编号列表`
-Grep pattern="## Summary" glob="CCGS-Data/design/gdd/*.md" output_mode="content" -A 4
-Grep pattern="## Summary" glob="CCGS-Data/project-docs/architecture/adr-*.md" output_mode="content" -A 3
+Grep pattern="## Summary" glob="ccgs-data/design/gdd/*.md" output_mode="content" -A 4
+Grep pattern="## Summary" glob="ccgs-data/project-docs/architecture/adr-*.md" output_mode="content" -A 3
 Markdown 编号列表`
 
 For `single-gdd [path]` mode: use the target GDD's summary to identify which
@@ -54,18 +54,18 @@ For `coverage` or `full` mode: proceed to full-read everything below.
 Read all inputs appropriate to the mode:
 
 ### Design Documents
-- All in-scope GDDs in `CCGS-Data/design/gdd/` — read every file completely
-- `CCGS-Data/design/gdd/systems-index.md` — the authoritative list of systems
+- All in-scope GDDs in `ccgs-data/design/gdd/` — read every file completely
+- `ccgs-data/design/gdd/systems-index.md` — the authoritative list of systems
 
 ### Architecture Documents
-- All in-scope ADRs in `CCGS-Data/project-docs/architecture/` — read every file completely
-- `CCGS-Data/project-docs/architecture/architecture.md` if it exists
+- All in-scope ADRs in `ccgs-data/project-docs/architecture/` — read every file completely
+- `ccgs-data/project-docs/architecture/architecture.md` if it exists
 
 ### Engine Reference
-- `CCGS-Data/project-docs/engine-reference/[engine]/VERSION.md`
-- `CCGS-Data/project-docs/engine-reference/[engine]/breaking-changes.md`
-- `CCGS-Data/project-docs/engine-reference/[engine]/deprecated-apis.md`
-- All files in `CCGS-Data/project-docs/engine-reference/[engine]/modules/`
+- `ccgs-data/project-docs/engine-reference/[engine]/VERSION.md`
+- `ccgs-data/project-docs/engine-reference/[engine]/breaking-changes.md`
+- `ccgs-data/project-docs/engine-reference/[engine]/deprecated-apis.md`
+- All files in `ccgs-data/project-docs/engine-reference/[engine]/modules/`
 
 ### Project Standards
 - `.ccgs-core/docs/technical-preferences.md`
@@ -83,7 +83,7 @@ at the top of the Phase 4 conflict detection output.
 
 ### Pre-load the TR Registry
 
-Before extracting any requirements, read `CCGS-Data/project-docs/architecture/tr-registry.yaml`
+Before extracting any requirements, read `ccgs-data/project-docs/architecture/tr-registry.yaml`
 if it exists. Index existing entries by `id` and by normalized `requirement`
 text (lowercase, trimmed). This prevents ID renumbering across review runs.
 
@@ -174,7 +174,7 @@ Requirements Traceability Matrix (RTM).
 
 ### Step 3b-1 — Load stories
 
-Glob `CCGS-Data/production/epics/**/*.md` (excluding EPIC.md index files). For each
+Glob `ccgs-data/production/epics/**/*.md` (excluding EPIC.md index files). For each
 story file:
 - Extract `TR-ID` from the story's Context section
 - Extract story file path, title, Status
@@ -380,7 +380,7 @@ Ask: "Should I flag these GDDs for revision in the systems index?"
 
 ## Phase 6: Architecture Document Coverage
 
-If `CCGS-Data/project-docs/architecture/architecture.md` exists, validate it against GDDs:
+If `ccgs-data/project-docs/architecture/architecture.md` exists, validate it against GDDs:
 
 - Does every system from `systems-index.md` appear in the architecture layers?
 - Does the data flow section cover all cross-system communication defined in GDDs?
@@ -454,13 +454,13 @@ Markdown 编号列表`
 向用户呈现选项以 the write approval:
 - "Review complete. What would you like to write?"
   - [A] Write all three files (review report + traceability index + TR registry)
-  - [B] Write review report only — `CCGS-Data/project-docs/architecture/architecture-review-[date].md`
+  - [B] Write review report only — `ccgs-data/project-docs/architecture/architecture-review-[date].md`
   - [C] Don't write anything yet — I need to review the findings first
 
 ### RTM Output (rtm mode only)
 
 For `rtm` mode, additionally ask: "May I write the full Requirements Traceability
-Matrix to `CCGS-Data/project-docs/architecture/requirements-traceability.md`?"
+Matrix to `ccgs-data/project-docs/architecture/requirements-traceability.md`?"
 
 RTM file format:
 
@@ -520,7 +520,7 @@ Markdown 编号列表`
 
 ### TR Registry Update
 
-Also ask: "May I update `CCGS-Data/project-docs/architecture/tr-registry.yaml` with new requirement
+Also ask: "May I update `ccgs-data/project-docs/architecture/tr-registry.yaml` with new requirement
 IDs from this review?"
 
 If yes:
@@ -556,7 +556,7 @@ append when it already exists.
 ### Session State Update
 
 After writing all approved files, silently append to
-`CCGS-Data/production/session-state/active.md`:
+`ccgs-data/production/session-state/active.md`:
 
     ## Session Extract — /architecture-review [date]
     - Verdict: [PASS / CONCERNS / FAIL]
@@ -564,7 +564,7 @@ After writing all approved files, silently append to
     - New TR-IDs registered: [N, or "None"]
     - GDD revision flags: [comma-separated GDD names, or "None"]
     - Top ADR gaps: [top 3 gap titles from the report, or "None"]
-    - Report: CCGS-Data/project-docs/architecture/architecture-review-[date].md
+    - Report: ccgs-data/project-docs/architecture/architecture-review-[date].md
 
 If `active.md` does not exist, create it with this block as the initial content.
 Confirm in conversation: "Session state updated."

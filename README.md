@@ -2,7 +2,7 @@
 
 基于 [Claude Code Game Studios](https://github.com/Donchitos/Claude-Code-Game-Studios) 重构的**通用解耦版**游戏开发 AI 框架。
 
-核心设计：将框架引擎（`.ccgs-core`）与项目数据（`CCGS-Data`）彻底分离，实现跨项目、跨引擎、跨 AI 工具的即插即用。
+核心设计：将框架引擎（`.ccgs-core`）与项目数据（`ccgs-data`）彻底分离，实现跨项目、跨引擎、跨 AI 工具的即插即用。
 
 ## 快速开始
 
@@ -28,7 +28,7 @@ bash .ccgs-core/init.sh --link-codex-skills
 # 编辑 .ccgs-core/hooks/hooks-config.yaml 填入项目特定的校验规则
 
 # 5. （可选）重命名数据层目录
-bash .ccgs-core/init.sh --rename-data GameData  # 将 CCGS-Data 重命名为 GameData
+bash .ccgs-core/init.sh --rename-data GameData  # 将 ccgs-data 重命名为 GameData
 
 # 6. （推荐）为长项目生成低消耗上下文缓存
 python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
@@ -72,7 +72,7 @@ bash .ccgs-core/init.sh --link-codex-skills
 │   ├── scripts/workflow/          # 上下文路由、缓存、会话归档脚本
 │   └── tests/                     # 框架自测套件
 │
-├── CCGS-Data/                     # 项目数据层（可重命名）
+├── ccgs-data/                     # 项目数据层（可重命名）
 │   ├── design/                    # 设计文档（GDD、UX、关卡等）
 │   ├── production/                # 生产管理（提案、QA、Sprint 等）
 │   └── project-docs/              # 技术文档（架构、ADR 等）
@@ -99,16 +99,16 @@ python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "当前任务"
 执行 Story 前可生成专属 context pack：
 
 ```bash
-python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/<epic>/<story>.md --write
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/epics/<epic>/<story>.md --write
 ```
 
-生成文件位于 `CCGS-Data/production/context/`，默认不加 `--write` 时只输出到终端。
+生成文件位于 `ccgs-data/production/context/`，默认不加 `--write` 时只输出到终端。
 
 ## 与原版的核心差异
 
 | 维度 | 原版 (Donchitos) | 通用版 (本仓库) |
 |:---|:---|:---|
-| 目录结构 | `.claude/`（平铺） | `.ccgs-core/` + `CCGS-Data/`（双层解耦） |
+| 目录结构 | `.claude/`（平铺） | `.ccgs-core/` + `ccgs-data/`（双层解耦） |
 | Agent 组织 | 48 个平铺 | 三级分层（Tier1/2/3） |
 | AI 工具绑定 | 仅 Claude Code | 通用（Claude / Gemini / Cursor / Codex） |
 | 流水线 | 无统一定义 | `pipeline-core.md`（Phase 0→4） |

@@ -124,9 +124,9 @@ Generate a translator context briefing document. This document is sent to the
 external translation team or localisation vendor alongside the string table export.
 
 Read:
-- `CCGS-Data/design/gdd/` — extract game genre, tone, setting, character names
+- `ccgs-data/design/gdd/` — extract game genre, tone, setting, character names
 - `assets/data/strings/strings-en.json` — the source string table
-- Any existing lore or narrative documents in `CCGS-Data/design/narrative/`
+- Any existing lore or narrative documents in `ccgs-data/design/narrative/`
 
 Generate `production/localization/translator-brief-[locale]-[date].md`:
 
@@ -231,7 +231,7 @@ Manage the voice-over localization process. Determine the sub-task from the argu
 
 ### VO Pipeline: Scan
 
-Read `assets/data/strings/` and `CCGS-Data/design/narrative/`. Identify:
+Read `assets/data/strings/` and `ccgs-data/design/narrative/`. Identify:
 - All dialogue lines (keys matching `dialogue.*`) with source text
 - Lines already recorded (audio file exists in `assets/audio/vo/`)
 - Lines not yet recorded
@@ -368,7 +368,7 @@ before any locale ships. This is not the same as `/validate` (which checks compl
 
 Spawn `localization-lead` via Task with:
 - The target locale(s) to QA
-- The list of all screens/flows in the game (from `CCGS-Data/design/gdd/` or `/content-audit` output)
+- The list of all screens/flows in the game (from `ccgs-data/design/gdd/` or `/content-audit` output)
 - The current `/localize validate` report
 - The cultural review report (if it exists)
 

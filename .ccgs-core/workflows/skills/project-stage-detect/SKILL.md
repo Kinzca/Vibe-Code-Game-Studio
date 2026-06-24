@@ -26,12 +26,12 @@ of artifacts, and gaps that need attention. It's especially useful when:
 Analyze project structure and content:
 
 **Design Documentation** (`design/`):
-- Count GDD files in `CCGS-Data/design/gdd/*.md`
+- Count GDD files in `ccgs-data/design/gdd/*.md`
 - Check for game-concept.md, game-pillars.md, systems-index.md
 - If systems-index.md exists, count total systems vs. designed systems
 - Analyze completeness (Overview, Detailed Design, Edge Cases, etc.)
-- Count narrative docs in `CCGS-Data/design/narrative/`
-- Count level designs in `CCGS-Data/design/levels/`
+- Count narrative docs in `ccgs-data/design/narrative/`
+- Count level designs in `ccgs-data/design/levels/`
 
 **Source Code** (`src/`):
 - Count source files (language-agnostic)
@@ -49,7 +49,7 @@ Analyze project structure and content:
 - Check for READMEs (documented vs undocumented)
 - Assess if prototypes are archived or active
 
-**Architecture Docs** (`CCGS-Data/project-docs/architecture/`):
+**Architecture Docs** (`ccgs-data/project-docs/architecture/`):
 - Count ADRs (Architecture Decision Records)
 - Check for overview/index documents
 
@@ -59,7 +59,7 @@ Analyze project structure and content:
 
 ### 2. Classify Project Stage
 
-Based on scanned artifacts, determine stage. Check `CCGS-Data/production/stage.txt` first —
+Based on scanned artifacts, determine stage. Check `ccgs-data/production/stage.txt` first —
 if it exists, use its value (explicit override from `/gate-check`). Otherwise,
 auto-detect using these heuristics (check from most-advanced backward):
 
@@ -77,7 +77,7 @@ auto-detect using these heuristics (check from most-advanced backward):
 
 **DO NOT** just list missing files. Instead, **ask clarifying questions**:
 
-- "I see combat code (`src/gameplay/combat/`) but no `CCGS-Data/design/gdd/combat-system.md`. Was this prototyped first, or should we reverse-document?"
+- "I see combat code (`src/gameplay/combat/`) but no `ccgs-data/design/gdd/combat-system.md`. Was this prototyped first, or should we reverse-document?"
 - "You have 15 ADRs but no architecture overview. Should I create one to help new contributors?"
 - "No sprint plans in `production/`. Are you tracking work elsewhere (Jira, Trello, etc.)?"
 - "I found a game concept but no systems index. Have you decomposed the concept into individual systems yet, or should we run `/map-systems`?"

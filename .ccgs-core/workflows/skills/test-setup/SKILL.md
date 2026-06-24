@@ -119,7 +119,7 @@ Markdown 编号列表`
 | Integration | Integration test OR playtest doc | `tests/integration/[system]/` |
 | Visual/Feel | Screenshot + lead sign-off | `tests/evidence/` |
 | UI | Manual walkthrough OR interaction test | `tests/evidence/` |
-| Config/Data | Smoke check pass | `CCGS-Data/production/qa/smoke/smoke-*.md` |
+| Config/Data | Smoke check pass | `ccgs-data/production/qa/smoke/smoke-*.md` |
 
 ## CI
 
@@ -232,7 +232,7 @@ jobs:
       - name: Run GdUnit4 Tests
         uses: MikeSchulze/gdUnit4-action@v1
         with:
-          godot-version: '[VERSION FROM CCGS-Data/project-docs/engine-reference/godot/VERSION.md]'
+          godot-version: '[VERSION FROM ccgs-data/project-docs/engine-reference/godot/VERSION.md]'
           paths: |
             tests/unit
             tests/integration

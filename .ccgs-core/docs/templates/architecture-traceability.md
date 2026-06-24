@@ -9,7 +9,7 @@
 - **Engine**: [e.g. Godot 4.6]
 - **GDDs Indexed**: [N]
 - **ADRs Indexed**: [M]
-- **Last Review**: [link to CCGS-Data/project-docs/architecture/architecture-review-[date].md]
+- **Last Review**: [link to ccgs-data/project-docs/architecture/architecture-review-[date].md]
 
 ## Coverage Summary
 

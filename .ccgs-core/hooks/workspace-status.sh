@@ -29,10 +29,10 @@ source "$PROJECT_ROOT/.ccgs-core/hooks/lib/yaml-parser.sh"
 # ============================================================================
 # 从配置读取所有可变路径（附降级默认值）
 # ============================================================================
-BUG_FILE=$(yaml_get_value "$CONFIG" "workspace_status" "bug_tracker" "CCGS-Data/production/tracking/bug-tracker.md")
-DEBT_FILE=$(yaml_get_value "$CONFIG" "workspace_status" "tech_debt" "CCGS-Data/production/tracking/tech-debt.md")
-SPRINT_GLOB=$(yaml_get_value "$CONFIG" "workspace_status" "sprint_glob" "CCGS-Data/production/sprints/sprint-*.md")
-SESSION_FILE=$(yaml_get_value "$CONFIG" "workspace_status" "session_state" "CCGS-Data/production/session-state/active.md")
+BUG_FILE=$(yaml_get_value "$CONFIG" "workspace_status" "bug_tracker" "ccgs-data/production/tracking/bug-tracker.md")
+DEBT_FILE=$(yaml_get_value "$CONFIG" "workspace_status" "tech_debt" "ccgs-data/production/tracking/tech-debt.md")
+SPRINT_GLOB=$(yaml_get_value "$CONFIG" "workspace_status" "sprint_glob" "ccgs-data/production/sprints/sprint-*.md")
+SESSION_FILE=$(yaml_get_value "$CONFIG" "workspace_status" "session_state" "ccgs-data/production/session-state/active.md")
 MARKERS=$(yaml_get_value "$CONFIG" "workspace_status" "status_markers" "🔴|🟡")
 
 # ============================================================================

@@ -1,6 +1,6 @@
 ---
 name: bug-triage
-description: "Read all open bugs in CCGS-Data/production/qa/bugs/, re-evaluate priority vs. severity, assign to sprints, surface systemic trends, and produce a triage report. Run at sprint start or when the bug count grows enough to need re-prioritization."
+description: "Read all open bugs in ccgs-data/production/qa/bugs/, re-evaluate priority vs. severity, assign to sprints, surface systemic trends, and produce a triage report. Run at sprint start or when the bug count grows enough to need re-prioritization."
 argument-hint: "[sprint | full | trend]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit
@@ -13,7 +13,7 @@ action list. It distinguishes between **severity** (how bad is the impact?) and
 **priority** (how urgently must we fix it?), detects systemic trends, and
 ensures no critical bug is lost between sprints.
 
-**Output:** `CCGS-Data/production/qa/triage/bug-triage-[date].md`
+**Output:** `ccgs-data/production/qa/triage/bug-triage-[date].md`
 
 **When to run:**
 - Sprint start — assign open bugs to the new sprint or backlog
@@ -38,12 +38,12 @@ ensures no critical bug is lost between sprints.
 ### Step 2a — Discover bug files
 
 Glob for bug reports in priority order:
-1. `CCGS-Data/production/qa/bugs/*.md` — individual bug report files (preferred format)
-2. `CCGS-Data/production/qa/bugs.md` — single consolidated bug log (fallback)
-3. Any `CCGS-Data/production/qa/plans/qa-plan-*.md` "Bugs Found" table (last resort)
+1. `ccgs-data/production/qa/bugs/*.md` — individual bug report files (preferred format)
+2. `ccgs-data/production/qa/bugs.md` — single consolidated bug log (fallback)
+3. Any `ccgs-data/production/qa/plans/qa-plan-*.md` "Bugs Found" table (last resort)
 
 If no bug files found:
-> "No bug files found in `CCGS-Data/production/qa/bugs/`. If bugs are tracked in a
+> "No bug files found in `ccgs-data/production/qa/bugs/`. If bugs are tracked in a
 > different location, adjust the glob pattern. If no bugs exist yet, there is
 > nothing to triage."
 
@@ -51,7 +51,7 @@ Stop and report. Do not proceed if no bugs exist.
 
 ### Step 2b — Load sprint context
 
-Read the most recently modified file in `CCGS-Data/production/sprints/` to understand:
+Read the most recently modified file in `ccgs-data/production/sprints/` to understand:
 - Current sprint number / name
 - Stories in scope (for assignment target)
 - Sprint capacity constraints (if noted)
@@ -216,7 +216,7 @@ Markdown 编号列表`
 
 Present the report in conversation, then ask:
 
-"May I write this triage report to `CCGS-Data/production/qa/triage/bug-triage-[date].md`?"
+"May I write this triage report to `ccgs-data/production/qa/triage/bug-triage-[date].md`?"
 
 Write only after approval.
 

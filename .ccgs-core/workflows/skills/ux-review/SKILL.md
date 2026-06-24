@@ -30,11 +30,11 @@ the `/team-ui` pipeline.
 
 ## Phase 1: Parse Arguments
 
-- **Specific file path** (e.g., `/ux-review CCGS-Data/design/ux/inventory.md`): validate
+- **Specific file path** (e.g., `/ux-review ccgs-data/design/ux/inventory.md`): validate
   that one document
-- **`all`**: find all files in `CCGS-Data/design/ux/` and validate each
-- **`hud`**: validate `CCGS-Data/design/ux/hud.md` specifically
-- **`patterns`**: validate `CCGS-Data/design/ux/interaction-patterns.md` specifically
+- **`all`**: find all files in `ccgs-data/design/ux/` and validate each
+- **`hud`**: validate `ccgs-data/design/ux/hud.md` specifically
+- **`patterns`**: validate `ccgs-data/design/ux/interaction-patterns.md` specifically
 - **No argument**: ask the user which spec to validate
 
 For `all`, output a summary table first (file | verdict | primary issue) then
@@ -52,7 +52,7 @@ Before validating any spec, load:
    Phase 3A, not the spec's own header. If unconfigured, fall back to the spec header.
 2. The accessibility tier committed to in `design/accessibility-requirements.md`
    (if it exists)
-3. The interaction pattern library at `CCGS-Data/design/ux/interaction-patterns.md` (if
+3. The interaction pattern library at `ccgs-data/design/ux/interaction-patterns.md` (if
    it exists)
 4. The GDDs referenced in the spec's header (read their UI Requirements sections)
 5. The player journey map at `design/player-journey.md` (if it exists) for
@@ -177,7 +177,7 @@ Run all checks against a `hud-design.md`-based document.
 
 ### GDD Alignment
 
-- [ ] All systems in `CCGS-Data/design/gdd/systems-index.md` with UI category have
+- [ ] All systems in `ccgs-data/design/gdd/systems-index.md` with UI category have
   representation in HUD (or justified absence)
 
 ---

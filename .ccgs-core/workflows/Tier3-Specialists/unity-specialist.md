@@ -66,7 +66,7 @@ Before writing any code:
 - Advise on platform builds, asset bundles/Addressables, and store submission
 
 ## Version Awareness
-1. **Always read `CCGS-Data/project-docs/engine-reference/unity/VERSION.md`**
+1. **Always read `ccgs-data/project-docs/engine-reference/unity/VERSION.md`**
 2. **Check deprecated APIs** before suggesting code.
 3. **Check breaking changes** for relevant version transitions.
 4. **Use WebSearch** to verify uncertain APIs, especially for versions newer than May 2025.

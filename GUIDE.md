@@ -45,7 +45,7 @@ bash .ccgs-core/init.sh --link-codex-skills
 
 | 命令 | 用途 |
 |:---|:---|
-| `bash .ccgs-core/init.sh` | 校验并修复 CCGS-Data 目录骨架 |
+| `bash .ccgs-core/init.sh` | 校验并修复 ccgs-data 目录骨架 |
 | `bash .ccgs-core/init.sh --gen-entry <工具>` | 生成 AI 工具入口文件 (claude / gemini / cursor / codex / all) |
 | `bash .ccgs-core/init.sh --link-codex-skills` | 将 CCGS workflows 映射到 Codex 本地 Skills 目录 |
 | `bash .ccgs-core/init.sh --rename-data <新名称>` | 重命名数据层目录（自动批量替换所有引用） |
@@ -72,7 +72,7 @@ bash .ccgs-core/init.sh --link-codex-skills
 
 ### 2.5 （可选）重命名数据层目录
 
-如果你不想使用默认的 `CCGS-Data` 目录名：
+如果你不想使用默认的 `ccgs-data` 目录名：
 
 ```bash
 bash .ccgs-core/init.sh --rename-data GameData
@@ -153,7 +153,7 @@ Concept → Systems Design → Technical Setup → Pre-Production → Production
 ```bash
 python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
 python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
-python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/<epic>/<story>.md --write
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/epics/<epic>/<story>.md --write
 ```
 
 | 命令 | 用途 |
@@ -269,7 +269,7 @@ python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/e
 │   │   └── templates/                  # 36 份文档模板
 │   └── tests/                          # 框架自测套件
 │
-├── CCGS-Data/                          # 项目数据层（可重命名）
+├── ccgs-data/                          # 项目数据层（可重命名）
 │   ├── design/                         # 设计文档
 │   │   ├── art/                        # Art Bible、资产规格
 │   │   ├── gdd/                        # 游戏设计文档 (GDD)
@@ -386,7 +386,7 @@ Codex 可额外运行 `bash .ccgs-core/init.sh --link-codex-skills`，在 `$CODE
 
 | 维度 | 原版 | 通用版 |
 |:---|:---|:---|
-| 目录结构 | `.claude/`（平铺） | `.ccgs-core/` + `CCGS-Data/`（双层解耦） |
+| 目录结构 | `.claude/`（平铺） | `.ccgs-core/` + `ccgs-data/`（双层解耦） |
 | Agent 组织 | 48 个平铺 | 49 个三级分层（Tier1/2/3） |
 | AI 工具绑定 | 仅 Claude Code | 通用（Claude / Gemini / Cursor / Codex） |
 | 流水线 | 无统一定义 | `pipeline-core.md`（Phase 0→4） |

@@ -45,7 +45,7 @@ COMMIT_MSG_PATTERN=$(yaml_get_value "$CONFIG" "commit_message" "pattern" "")
 # ============================================================================
 # 校验 2: GDD 文档完整性
 # ============================================================================
-GDD_PATH=$(yaml_get_value "$CONFIG" "gdd_validation" "path" "CCGS-Data/design/gdd/")
+GDD_PATH=$(yaml_get_value "$CONFIG" "gdd_validation" "path" "ccgs-data/design/gdd/")
 GDD_FILES=$(echo "$STAGED" | grep -E "^${GDD_PATH}.*\\.md$" || true)
 
 if [ -n "$GDD_FILES" ]; then

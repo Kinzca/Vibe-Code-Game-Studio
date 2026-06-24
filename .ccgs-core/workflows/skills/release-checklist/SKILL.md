@@ -17,7 +17,7 @@ Read the argument for the target platform (`pc`, `console`, `mobile`, or `all`).
 ## Phase 2: Load Project Context
 
 - Read `CLAUDE.md` for project context, version information, and platform targets.
-- Read the current milestone from `CCGS-Data/production/milestones/` to understand what features and content should be included in this release.
+- Read the current milestone from `ccgs-data/production/milestones/` to understand what features and content should be included in this release.
 
 ---
 
@@ -169,7 +169,7 @@ Markdown 编号列表`
 
 Present the checklist to the user with: total checklist items, number of known blockers (FIXME/HACK counts, known bugs).
 
-Ask: "May I write this to `CCGS-Data/production/releases/release-checklist-[version].md`?"
+Ask: "May I write this to `ccgs-data/production/releases/release-checklist-[version].md`?"
 
 If yes, write the file, creating the directory if needed.
 

@@ -42,20 +42,20 @@ skill is running during the silent read phase.
 Then read silently before presenting anything else.
 
 ### Existence check
-- `CCGS-Data/production/stage.txt` — if present, read it (authoritative phase)
-- `CCGS-Data/design/gdd/game-concept.md` — concept exists?
-- `CCGS-Data/design/gdd/systems-index.md` — systems index exists?
-- Count GDD files: `CCGS-Data/design/gdd/*.md` (excluding game-concept.md and systems-index.md)
-- Count ADR files: `CCGS-Data/project-docs/architecture/adr-*.md`
-- Count story files: `CCGS-Data/production/epics/**/*.md` (excluding EPIC.md)
+- `ccgs-data/production/stage.txt` — if present, read it (authoritative phase)
+- `ccgs-data/design/gdd/game-concept.md` — concept exists?
+- `ccgs-data/design/gdd/systems-index.md` — systems index exists?
+- Count GDD files: `ccgs-data/design/gdd/*.md` (excluding game-concept.md and systems-index.md)
+- Count ADR files: `ccgs-data/project-docs/architecture/adr-*.md`
+- Count story files: `ccgs-data/production/epics/**/*.md` (excluding EPIC.md)
 - `.ccgs-core/docs/technical-preferences.md` — engine configured?
-- `CCGS-Data/project-docs/engine-reference/` — engine reference docs present?
+- `ccgs-data/project-docs/engine-reference/` — engine reference docs present?
 - Glob `docs/adoption-plan-*.md` — note the filename of the most recent prior plan if any exist
 
 ### Infer phase (if no stage.txt)
 Use the same heuristic as `/project-stage-detect`:
 - 10+ source files in `src/` → Production
-- Stories in `CCGS-Data/production/epics/` → Pre-Production
+- Stories in `ccgs-data/production/epics/` → Pre-Production
 - ADRs exist → Technical Setup
 - systems-index.md exists → Systems Design
 - game-concept.md exists → Concept
@@ -121,7 +121,7 @@ if the Status section exists.
 
 ### 2c: systems-index.md Format Audit
 
-If `CCGS-Data/design/gdd/systems-index.md` exists:
+If `ccgs-data/design/gdd/systems-index.md` exists:
 
 1. **Parenthetical status values** — Grep for any Status cell containing
    parentheses: `"Needs Revision ("`, `"In Progress ("`, etc.
@@ -149,13 +149,13 @@ For each story file found:
 
 | Artifact | Path | Impact if missing |
 |---|---|---|
-| TR registry | `CCGS-Data/project-docs/architecture/tr-registry.yaml` | HIGH — no stable requirement IDs |
-| Control manifest | `CCGS-Data/project-docs/architecture/control-manifest.md` | HIGH — no layer rules for stories |
+| TR registry | `ccgs-data/project-docs/architecture/tr-registry.yaml` | HIGH — no stable requirement IDs |
+| Control manifest | `ccgs-data/project-docs/architecture/control-manifest.md` | HIGH — no layer rules for stories |
 | Manifest version stamp | In manifest header: `Manifest Version:` | MEDIUM — staleness checks blind |
-| Sprint status | `CCGS-Data/production/sprint-status.yaml` | MEDIUM — `/sprint-status` falls back to markdown |
-| Stage file | `CCGS-Data/production/stage.txt` | MEDIUM — phase auto-detect unreliable |
-| Engine reference | `CCGS-Data/project-docs/engine-reference/[engine]/VERSION.md` | HIGH — ADR engine checks blind |
-| Architecture traceability | `CCGS-Data/project-docs/architecture/architecture-traceability.md` | MEDIUM — no persistent matrix |
+| Sprint status | `ccgs-data/production/sprint-status.yaml` | MEDIUM — `/sprint-status` falls back to markdown |
+| Stage file | `ccgs-data/production/stage.txt` | MEDIUM — phase auto-detect unreliable |
+| Engine reference | `ccgs-data/project-docs/engine-reference/[engine]/VERSION.md` | HIGH — ADR engine checks blind |
+| Architecture traceability | `ccgs-data/project-docs/architecture/architecture-traceability.md` | MEDIUM — no persistent matrix |
 
 ### 2f: Technical Preferences Audit
 
@@ -213,12 +213,12 @@ and the exact replacement text. Offer to fix this immediately before writing the
 
 **Special case — ADRs missing Status field:**
 For each affected ADR, the fix is:
-`/architecture-decision retrofit CCGS-Data/project-docs/architecture/adr-[NNNN]-[slug].md`
+`/architecture-decision retrofit ccgs-data/project-docs/architecture/adr-[NNNN]-[slug].md`
 List each ADR as a separate checkable item.
 
 **Special case — GDDs missing sections:**
 For each affected GDD, list which sections are missing and the fix:
-`/design-system retrofit CCGS-Data/design/gdd/[filename].md`
+`/design-system retrofit ccgs-data/design/gdd/[filename].md`
 
 **Infrastructure bootstrap ordering** — always present in this sequence:
 1. Fix ADR formats first (registry depends on reading ADR Status fields)
@@ -319,17 +319,17 @@ the TR registry from your existing GDDs and ADRs.
 ### 3b. Create control manifest
 Run `/create-control-manifest`
 **Time**: 30 min
-- [ ] CCGS-Data/project-docs/architecture/control-manifest.md created
+- [ ] ccgs-data/project-docs/architecture/control-manifest.md created
 
 ### 3c. Create sprint tracking file
 Run `/sprint-plan update`
 **Time**: 5 min (if sprint plan already exists as markdown)
-- [ ] CCGS-Data/production/sprint-status.yaml created
+- [ ] ccgs-data/production/sprint-status.yaml created
 
 ### 3d. Set authoritative project stage
 Run `/gate-check [current-phase]`
 **Time**: 5 min
-- [ ] CCGS-Data/production/stage.txt written
+- [ ] ccgs-data/production/stage.txt written
 
 ---
 
@@ -365,7 +365,7 @@ Markdown 编号列表`
 ## Phase 6b: Set Review Mode
 
 After writing the adoption plan (or if the user cancels writing), check whether
-`CCGS-Data/production/review-mode.txt` exists.
+`ccgs-data/production/review-mode.txt` exists.
 
 **If it exists**: Read it and note the current mode — "Review mode is already set to `[current]`." — skip the prompt.
 
@@ -377,7 +377,7 @@ After writing the adoption plan (or if the user cancels writing), check whether
   - `Lean (recommended)` — Directors only at phase gate transitions (/gate-check). Skips per-skill reviews. Balanced for solo devs and small teams.
   - `Solo` — No director reviews at all. Maximum speed. Best for game jams, prototypes, or if reviews feel like overhead.
 
-Write the choice to `CCGS-Data/production/review-mode.txt` immediately after selection — no separate "May I write?" needed:
+Write the choice to `ccgs-data/production/review-mode.txt` immediately after selection — no separate "May I write?" needed:
 - `Full` → write `full`
 - `Lean (recommended)` → write `lean`
 - `Solo` → write `solo`

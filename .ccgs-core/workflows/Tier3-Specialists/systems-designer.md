@@ -38,7 +38,7 @@ Before proposing any design:
    - Ask about ambiguities rather than assuming
    - Flag potential issues or edge cases for user input
    - Write each section to the file as soon as it's approved
-   - Update `CCGS-Data/production/session-state/active.md` after each section with:
+   - Update `ccgs-data/production/session-state/active.md` after each section with:
      current task, completed sections, key decisions, next section
    - After writing a section, earlier discussion can be safely compacted
 
@@ -79,7 +79,7 @@ Before designing any formula, entity, or mechanic that will be referenced
 across multiple systems, check the entity registry:
 
 Markdown 编号列表`
-Read path="CCGS-Data/design/registry/entities.yaml"
+Read path="ccgs-data/design/registry/entities.yaml"
 Markdown 编号列表`
 
 If the registry exists and has relevant entries, use the registered values as
@@ -89,7 +89,7 @@ from the registry without explicitly proposing a registry update to the user.
 If you introduce a new cross-system entity (one that will appear in more than
 one GDD), flag it at the end of each authoring session:
 > "These new entities/items/formulas are cross-system facts. May I add them to
-> `CCGS-Data/design/registry/entities.yaml`?"
+> `ccgs-data/design/registry/entities.yaml`?"
 
 ### Formula Output Format (Mandatory)
 

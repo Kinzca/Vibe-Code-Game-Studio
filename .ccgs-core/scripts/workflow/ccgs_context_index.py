@@ -129,7 +129,7 @@ def collect_refs(text: str) -> dict[str, list[str]]:
         "adrs": sorted(set(re.findall(r"\bADR-\d{4}\b", text))),
         "trs": sorted(set(re.findall(r"\bTR-[A-Za-z0-9_.-]+\b", text))),
         "stories": sorted(set(re.findall(r"\bS\d+-\d+\b", text))),
-        "gdds": sorted(set(re.findall(r"CCGS-Data/design/gdd/[A-Za-z0-9_.\-/]+\.md", text))),
+        "gdds": sorted(set(re.findall(r"ccgs-data/design/gdd/[A-Za-z0-9_.\-/]+\.md", text))),
     }
 
 
@@ -171,7 +171,7 @@ def iter_files(root: Path, data_dir: str) -> list[tuple[str, Path, str]]:
 
 def build_index(root: Path) -> dict[str, Any]:
     env = parse_env(root / ".ccgs-core/ccgs.env")
-    data_dir = env.get("DATA_DIR", "CCGS-Data")
+    data_dir = env.get("DATA_DIR", "ccgs-data")
     core_dir = env.get("CORE_DIR", ".ccgs-core")
     entries: list[dict[str, Any]] = []
 
@@ -229,7 +229,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build compact CCGS document index.")
     parser.add_argument("--repo", default=".", help="Repository path. Default: current directory.")
     parser.add_argument("--output", default="", help="Output path relative to repo when --write is used.")
-    parser.add_argument("--write", action="store_true", help="Write index to CCGS-Data/production/context/ccgs-index.json.")
+    parser.add_argument("--write", action="store_true", help="Write index to ccgs-data/production/context/ccgs-index.json.")
     parser.add_argument("--summary", action="store_true", help="Print only counts and output path.")
     args = parser.parse_args()
 

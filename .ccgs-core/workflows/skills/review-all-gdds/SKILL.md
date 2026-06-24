@@ -46,7 +46,7 @@ Before reading any full document, use Grep to extract `## Summary` sections
 from all GDD files:
 
 Markdown 编号列表`
-Grep pattern="## Summary" glob="CCGS-Data/design/gdd/*.md" output_mode="content" -A 5
+Grep pattern="## Summary" glob="ccgs-data/design/gdd/*.md" output_mode="content" -A 5
 Markdown 编号列表`
 
 Display a manifest to the user:
@@ -67,7 +67,7 @@ proceed to L1 for those GDDs plus any GDDs listed in their "Key deps".
 Before full-reading any GDD, check for the entity registry:
 
 Markdown 编号列表`
-Read path="CCGS-Data/design/registry/entities.yaml"
+Read path="ccgs-data/design/registry/entities.yaml"
 Markdown 编号列表`
 
 If the registry exists and has entries, use it as a **pre-built conflict
@@ -84,10 +84,10 @@ Run `/consistency-check` after this review to populate the registry."
 
 Full-read the in-scope documents:
 
-1. `CCGS-Data/design/gdd/game-concept.md` — game vision, core loop, MVP definition
-2. `CCGS-Data/design/gdd/game-pillars.md` if it exists — design pillars and anti-pillars
-3. `CCGS-Data/design/gdd/systems-index.md` — authoritative system list, layers, dependencies, status
-4. **Every in-scope system GDD in `CCGS-Data/design/gdd/`** — read completely (skip
+1. `ccgs-data/design/gdd/game-concept.md` — game vision, core loop, MVP definition
+2. `ccgs-data/design/gdd/game-pillars.md` if it exists — design pillars and anti-pillars
+3. `ccgs-data/design/gdd/systems-index.md` — authoritative system list, layers, dependencies, status
+4. **Every in-scope system GDD in `ccgs-data/design/gdd/`** — read completely (skip
    game-concept.md and systems-index.md — those are read above)
 
 Report: "Loaded [N] system GDDs covering [M] systems. Pillars: [list]. Anti-pillars: [list]."
@@ -545,7 +545,7 @@ Markdown 编号列表`
 ## Phase 6: Write Report and Flag GDDs
 
 向用户呈现选项以 write permission:
-- Prompt: "May I write this review to `CCGS-Data/design/gdd/gdd-cross-review-[date].md`?"
+- Prompt: "May I write this review to `ccgs-data/design/gdd/gdd-cross-review-[date].md`?"
 - Options: `[A] Yes — write the report` / `[B] No — skip`
 
 If any GDDs are flagged for revision, use a second Markdown 编号列表:
@@ -558,7 +558,7 @@ If any GDDs are flagged for revision, use a second Markdown 编号列表:
 ### Session State Update
 
 After writing the report (and updating systems index if approved), silently
-append to `CCGS-Data/production/session-state/active.md`:
+append to `ccgs-data/production/session-state/active.md`:
 
     ## Session Extract — /review-all-gdds [date]
     - Verdict: [PASS / CONCERNS / FAIL]
@@ -566,7 +566,7 @@ append to `CCGS-Data/production/session-state/active.md`:
     - Flagged for revision: [comma-separated list, or "None"]
     - Blocking issues: [N — brief one-line descriptions, or "None"]
     - Recommended next: [the Phase 7 handoff action, condensed to one line]
-    - Report: CCGS-Data/design/gdd/gdd-cross-review-[date].md
+    - Report: ccgs-data/design/gdd/gdd-cross-review-[date].md
 
 If `active.md` does not exist, create it with this block as the initial content.
 Confirm in conversation: "Session state updated."

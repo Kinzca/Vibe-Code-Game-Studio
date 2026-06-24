@@ -21,7 +21,7 @@ commands. Use its output as the Phase 0 starting set, then read deeper only when
 the task requires it. Project-specific route rules can be added in either:
 
 - `.ccgs-core/context-router-rules.json`
-- `CCGS-Data/production/context-router-rules.json`
+- `ccgs-data/production/context-router-rules.json`
 
 Each rule is a JSON object with `name`, `terms`, `paths`, and optional `roles`.
 This keeps project-specific keywords out of the universal framework while still
@@ -40,7 +40,7 @@ python3 .ccgs-core/scripts/workflow/ccgs-context-index.py --write
 
 Writes:
 
-- `CCGS-Data/production/context/ccgs-index.json`
+- `ccgs-data/production/context/ccgs-index.json`
 
 The index stores document type, path, title, status, references, line count, and
 mtime. It is not a replacement for source documents; it is a routing map.
@@ -53,7 +53,7 @@ python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
 
 Writes:
 
-- `CCGS-Data/production/context/current-context.md`
+- `ccgs-data/production/context/current-context.md`
 
 Read this file at the beginning of a new session or after a task handoff. It
 summarizes current sprint status, recent ADRs, recent stories, and the preferred
@@ -62,12 +62,12 @@ read policy.
 ### Build a story context pack
 
 ```bash
-python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/<epic>/<story>.md --write
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/epics/<epic>/<story>.md --write
 ```
 
 Writes:
 
-- `CCGS-Data/production/context/story/<story>-context.md`
+- `ccgs-data/production/context/story/<story>-context.md`
 
 Use the story pack before `/story-readiness`, `/dev-story`, `/code-review`, or
 `/story-done`. It extracts story metadata, acceptance criteria, ADR/TR/GDD
@@ -126,7 +126,7 @@ python3 .ccgs-core/scripts/workflow/archive-session-state.py --keep 10 --dry-run
 ```
 
 If the preview is correct, rerun without `--dry-run`. Older sections are appended
-to `CCGS-Data/production/session-state/archive/YYYY-MM.md`; the newest sections
+to `ccgs-data/production/session-state/archive/YYYY-MM.md`; the newest sections
 remain in `active.md`.
 
 ### Incremental File Writing

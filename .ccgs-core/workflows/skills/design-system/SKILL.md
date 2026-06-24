@@ -12,26 +12,26 @@ When this skill is invoked:
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 
 A system name or retrofit path is **required**. If missing:
 
-1. Check if `CCGS-Data/design/gdd/systems-index.md` exists.
+1. Check if `ccgs-data/design/gdd/systems-index.md` exists.
 2. If it exists: read it, find the highest-priority system with status "Not Started" or equivalent, and 向用户呈现选项（使用 Markdown 编号列表）:
    - Prompt: "The next system in your design order is **[system-name]** ([priority] | [layer]). Start designing it?"
    - Options: `[A] Yes — design [system-name]` / `[B] Pick a different system` / `[C] Stop here`
    - If [A]: proceed with that system name. If [B]: ask which system to design (plain text). If [C]: exit.
 3. If no systems index exists, fail with:
    > "Usage: `/design-system <system-name>` — e.g., `/design-system movement`
-   > Or to fill gaps in an existing GDD: `/design-system retrofit CCGS-Data/design/gdd/[system-name].md`
+   > Or to fill gaps in an existing GDD: `/design-system retrofit ccgs-data/design/gdd/[system-name].md`
    > No systems index found. Run `/map-systems` first to map your systems and get the design order."
 
 **Detect retrofit mode:**
 If the argument starts with `retrofit` or the argument is a file path to an
-existing `.md` file in `CCGS-Data/design/gdd/`, enter **retrofit mode**:
+existing `.md` file in `ccgs-data/design/gdd/`, enter **retrofit mode**:
 
 1. Read the existing GDD file.
 2. Identify which of the 8 required sections are present (scan for section headings).
@@ -42,7 +42,7 @@ existing `.md` file in `CCGS-Data/design/gdd/`, enter **retrofit mode**:
 4. Present to the user before doing anything:
    Markdown 编号列表`
    ## Retrofit: [System Name]
-   File: CCGS-Data/design/gdd/[filename].md
+   File: ccgs-data/design/gdd/[filename].md
 
    Sections already written (will not be touched):
    ✓ [section name]
@@ -72,14 +72,14 @@ primary advantage over ad-hoc design — it arrives informed.
 
 ### 2a: Required Reads
 
-- **Game concept**: Read `CCGS-Data/design/gdd/game-concept.md` — fail if missing:
+- **Game concept**: Read `ccgs-data/design/gdd/game-concept.md` — fail if missing:
   > "No game concept found. Run `/brainstorm` first."
-- **Systems index**: Read `CCGS-Data/design/gdd/systems-index.md` — fail if missing:
+- **Systems index**: Read `ccgs-data/design/gdd/systems-index.md` — fail if missing:
   > "No systems index found. Run `/map-systems` first to map your systems."
 - **Target system**: Find the system in the index. If not listed, warn:
   > "[system-name] is not in the systems index. Would you like to add it, or
   > design it as an off-index system?"
-- **Entity registry**: Read `CCGS-Data/design/registry/entities.yaml` if it exists.
+- **Entity registry**: Read `ccgs-data/design/registry/entities.yaml` if it exists.
   Extract all entries referenced by or relevant to this system (grep
   `referenced_by.*[system-name]` and `source.*[system-name]`). Hold these
   in context as **known facts** — values that other GDDs have already
@@ -106,10 +106,10 @@ For each dependency GDD that exists, extract and hold in context:
 
 ### 2c: Optional Reads
 
-- **Game pillars**: Read `CCGS-Data/design/gdd/game-pillars.md` if it exists
-- **Existing GDD**: Read `CCGS-Data/design/gdd/[system-name].md` if it exists (resume, don't
+- **Game pillars**: Read `ccgs-data/design/gdd/game-pillars.md` if it exists
+- **Existing GDD**: Read `ccgs-data/design/gdd/[system-name].md` if it exists (resume, don't
   restart from scratch)
-- **Related GDDs**: Glob `CCGS-Data/design/gdd/*.md` and read any that are thematically related
+- **Related GDDs**: Glob `ccgs-data/design/gdd/*.md` and read any that are thematically related
   (e.g., if designing a system that overlaps with another in scope, read the related GDD
   even if it's not a formal dependency)
 
@@ -161,10 +161,10 @@ Map the system's category (from systems-index.md) to an engine domain:
 
 **Step 2 — Read engine context (if available):**
 - Read `.ccgs-core/docs/technical-preferences.md` to identify the engine and version
-- If engine is configured, read `CCGS-Data/project-docs/engine-reference/[engine]/VERSION.md`
-- Read `CCGS-Data/project-docs/engine-reference/[engine]/modules/[domain].md` if it exists
-- Read `CCGS-Data/project-docs/engine-reference/[engine]/breaking-changes.md` for domain-relevant entries
-- Glob `CCGS-Data/project-docs/architecture/adr-*.md` and read any ADRs whose domain matches
+- If engine is configured, read `ccgs-data/project-docs/engine-reference/[engine]/VERSION.md`
+- Read `ccgs-data/project-docs/engine-reference/[engine]/modules/[domain].md` if it exists
+- Read `ccgs-data/project-docs/engine-reference/[engine]/breaking-changes.md` for domain-relevant entries
+- Glob `ccgs-data/project-docs/architecture/adr-*.md` and read any ADRs whose domain matches
   (check the Engine Compatibility table's "Domain" field)
 
 **Step 3 — Present the Feasibility Brief:**
@@ -287,9 +287,9 @@ related_adrs: []
 [To be designed]
 Markdown 编号列表`
 
-Ask: "May I create the skeleton file at `CCGS-Data/design/gdd/[system-name].md`?"
+Ask: "May I create the skeleton file at `ccgs-data/design/gdd/[system-name].md`?"
 
-After writing, update `CCGS-Data/production/session-state/active.md`:
+After writing, update `ccgs-data/production/session-state/active.md`:
 - Use Glob to check if the file exists.
 - If it **does not exist**: use the **Write** tool to create it. Never attempt Edit on a file that may not exist.
 - If it **already exists**: use the **Edit** tool to update the relevant fields.
@@ -297,7 +297,7 @@ After writing, update `CCGS-Data/production/session-state/active.md`:
 File content:
 - Task: Designing [system-name] GDD
 - Current section: Starting (skeleton created)
-- File: CCGS-Data/design/gdd/[system-name].md
+- File: ccgs-data/design/gdd/[system-name].md
 
 ---
 
@@ -357,7 +357,7 @@ Markdown 编号列表`
    - If new (not in registry): flag it as a candidate for registry registration
      (will be handled in Phase 5).
 
-After writing each section, update `CCGS-Data/production/session-state/active.md` with the
+After writing each section, update `ccgs-data/production/session-state/active.md` with the
 completed section name. Use Glob to check if the file exists — use Write to create
 it if absent, Edit to update it if present.
 
@@ -373,7 +373,7 @@ Each section has unique design considerations and may benefit from specialist ag
 
 **Derive recommended options before building the widget**: Read the system's category and layer from the systems index (already in context from Phase 2), then determine the recommended option for each tab:
 - **Framing tab**: Foundation/Infrastructure layer → `[A]` recommended. Player-facing categories (Combat, UI, Dialogue, Character, Animation, Visual Effects, Audio) → `[C] Both` recommended.
-- **ADR ref tab**: Glob `CCGS-Data/project-docs/architecture/adr-*.md` and grep for the system name in the GDD Requirements section of any ADR. If a matching ADR is found → `[A] Yes — cite the ADR` recommended. If none found → `[B] No` recommended.
+- **ADR ref tab**: Glob `ccgs-data/project-docs/architecture/adr-*.md` and grep for the system name in the GDD Requirements section of any ADR. If a matching ADR is found → `[A] Yes — cite the ADR` recommended. If none found → `[B] No` recommended.
 - **Fantasy tab**: Foundation/Infrastructure layer → `[B] No` recommended. All other categories → `[A] Yes` recommended.
 
 Append `(Recommended)` to the appropriate option text in each tab.
@@ -637,7 +637,7 @@ UI requirements, output this flag immediately:
 > **📌 UX Flag — [System Name]**: This system has UI requirements. In Phase 4
 > (Pre-Production), run `/ux-design` to create a UX spec for each screen or
 > HUD element this system contributes to **before** writing epics. Stories that
-> reference UI should cite `CCGS-Data/design/ux/[screen].md`, not the GDD directly.
+> reference UI should cite `ccgs-data/design/ux/[screen].md`, not the GDD directly.
 >
 > Note this in the systems index for this system if you update it.
 
@@ -669,7 +669,7 @@ the source of truth). Verify:
 
 Before finalizing the GDD, spawn `creative-director` via Task using gate **CD-GDD-ALIGN** (`.ccgs-core/docs/director-gates.md`).
 
-Pass: completed GDD file path, game pillars (from `CCGS-Data/design/gdd/game-concept.md` or `CCGS-Data/design/gdd/game-pillars.md`), MDA aesthetics target.
+Pass: completed GDD file path, game pillars (from `ccgs-data/design/gdd/game-concept.md` or `ccgs-data/design/gdd/game-pillars.md`), MDA aesthetics target.
 
 Handle verdict per the standard rules in `director-gates.md`. After resolution, record the verdict in the GDD Status header:
 `> **Creative Director Review (CD-GDD-ALIGN)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date]`
@@ -684,9 +684,9 @@ Scan the completed GDD for cross-system facts that should be registered:
 - Named formulas with defined variables and output ranges
 - Named constants referenced by value in more than one place
 
-For each candidate, check if it already exists in `CCGS-Data/design/registry/entities.yaml`:
+For each candidate, check if it already exists in `ccgs-data/design/registry/entities.yaml`:
 Markdown 编号列表`
-Grep pattern="  - name: [candidate_name]" path="CCGS-Data/design/registry/entities.yaml"
+Grep pattern="  - name: [candidate_name]" path="ccgs-data/design/registry/entities.yaml"
 Markdown 编号列表`
 
 Present a summary:
@@ -700,7 +700,7 @@ Registry candidates from this GDD:
     - [constant_name] [constant]: value=[N] ← matches registry ✅
 Markdown 编号列表`
 
-Ask: "May I update `CCGS-Data/design/registry/entities.yaml` with these [N] new entries
+Ask: "May I update `ccgs-data/design/registry/entities.yaml` with these [N] new entries
 and update `referenced_by` for the existing entries?"
 
 If yes: append new entries and update `referenced_by` arrays. Never modify
@@ -716,7 +716,7 @@ Present a completion summary:
 > - Cross-system conflicts found: [list or "none"]
 
 > **To validate this GDD, open a fresh Claude Code session and run:**
-> `/design-review CCGS-Data/design/gdd/[system-name].md`
+> `/design-review ccgs-data/design/gdd/[system-name].md`
 >
 > **Never run `/design-review` in the same session as `/design-system`.** The reviewing
 > agent must be independent of the authoring context. Running it here would inherit
@@ -734,17 +734,17 @@ After the GDD is complete (and optionally reviewed):
   - If design-review was run and verdict is NEEDS REVISION: Status → "In Review"
   - If design-review was skipped: Status → "Designed" (pending review)
   - If the user chose "I'll review it myself first": Status → "Designed"
-  - Design Doc: link to `CCGS-Data/design/gdd/[system-name].md`
+  - Design Doc: link to `ccgs-data/design/gdd/[system-name].md`
 - Update the Progress Tracker counts
 
-Ask: "May I update the systems index at `CCGS-Data/design/gdd/systems-index.md`?"
+Ask: "May I update the systems index at `ccgs-data/design/gdd/systems-index.md`?"
 
 ### 5d: Update Session State
 
-Update `CCGS-Data/production/session-state/active.md` with:
+Update `ccgs-data/production/session-state/active.md` with:
 - Task: [system-name] GDD
 - Status: Complete (or In Review if design-review was run)
-- File: CCGS-Data/design/gdd/[system-name].md
+- File: ccgs-data/design/gdd/[system-name].md
 - Sections: All 8 written
 - Next: [suggest next system from design order]
 
@@ -796,9 +796,9 @@ orchestrates the overall flow; agents provide expert content.
 
 If the session is interrupted (compaction, crash, new session):
 
-1. Read `CCGS-Data/production/session-state/active.md` — it records the current system and
+1. Read `ccgs-data/production/session-state/active.md` — it records the current system and
    which sections are complete
-2. Read `CCGS-Data/design/gdd/[system-name].md` — sections with real content are done;
+2. Read `ccgs-data/design/gdd/[system-name].md` — sections with real content are done;
    sections with `[To be designed]` still need work
 3. Resume from the next incomplete section — no need to re-discuss completed ones
 
@@ -835,7 +835,7 @@ This is a long-running skill. After writing each section, check if the status li
 shows context at or above 70%. If so, append this notice to the response:
 
 > **Context is approaching the limit (≥70%).** Your progress is saved — all approved
-> sections are written to `CCGS-Data/design/gdd/[system-name].md`. When you're ready to continue,
+> sections are written to `ccgs-data/design/gdd/[system-name].md`. When you're ready to continue,
 > open a fresh Claude Code session and run `/design-system [system-name]` — it will
 > detect which sections are complete and resume from the next one.
 
@@ -843,7 +843,7 @@ shows context at or above 70%. If so, append this notice to the response:
 
 ## Recommended Next Steps
 
-- Run `/design-review CCGS-Data/design/gdd/[system-name].md` in a **fresh session** to validate the completed GDD independently
+- Run `/design-review ccgs-data/design/gdd/[system-name].md` in a **fresh session** to validate the completed GDD independently
 - Run `/consistency-check` to verify this GDD's values don't conflict with other GDDs
 - Run `/map-systems next` to move to the next highest-priority undesigned system
 - Run `/gate-check pre-production` when all MVP GDDs are authored and reviewed

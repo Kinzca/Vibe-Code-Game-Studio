@@ -6,7 +6,7 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, TodoWrite
 ---
 **Argument check:** If no version number is provided:
-1. Read `CCGS-Data/production/session-state/active.md` and the most recent file in `CCGS-Data/production/milestones/` (if they exist) to infer the target version.
+1. Read `ccgs-data/production/session-state/active.md` and the most recent file in `ccgs-data/production/milestones/` (if they exist) to infer the target version.
 2. If a version is found: report "No version argument provided — inferred [version] from milestone data. Proceeding." Then confirm with Markdown 编号列表: "Releasing [version]. Is this correct?"
 3. If no version is discoverable: 向用户呈现选项以 ask "What version number should be released? (e.g., v1.0.0)" and wait for user input before proceeding. Do NOT default to a hardcoded version string.
 
@@ -145,4 +145,4 @@ Verdict: **BLOCKED** — release halted; go/no-go was NO or a hard blocker is un
 
 - Monitor post-release dashboards for 48 hours.
 - Run `/retrospective` if significant issues occurred during the release.
-- Update `CCGS-Data/production/stage.txt` to `Live` after successful deployment.
+- Update `ccgs-data/production/stage.txt` to `Live` after successful deployment.

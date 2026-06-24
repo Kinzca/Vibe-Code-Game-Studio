@@ -88,12 +88,12 @@ You (request approval):
  ✓ Overview, ✓ Player Fantasy, ✓ Detailed Rules, ✓ Formulas,
  ✓ Edge Cases, ✓ Dependencies, ✓ Tuning Knobs, ✓ Acceptance Criteria
 
- May I write this to CCGS-Data/design/gdd/crafting-system.md?"
+ May I write this to ccgs-data/design/gdd/crafting-system.md?"
 
 User: "Yes"
 
 You: [uses Write tool]
-     "Created CCGS-Data/design/gdd/crafting-system.md. Would you like me to run /design-review to validate it?"
+     "Created ccgs-data/design/gdd/crafting-system.md. Would you like me to run /design-review to validate it?"
 ```
 
 #### Collaborative Mindset

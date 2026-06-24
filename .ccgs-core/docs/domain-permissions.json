@@ -8,7 +8,7 @@
         "release-manager"
       ],
       "allowed_paths": [
-        "CCGS-Data/"
+        "ccgs-data/"
       ]
     },
     "design": {
@@ -22,8 +22,8 @@
         "prototyper"
       ],
       "allowed_paths": [
-        "CCGS-Data/design/",
-        "CCGS-Data/production/epics/"
+        "ccgs-data/design/",
+        "ccgs-data/production/epics/"
       ]
     },
     "gameplay_programming": {
@@ -35,9 +35,9 @@
         "performance-analyst"
       ],
       "allowed_paths": [
-        "CCGS-Data/design/gdd/",
-        "CCGS-Data/production/epics/",
-        "CCGS-Data/project-docs/architecture/",
+        "ccgs-data/design/gdd/",
+        "ccgs-data/production/epics/",
+        "ccgs-data/project-docs/architecture/",
         ".ccgs-core/rules/gameplay-code.md",
         ".ccgs-core/rules/ai-code.md"
       ]
@@ -50,9 +50,9 @@
         "accessibility-specialist"
       ],
       "allowed_paths": [
-        "CCGS-Data/design/ux/",
-        "CCGS-Data/design/art/",
-        "CCGS-Data/production/epics/",
+        "ccgs-data/design/ux/",
+        "ccgs-data/design/art/",
+        "ccgs-data/production/epics/",
         ".ccgs-core/rules/ui-code.md",
         ".ccgs-core/rules/asset-pipeline.md"
       ]
@@ -63,7 +63,7 @@
         "technical-artist"
       ],
       "allowed_paths": [
-        "CCGS-Data/design/art/",
+        "ccgs-data/design/art/",
         ".ccgs-core/rules/shader-code.md"
       ]
     },
@@ -73,8 +73,8 @@
         "sound-designer"
       ],
       "allowed_paths": [
-        "CCGS-Data/design/narrative/",
-        "CCGS-Data/design/gdd/"
+        "ccgs-data/design/narrative/",
+        "ccgs-data/design/gdd/"
       ]
     },
     "narrative": {
@@ -84,8 +84,8 @@
         "world-builder"
       ],
       "allowed_paths": [
-        "CCGS-Data/design/narrative/",
-        "CCGS-Data/design/gdd/",
+        "ccgs-data/design/narrative/",
+        "ccgs-data/design/gdd/",
         ".ccgs-core/rules/narrative.md"
       ]
     },
@@ -98,7 +98,7 @@
         "community-manager"
       ],
       "allowed_paths": [
-        "CCGS-Data/project-docs/architecture/",
+        "ccgs-data/project-docs/architecture/",
         ".ccgs-core/rules/network-code.md"
       ]
     },
@@ -108,9 +108,9 @@
         "qa-tester"
       ],
       "allowed_paths": [
-        "CCGS-Data/production/qa/",
-        "CCGS-Data/production/epics/",
-        "CCGS-Data/design/"
+        "ccgs-data/production/qa/",
+        "ccgs-data/production/epics/",
+        "ccgs-data/design/"
       ]
     },
     "engine_unity": {
@@ -122,8 +122,8 @@
         "unity-ui-specialist"
       ],
       "allowed_paths": [
-        "CCGS-Data/project-docs/engine-reference/unity/",
-        "CCGS-Data/project-docs/architecture/",
+        "ccgs-data/project-docs/engine-reference/unity/",
+        "ccgs-data/project-docs/architecture/",
         ".ccgs-core/rules/engine-code.md"
       ]
     },
@@ -136,8 +136,8 @@
         "ue-umg-specialist"
       ],
       "allowed_paths": [
-        "CCGS-Data/project-docs/engine-reference/unreal/",
-        "CCGS-Data/project-docs/architecture/",
+        "ccgs-data/project-docs/engine-reference/unreal/",
+        "ccgs-data/project-docs/architecture/",
         ".ccgs-core/rules/engine-code.md"
       ]
     },
@@ -150,8 +150,8 @@
         "godot-csharp-specialist"
       ],
       "allowed_paths": [
-        "CCGS-Data/project-docs/engine-reference/godot/",
-        "CCGS-Data/project-docs/architecture/",
+        "ccgs-data/project-docs/engine-reference/godot/",
+        "ccgs-data/project-docs/architecture/",
         ".ccgs-core/rules/engine-code.md"
       ]
     }

@@ -26,7 +26,7 @@ gap list for each non-ready story.
 Resolve the review mode once at startup (store for all gate spawns this run):
 
 1. If skill was called with `--review [full|lean|solo]` → use that value
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern and mode definitions.
@@ -37,18 +37,18 @@ See `.ccgs-core/docs/director-gates.md` for the full check pattern and mode defi
 
 **Scope:** `$ARGUMENTS[0]` (blank = ask user via )
 
-- **Specific path** (e.g., `/story-readiness CCGS-Data/production/epics/combat/story-001-basic-attack.md`):
+- **Specific path** (e.g., `/story-readiness ccgs-data/production/epics/combat/story-001-basic-attack.md`):
   validate that single story file.
-- **`sprint`**: read the current sprint plan from `CCGS-Data/production/sprints/` (most
+- **`sprint`**: read the current sprint plan from `ccgs-data/production/sprints/` (most
   recent file), extract every story path it references, validate each one.
-- **`all`**: glob `CCGS-Data/production/epics/**/*.md`, exclude `EPIC.md` index files,
+- **`all`**: glob `ccgs-data/production/epics/**/*.md`, exclude `EPIC.md` index files,
   validate every story file found.
 - **No argument**: ask the user which scope to validate.
 
 If no argument is given, 向用户呈现选项（使用 Markdown 编号列表）:
 - "What would you like to validate?"
   - Options: "A specific story file", "All stories in the current sprint",
-    "All stories in CCGS-Data/production/epics/", "Stories for a specific epic"
+    "All stories in ccgs-data/production/epics/", "Stories for a specific epic"
 
 Report the scope before proceeding: "Validating [N] story files."
 
@@ -58,11 +58,11 @@ Report the scope before proceeding: "Validating [N] story files."
 
 Before checking any stories, load reference documents once (not per-story):
 
-- `CCGS-Data/design/gdd/systems-index.md` — to know which systems have approved GDDs
-- `CCGS-Data/project-docs/architecture/control-manifest.md` — to know which manifest rules exist
+- `ccgs-data/design/gdd/systems-index.md` — to know which systems have approved GDDs
+- `ccgs-data/project-docs/architecture/control-manifest.md` — to know which manifest rules exist
   (if the file does not exist, note it as missing once; do not re-flag per story)
   Also extract the `Manifest Version:` date from the header block if the file exists.
-- `CCGS-Data/project-docs/architecture/tr-registry.yaml` — index all entries by `id`. Used to
+- `ccgs-data/project-docs/architecture/tr-registry.yaml` — index all entries by `id`. Used to
   validate TR-IDs in stories. If the file does not exist, note it once; TR-ID
   checks will auto-pass for all stories (registry predates stories, so missing
   registry means stories are from before TR tracking was introduced).
@@ -81,7 +81,7 @@ items pass or are explicitly marked N/A with a stated reason.
 
 ### Design Completeness
 
-- [ ] **GDD requirement referenced**: The story includes a `CCGS-Data/design/gdd/` path
+- [ ] **GDD requirement referenced**: The story includes a `ccgs-data/design/gdd/` path
   and quotes or links a specific requirement, acceptance criterion, or rule from
   that GDD — not just the GDD filename. A link to the document without tracing
   to a specific requirement does not pass.
@@ -120,7 +120,7 @@ items pass or are explicitly marked N/A with a stated reason.
     (story may predate registry, or registry needs an `/architecture-review` run).
   - Auto-pass if the story has no TR-ID reference OR if the registry does not exist.
 - [ ] **Manifest version is current**: If the story has a `Manifest Version:` date
-  in its header AND `CCGS-Data/project-docs/architecture/control-manifest.md` exists:
+  in its header AND `ccgs-data/project-docs/architecture/control-manifest.md` exists:
   - If story version matches current manifest `Manifest Version:` → pass.
   - If story version is older than current manifest → NEEDS WORK: new rules may
     apply. Fix: review changed manifest rules, update story if any forbidden/required
@@ -133,7 +133,7 @@ items pass or are explicitly marked N/A with a stated reason.
   pure data/config change), "N/A — no engine API involved" is acceptable.
 - [ ] **Control manifest rules noted**: Relevant layer rules from the control
   manifest are referenced, OR "N/A — manifest not yet created" is stated.
-  This item auto-passes if `CCGS-Data/project-docs/architecture/control-manifest.md` does not
+  This item auto-passes if `ccgs-data/project-docs/architecture/control-manifest.md` does not
   exist yet (do not penalize stories written before the manifest was created).
 
 ### Scope Clarity
@@ -310,7 +310,7 @@ content changes.
 
 After completing a single-story readiness check (not `all` or `sprint` scope):
 
-1. Read the current sprint file from `CCGS-Data/production/sprints/` (most recent).
+1. Read the current sprint file from `ccgs-data/production/sprints/` (most recent).
 2. Find stories that are:
    - Status: READY or NOT STARTED
    - Not the story just checked

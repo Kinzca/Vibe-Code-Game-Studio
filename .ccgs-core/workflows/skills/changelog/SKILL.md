@@ -28,9 +28,9 @@ Markdown 编号列表`
 
 If no tags exist, read the full log or a reasonable recent range (last 100 commits).
 
-Read sprint reports from `CCGS-Data/production/sprints/` for the relevant period to understand planned work and context behind changes.
+Read sprint reports from `ccgs-data/production/sprints/` for the relevant period to understand planned work and context behind changes.
 
-Read completed design documents from `CCGS-Data/design/gdd/` for any new features implemented during this period.
+Read completed design documents from `ccgs-data/design/gdd/` for any new features implemented during this period.
 
 ---
 

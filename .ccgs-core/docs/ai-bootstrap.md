@@ -88,10 +88,10 @@ Phase 4: 文档同步    → GDD 更新与沉淀
 
 ## 六、数据层路径约定
 
-所有项目数据存放在 `CCGS-Data/` 目录下（可通过 `ccgs.env` 中的 `DATA_DIR` 变量自定义）：
+所有项目数据存放在 `ccgs-data/` 目录下（可通过 `ccgs.env` 中的 `DATA_DIR` 变量自定义）：
 
 ```
-CCGS-Data/
+ccgs-data/
 ├── design/           # 设计文档（GDD、UX、关卡、美术、叙事）
 ├── production/       # 生产管理（提案、QA、Sprint、追踪、发布）
 └── project-docs/     # 技术文档（架构、ADR、引擎参考）
@@ -103,7 +103,7 @@ CCGS-Data/
 2. **单一职责**：一次只扮演一个 Agent 角色，不要混合多个角色的职责
 3. **数据驱动**：优先阅读现有的 GDD 和 ADR，而非凭空假设
 4. **自审查**：修改代码前检查是否违反 `technical-preferences.md` 中的禁止模式
-5. **Bug 联动**：发现问题必须登记 `CCGS-Data/production/tracking/bug-tracker.md`
+5. **Bug 联动**：发现问题必须登记 `ccgs-data/production/tracking/bug-tracker.md`
 
 ## 八、输出语言约定
 

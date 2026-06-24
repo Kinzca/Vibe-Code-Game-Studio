@@ -13,14 +13,14 @@ When a GDD changes, architectural decisions written against it may no longer be
 valid. This skill finds every affected ADR, compares what the ADR assumed against
 what the GDD now says, and guides the user through resolution.
 
-**Usage:** `/propagate-design-change CCGS-Data/design/gdd/combat-system.md`
+**Usage:** `/propagate-design-change ccgs-data/design/gdd/combat-system.md`
 
 ---
 
 ## 1. Validate Argument
 
 A GDD path argument is **required**. If missing, fail with:
-> "Usage: `/propagate-design-change CCGS-Data/design/gdd/[system].md`
+> "Usage: `/propagate-design-change ccgs-data/design/gdd/[system].md`
 > Provide the path to the GDD that was changed."
 
 Verify the file exists. If not, fail with:
@@ -39,7 +39,7 @@ Read the current GDD in full.
 Run git to get the previous committed version:
 
 Markdown 编号列表`bash
-git show HEAD:CCGS-Data/design/gdd/[filename].md
+git show HEAD:ccgs-data/design/gdd/[filename].md
 Markdown 编号列表`
 
 If the file has no git history (new file), report:
@@ -71,12 +71,12 @@ Markdown 编号列表`
 
 ## 4. Load Architecture Inputs
 
-Read all ADRs in `CCGS-Data/project-docs/architecture/`:
+Read all ADRs in `ccgs-data/project-docs/architecture/`:
 - For each ADR, read the full file
 - Extract the "GDD Requirements Addressed" table
 - Note which GDD documents and requirement IDs each ADR references
 
-Read `CCGS-Data/project-docs/architecture/architecture-traceability.md` if it exists.
+Read `ccgs-data/project-docs/architecture/architecture-traceability.md` if it exists.
 
 Report: "Loaded [N] ADRs. [M] reference [gdd filename]."
 
@@ -188,7 +188,7 @@ For ADRs marked **Superseded**:
 
 ## 8. Update Traceability Index
 
-If `CCGS-Data/project-docs/architecture/architecture-traceability.md` exists:
+If `ccgs-data/project-docs/architecture/architecture-traceability.md` exists:
 - Add the changed GDD requirements to the "Superseded Requirements" table:
 
 Markdown 编号列表`markdown
@@ -204,7 +204,7 @@ Ask: "May I update the traceability index?"
 
 ## 9. Output Change Impact Document
 
-Ask: "May I write the change impact report to `CCGS-Data/project-docs/architecture/change-impact-[date]-[system-slug].md`?"
+Ask: "May I write the change impact report to `ccgs-data/project-docs/architecture/change-impact-[date]-[system-slug].md`?"
 
 The document contains:
 - The change summary from step 3

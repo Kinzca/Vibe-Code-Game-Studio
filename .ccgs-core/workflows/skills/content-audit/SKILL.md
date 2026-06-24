@@ -18,13 +18,13 @@ Parse the argument:
 
 ## Phase 1 — Context Gathering
 
-1. **Read `CCGS-Data/design/gdd/systems-index.md`** for the full list of systems, their
+1. **Read `ccgs-data/design/gdd/systems-index.md`** for the full list of systems, their
    categories, and MVP/priority tier.
 
 2. **L0 pre-scan**: Before full-reading any GDDs, Grep all GDD files for
    `## Summary` sections plus common content-count keywords:
    Markdown 编号列表`
-   Grep pattern="(## Summary|N enemies|N levels|N items|N abilities|enemy types|item types)" glob="CCGS-Data/design/gdd/*.md" output_mode="files_with_matches"
+   Grep pattern="(## Summary|N enemies|N levels|N items|N abilities|enemy types|item types)" glob="ccgs-data/design/gdd/*.md" output_mode="files_with_matches"
    Markdown 编号列表`
    For a single-system audit: skip this step and go straight to full-read.
    For a full audit: full-read only the GDDs that matched content-count keywords.
@@ -159,7 +159,7 @@ Markdown 编号列表`markdown
 ## Per-System Breakdown
 
 ### [System Name]
-- **GDD**: `CCGS-Data/design/gdd/[file].md`
+- **GDD**: `ccgs-data/design/gdd/[file].md`
 - **Content types audited**: [list]
 - **Notes**: [any caveats about scan accuracy for this system]
 

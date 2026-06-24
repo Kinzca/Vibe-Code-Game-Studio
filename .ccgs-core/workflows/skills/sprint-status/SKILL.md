@@ -24,11 +24,11 @@ files, and makes at most one concrete recommendation.
 **Argument:** `$ARGUMENTS[0]` (blank = use current sprint)
 
 - If an argument is given (e.g., `/sprint-status 3`), search
-  `CCGS-Data/production/sprints/` for a file matching `sprint-03.md`, `sprint-3.md`,
+  `ccgs-data/production/sprints/` for a file matching `sprint-03.md`, `sprint-3.md`,
   or similar. Report which file was found.
 - If no argument is given, find the most recently modified file in
-  `CCGS-Data/production/sprints/` and treat it as the current sprint.
-- If `CCGS-Data/production/sprints/` does not exist or is empty, report: "No sprint
+  `ccgs-data/production/sprints/` and treat it as the current sprint.
+- If `ccgs-data/production/sprints/` does not exist or is empty, report: "No sprint
   files found. Start a sprint with `/sprint-plan new`." Then stop.
 
 Read the sprint file in full. Extract:
@@ -54,7 +54,7 @@ found — burndown assessment skipped."
 
 ## 3. Scan Story Status
 
-**First: check for `CCGS-Data/production/sprint-status.yaml`.**
+**First: check for `ccgs-data/production/sprint-status.yaml`.**
 
 If it exists, read it directly — it is the authoritative source of truth.
 Extract status for each story from the `status` field. No markdown scanning needed.

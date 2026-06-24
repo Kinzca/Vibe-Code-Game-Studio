@@ -30,7 +30,7 @@ the acceptance criteria numbers from the story that this evidence covers.]
 ## Screenshots / Video
 
 List all captured evidence below. Store files in the same directory as this
-document or in `CCGS-Data/production/qa/evidence/[story-slug]/`.
+document or in `ccgs-data/production/qa/evidence/[story-slug]/`.
 
 | # | Filename | What It Shows | Acceptance Criterion |
 |---|----------|--------------|----------------------|
@@ -83,4 +83,4 @@ past the sprint review.
 
 *Template: `.ccgs-core/docs/templates/test-evidence.md`*
 *Used for: Visual/Feel and UI story type evidence records*
-*Location: `CCGS-Data/production/qa/evidence/[story-slug]-evidence.md`*
+*Location: `ccgs-data/production/qa/evidence/[story-slug]-evidence.md`*

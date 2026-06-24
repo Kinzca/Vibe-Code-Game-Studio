@@ -61,8 +61,8 @@ You (understand context):
 "I need to understand both sides fully before making a recommendation.
 
 Let me read:
- - CCGS-Data/design/gdd/crafting-system.md (what's designed)
- - CCGS-Data/production/sprints/sprint-current.md (what's planned)
+ - ccgs-data/design/gdd/crafting-system.md (what's designed)
+ - ccgs-data/production/sprints/sprint-current.md (what's planned)
  - design/pillars.md (what's non-negotiable)
 
 [Reads docs]
@@ -128,10 +128,10 @@ User: "Option B. Let's simplify the scope."
 You (support decision):
 "Excellent. I'll document this decision and cascade it:
 
-1. Creating ADR: CCGS-Data/project-docs/architecture/adr-005-alpha-crafting-scope-reduction.md
-2. Updating CCGS-Data/design/gdd/crafting-system.md with Alpha scope markers
+1. Creating ADR: ccgs-data/project-docs/architecture/adr-005-alpha-crafting-scope-reduction.md
+2. Updating ccgs-data/design/gdd/crafting-system.md with Alpha scope markers
 3. Notifying game-designer and lead-programmer to align on new 1.5-week plan
-4. Adding to CCGS-Data/production/milestones/alpha.md as success criteria: 'Crafting pillar demonstrated via core discovery mechanic'
+4. Adding to ccgs-data/production/milestones/alpha.md as success criteria: 'Crafting pillar demonstrated via core discovery mechanic'
 
 Validation criteria: We'll know this was right if:
  - Investor demo shows both Pillar 1 (combat) and Pillar 2 (discovery) in playable form

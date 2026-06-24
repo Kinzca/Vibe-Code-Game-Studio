@@ -17,7 +17,7 @@ define.
 **Run this skill per epic**, not per layer. Run it for Foundation epics first,
 then Core, and so on — matching the dependency order.
 
-**Output:** `CCGS-Data/production/epics/[epic-slug]/story-NNN-[slug].md` files
+**Output:** `ccgs-data/production/epics/[epic-slug]/story-NNN-[slug].md` files
 
 **Previous step:** `/create-epics [system]`
 **Next step after stories exist:** `/story-readiness [story-path]` then `/dev-story [story-path]`
@@ -27,15 +27,15 @@ then Core, and so on — matching the dependency order.
 ## 1. Parse Argument
 
 Extract `--review [full|lean|solo]` if present and store as the review mode
-override for this run. If not provided, read `CCGS-Data/production/review-mode.txt`
+override for this run. If not provided, read `ccgs-data/production/review-mode.txt`
 (default `full` if missing). This resolved mode applies to all gate spawns
 in this skill — apply the check pattern from `.ccgs-core/docs/director-gates.md`
 before every gate invocation.
 
 - `/create-stories [epic-slug]` — e.g. `/create-stories combat`
-- `/create-stories CCGS-Data/production/epics/combat/EPIC.md` — full path also accepted
+- `/create-stories ccgs-data/production/epics/combat/EPIC.md` — full path also accepted
 - No argument — ask: "Which epic would you like to break into stories?"
-  Glob `CCGS-Data/production/epics/*/EPIC.md` and list available epics with their status.
+  Glob `ccgs-data/production/epics/*/EPIC.md` and list available epics with their status.
 
 ---
 
@@ -43,15 +43,15 @@ before every gate invocation.
 
 Read in full:
 
-- `CCGS-Data/production/epics/[epic-slug]/EPIC.md` — epic overview, governing ADRs, GDD requirements table
-- The epic's GDD (`CCGS-Data/design/gdd/[filename].md`) — read all 8 sections, especially Acceptance Criteria, Formulas, and Edge Cases
+- `ccgs-data/production/epics/[epic-slug]/EPIC.md` — epic overview, governing ADRs, GDD requirements table
+- The epic's GDD (`ccgs-data/design/gdd/[filename].md`) — read all 8 sections, especially Acceptance Criteria, Formulas, and Edge Cases
 - All governing ADRs listed in the epic — read the Decision, Implementation Guidelines, Engine Compatibility, and Engine Notes sections
-- `CCGS-Data/project-docs/architecture/control-manifest.md` — extract rules for this epic's layer; note the Manifest Version date from the header
-- `CCGS-Data/project-docs/architecture/tr-registry.yaml` — load all TR-IDs for this system
+- `ccgs-data/project-docs/architecture/control-manifest.md` — extract rules for this epic's layer; note the Manifest Version date from the header
+- `ccgs-data/project-docs/architecture/tr-registry.yaml` — load all TR-IDs for this system
 
 **ADR existence validation**: After reading the governing ADRs list from the epic, confirm each ADR file exists on disk. If any ADR file cannot be found, **stop immediately** before decomposing any story:
 
-> "Epic references [ADR-NNNN: title] but `CCGS-Data/project-docs/architecture/[adr-file].md` was not found.
+> "Epic references [ADR-NNNN: title] but `ccgs-data/project-docs/architecture/[adr-file].md` was not found.
 > Check the filename in the epic's Governing ADRs list, or run `/architecture-decision`
 > to create it. Cannot create stories until all referenced ADR files are present."
 
@@ -152,21 +152,21 @@ Story 002: [title] — Integration — ADR-MMMM
 
 Story 003: [title] — Visual/Feel — ADR-NNNN
   Covers: TR-[system]-004
-  Evidence required: CCGS-Data/production/qa/evidence/[slug]-evidence.md
+  Evidence required: ccgs-data/production/qa/evidence/[slug]-evidence.md
 
 [N stories total: N Logic, N Integration, N Visual/Feel, N UI, N Config/Data]
 Markdown 编号列表`
 
 向用户呈现选项（使用 Markdown 编号列表）:
-- Prompt: "May I write these [N] stories to `CCGS-Data/production/epics/[epic-slug]/`?"
+- Prompt: "May I write these [N] stories to `ccgs-data/production/epics/[epic-slug]/`?"
 - Options: `[A] Yes — write all [N] stories` / `[B] Not yet — I want to review or adjust first`
 
 ---
 
 ## 6. Write Story Files
 
-For each story, write `CCGS-Data/production/epics/[epic-slug]/story-[NNN]-[slug].md`.
-After writing the story files, you MUST run `.ccgs-core/hooks/verify-schema.sh CCGS-Data/production/epics/[epic-slug]/story-[NNN]-[slug].md story` for each story. If the script fails, immediately fix the file based on the error.
+For each story, write `ccgs-data/production/epics/[epic-slug]/story-[NNN]-[slug].md`.
+After writing the story files, you MUST run `.ccgs-core/hooks/verify-schema.sh ccgs-data/production/epics/[epic-slug]/story-[NNN]-[slug].md story` for each story. If the script fails, immediately fix the file based on the error.
 
 Markdown 编号列表`markdown
 ---
@@ -187,9 +187,9 @@ manifest_version: "[date from control-manifest.md header]"
 
 ## Context
 
-**GDD**: `CCGS-Data/design/gdd/[filename].md`
+**GDD**: `ccgs-data/design/gdd/[filename].md`
 **Requirement**: `TR-[system]-NNN`
-*(Requirement text lives in `CCGS-Data/project-docs/architecture/tr-registry.yaml` — read fresh at review time)*
+*(Requirement text lives in `ccgs-data/project-docs/architecture/tr-registry.yaml` — read fresh at review time)*
 
 **ADR Governing Implementation**: [ADR-NNNN: title]
 **ADR Decision Summary**: [1-2 sentence summary of what the ADR decided]
@@ -206,7 +206,7 @@ manifest_version: "[date from control-manifest.md header]"
 
 ## Acceptance Criteria
 
-*From GDD `CCGS-Data/design/gdd/[filename].md`, scoped to this story:*
+*From GDD `ccgs-data/design/gdd/[filename].md`, scoped to this story:*
 
 - [ ] [criterion 1 — directly from GDD]
 - [ ] [criterion 2]
@@ -258,9 +258,9 @@ change meaning. This is what the programmer reads instead of the ADR.]
 **Required evidence**:
 - Logic: `tests/unit/[system]/[story-slug]_test.[ext]` — must exist and pass
 - Integration: `tests/integration/[system]/[story-slug]_test.[ext]` OR playtest doc
-- Visual/Feel: `CCGS-Data/production/qa/evidence/[story-slug]-evidence.md` + sign-off
-- UI: `CCGS-Data/production/qa/evidence/[story-slug]-evidence.md` or interaction test
-- Config/Data: smoke check pass (`CCGS-Data/production/qa/smoke/smoke-*.md`)
+- Visual/Feel: `ccgs-data/production/qa/evidence/[story-slug]-evidence.md` + sign-off
+- UI: `ccgs-data/production/qa/evidence/[story-slug]-evidence.md` or interaction test
+- Config/Data: smoke check pass (`ccgs-data/production/qa/smoke/smoke-*.md`)
 
 **Status**: [ ] Not yet created
 
@@ -273,7 +273,7 @@ change meaning. This is what the programmer reads instead of the ADR.]
 - Unlocks: [Story NNN+1, or "None"]
 Markdown 编号列表`
 
-### Also update `CCGS-Data/production/epics/[epic-slug]/EPIC.md`
+### Also update `ccgs-data/production/epics/[epic-slug]/EPIC.md`
 
 Replace the "Stories: Not yet created" line with a populated table:
 
@@ -293,11 +293,11 @@ Markdown 编号列表`
 向用户呈现选项以 close with context-aware next steps:
 
 Check:
-- Are there other epics in `CCGS-Data/production/epics/` without stories yet? List them.
+- Are there other epics in `ccgs-data/production/epics/` without stories yet? List them.
 - Is this the last epic? If so, include `/sprint-plan` as an option.
 
 Widget:
-- Prompt: "[N] stories written to `CCGS-Data/production/epics/[epic-slug]/`. What next?"
+- Prompt: "[N] stories written to `ccgs-data/production/epics/[epic-slug]/`. What next?"
 - Options (include all that apply):
   - `[A] Start implementing — run /story-readiness [first-story-path]` (Recommended)
   - `[B] Create stories for [next-epic-slug] — run /create-stories [slug]` (only if other epics have no stories yet)
@@ -319,5 +319,5 @@ Note in output: "Work through stories in order — each story's `Depends on:` fi
 
 After writing (or declining):
 
-- **Verdict: COMPLETE** — [N] stories written to `CCGS-Data/production/epics/[epic-slug]/`. Run `/story-readiness` → `/dev-story` to begin implementation.
+- **Verdict: COMPLETE** — [N] stories written to `ccgs-data/production/epics/[epic-slug]/`. Run `/story-readiness` → `/dev-story` to begin implementation.
 - **Verdict: BLOCKED** — user declined. No story files written.

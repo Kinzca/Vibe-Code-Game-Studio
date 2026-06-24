@@ -245,7 +245,7 @@ def bug_count(root: Path, data_dir: str) -> int:
 
 
 def discover_named_paths(query: str) -> list[str]:
-    pattern = r"(?:(?:\.ccgs-core|CCGS-Data|tools|src|js|tests|assets|docs)/[^\s`'\"，。；、)]+)"
+    pattern = r"(?:(?:\.ccgs-core|ccgs-data|tools|src|js|tests|assets|docs)/[^\s`'\"，。；、)]+)"
     paths: list[str] = []
     for match in re.findall(pattern, query):
         paths.append(match.rstrip(".,;:）]"))
@@ -357,7 +357,7 @@ def build_recommendations(
     include_search: bool,
 ) -> tuple[list[Recommendation], dict[str, object]]:
     env = parse_env(root / ".ccgs-core/ccgs.env")
-    data_dir = env.get("DATA_DIR", "CCGS-Data")
+    data_dir = env.get("DATA_DIR", "ccgs-data")
     core_dir = env.get("CORE_DIR", ".ccgs-core")
     status = recent_status(root)
     recs: dict[str, Recommendation] = {}

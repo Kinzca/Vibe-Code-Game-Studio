@@ -23,14 +23,14 @@ If no argument, ask the user which system to check.
 
 ## Phase 2: Read Data Files
 
-Read relevant files from `assets/data/` and `CCGS-Data/design/balance/` for the identified domain.
+Read relevant files from `assets/data/` and `ccgs-data/design/balance/` for the identified domain.
 Note every file read — they will appear in the Data Sources section of the report.
 
 ---
 
 ## Phase 3: Read Design Document
 
-Read the GDD for the system from `CCGS-Data/design/gdd/` to understand intended design targets,
+Read the GDD for the system from `ccgs-data/design/gdd/` to understand intended design targets,
 tuning knobs, and expected value ranges. This is the baseline for "correct" behaviour.
 
 ---
@@ -106,13 +106,13 @@ After presenting the report, ask:
 
 If yes:
 - Ask which issue to address first (refer to the Recommendations table by priority row)
-- Guide the user to update the relevant data file in `assets/data/` or formula in `CCGS-Data/design/balance/`
+- Guide the user to update the relevant data file in `assets/data/` or formula in `ccgs-data/design/balance/`
 - After each fix, offer to re-run the relevant balance checks to verify no new outliers were introduced
 - If the fix changes a tuning knob defined in a GDD or referenced by an ADR, remind the user:
   > "This value is defined in a design document. Run `/propagate-design-change [path]` on the affected GDD to find downstream impacts before committing."
 
 If no:
-- Summarize open issues and suggest saving the report to `CCGS-Data/design/balance/balance-check-[system]-[date].md` for later
+- Summarize open issues and suggest saving the report to `ccgs-data/design/balance/balance-check-[system]-[date].md` for later
 
 End with:
 > "Re-run `/balance-check` after fixes to verify."

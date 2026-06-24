@@ -3,7 +3,7 @@
 > **Status**: Draft | In Review | Approved
 > **Author**: [game-designer / creative-director]
 > **Last Updated**: [Date]
-> **Links To**: `CCGS-Data/design/gdd/game-concept.md`, `CCGS-Data/design/gdd/game-pillars.md`
+> **Links To**: `ccgs-data/design/gdd/game-concept.md`, `ccgs-data/design/gdd/game-pillars.md`
 
 ---
 

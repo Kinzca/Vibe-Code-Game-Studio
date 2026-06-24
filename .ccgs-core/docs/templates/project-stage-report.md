@@ -21,9 +21,9 @@
 ### Design Documentation
 - **Status**: [X%] complete
 - **Files Found**: [N] documents in `design/`
-  - GDD sections: [N] files in `CCGS-Data/design/gdd/`
-  - Narrative docs: [N] files in `CCGS-Data/design/narrative/`
-  - Level designs: [N] files in `CCGS-Data/design/levels/`
+  - GDD sections: [N] files in `ccgs-data/design/gdd/`
+  - Narrative docs: [N] files in `ccgs-data/design/narrative/`
+  - Level designs: [N] files in `ccgs-data/design/levels/`
 - **Key Gaps**:
   - [ ] [Missing doc 1 + why it matters]
   - [ ] [Missing doc 2 + why it matters]
@@ -41,7 +41,7 @@
 
 ### Architecture Documentation
 - **Status**: [X%] complete
-- **ADRs Found**: [N] decisions documented in `CCGS-Data/project-docs/architecture/`
+- **ADRs Found**: [N] decisions documented in `ccgs-data/project-docs/architecture/`
 - **Coverage**:
   - ✅ [Decision area 1] — documented
   - ⚠️  [Decision area 2] — undocumented but implemented
@@ -53,8 +53,8 @@
 ### Production Management
 - **Status**: [X%] complete
 - **Found**:
-  - Sprint plans: [N] in `CCGS-Data/production/sprints/`
-  - Milestones: [N] in `CCGS-Data/production/milestones/`
+  - Sprint plans: [N] in `ccgs-data/production/sprints/`
+  - Milestones: [N] in `ccgs-data/production/milestones/`
   - Roadmap: [Exists | Missing]
 - **Key Gaps**:
   - [ ] [Missing production artifact + impact]

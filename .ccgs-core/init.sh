@@ -3,7 +3,7 @@
 # init.sh — CCGS 框架一键初始化与维护工具
 # ============================================================================
 # 功能:
-#   1. 校验/修复 CCGS-Data 目录骨架完整性
+#   1. 校验/修复 ccgs-data 目录骨架完整性
 #   2. 重命名数据层目录（批量替换所有引用）
 #   3. 生成 AI 工具入口配置文件（CLAUDE.md / GEMINI.md / .cursorrules / AGENTS.md）
 #
@@ -28,7 +28,7 @@ ENV_FILE="$SCRIPT_DIR/ccgs.env"
 if [ -f "$ENV_FILE" ]; then
     source "$ENV_FILE"
 else
-    DATA_DIR="CCGS-Data"
+    DATA_DIR="ccgs-data"
     CORE_DIR=".ccgs-core"
 fi
 
@@ -317,7 +317,7 @@ ENTRY_EOF
                 echo ""
                 echo "- Read only the recommended files unless the task clearly requires deeper context."
                 echo "- Use \`python3 .ccgs-core/scripts/workflow/archive-session-state.py --keep 10 --dry-run --brief\` to check whether \`active.md\` should be compacted."
-                echo "- Prefer \`tail -n 120 CCGS-Data/production/session-state/active.md\` over reading the full historical session log."
+                echo "- Prefer \`tail -n 120 ccgs-data/production/session-state/active.md\` over reading the full historical session log."
                 echo ""
                 echo "## Output Language"
                 echo ""
@@ -328,7 +328,7 @@ ENTRY_EOF
                 echo ""
                 echo "## Slash Command Compatibility"
                 echo ""
-                echo "Codex does not auto-register CCGS slash commands in the app menu. When the user types a command such as \`/dev-story CCGS-Data/production/epics/.../story.md\` or \`/gameplay-programmer\`, treat it as a textual CCGS workflow invocation:"
+                echo "Codex does not auto-register CCGS slash commands in the app menu. When the user types a command such as \`/dev-story ccgs-data/production/epics/.../story.md\` or \`/gameplay-programmer\`, treat it as a textual CCGS workflow invocation:"
                 echo ""
                 echo "1. Resolve \`/<name>\` to \`.ccgs-core/workflows/skills/<name>/SKILL.md\`."
                 echo "2. If no standard Skill exists, resolve \`/<name>\` to an Agent role file under \`.ccgs-core/workflows/Tier1-Directors/\`, \`.ccgs-core/workflows/Tier2-Leads/\`, or \`.ccgs-core/workflows/Tier3-Specialists/\`."

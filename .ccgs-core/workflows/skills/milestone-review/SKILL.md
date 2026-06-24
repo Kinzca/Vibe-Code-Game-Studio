@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Write, Task
 
 Extract the milestone name (`current` or a specific name) and resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
@@ -19,9 +19,9 @@ See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 
 ## Phase 1: Load Milestone Data
 
-Read the milestone definition from `CCGS-Data/production/milestones/`. If the argument is `current`, use the most recently modified milestone file.
+Read the milestone definition from `ccgs-data/production/milestones/`. If the argument is `current`, use the most recently modified milestone file.
 
-Read all sprint reports for sprints within this milestone from `CCGS-Data/production/sprints/`.
+Read all sprint reports for sprints within this milestone from `ccgs-data/production/sprints/`.
 
 ---
 
@@ -125,7 +125,7 @@ Present the producer's assessment inline within the Go/No-Go section. The produc
 
 Present the review to the user.
 
-Ask: "May I write this to `CCGS-Data/production/milestones/[milestone-name]-review.md`?"
+Ask: "May I write this to `ccgs-data/production/milestones/[milestone-name]-review.md`?"
 
 If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — milestone review saved.
 

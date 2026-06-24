@@ -30,11 +30,11 @@ python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
 Generate a story-specific context pack before readiness/dev/done work:
 
 ```bash
-python3 .ccgs-core/scripts/workflow/ccgs-story-context.py CCGS-Data/production/epics/example/story-001-example.md --write
+python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/epics/example/story-001-example.md --write
 ```
 
 Default behavior prints to stdout. Add `--write` only when you want to persist
-the generated cache under `CCGS-Data/production/context/`.
+the generated cache under `ccgs-data/production/context/`.
 
 ## Session-State Archive
 
@@ -43,5 +43,5 @@ python3 .ccgs-core/scripts/workflow/archive-session-state.py --keep 10 --brief
 ```
 
 The archive tool keeps the newest top-level sections in
-`CCGS-Data/production/session-state/active.md` and appends older sections to a
+`ccgs-data/production/session-state/active.md` and appends older sections to a
 monthly archive file. Use `--dry-run` before the first real archive on a project.

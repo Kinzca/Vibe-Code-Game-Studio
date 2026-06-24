@@ -10,12 +10,12 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 
-Read `CCGS-Data/design/gdd/game-concept.md`. If it does not exist, fail with:
+Read `ccgs-data/design/gdd/game-concept.md`. If it does not exist, fail with:
 > "No game concept found. Run `/brainstorm` first — the art bible is authored after the game concept is approved."
 
 Extract from game-concept.md:
@@ -25,7 +25,7 @@ Extract from game-concept.md:
 - **Visual Identity Anchor** section if present (from brainstorm Phase 4 art-director output)
 - Target platform (if noted)
 
-**Retrofit mode detection**: Glob `CCGS-Data/design/art/art-bible.md`. If the file exists:
+**Retrofit mode detection**: Glob `ccgs-data/design/art/art-bible.md`. If the file exists:
 - Read it in full
 - For each of the 9 sections, check whether the body contains real content (more than a `[To be designed]` placeholder or similar) vs. is empty/placeholder
 - Build a section status table:
@@ -45,7 +45,7 @@ Section | Status
 Markdown 编号列表`
 
 - Present this table to the user:
-  > "Found existing art bible at `CCGS-Data/design/art/art-bible.md`. [N] sections are complete, [M] need content. I'll work on the incomplete sections only — existing content will not be touched."
+  > "Found existing art bible at `ccgs-data/design/art/art-bible.md`. [N] sections are complete, [M] need content. I'll work on the incomplete sections only — existing content will not be touched."
 - Only work on sections with Status: Empty or Placeholder. Do not re-author sections that are already complete.
 
 If the file does not exist, this is a fresh authoring session — proceed normally.
@@ -203,10 +203,10 @@ Handle verdict per standard rules in `director-gates.md`. Record the verdict in 
 ## Phase 6: Close
 
 Before presenting next steps, check project state:
-- Does `CCGS-Data/design/gdd/systems-index.md` exist? → map-systems is done, skip that option
+- Does `ccgs-data/design/gdd/systems-index.md` exist? → map-systems is done, skip that option
 - Does `.ccgs-core/docs/technical-preferences.md` contain a configured engine (not `[TO BE CONFIGURED]`)? → setup-engine is done, skip that option
-- Does `CCGS-Data/design/gdd/` contain any `*.md` files? → design-system has been run, skip that option
-- Does `CCGS-Data/design/gdd/gdd-cross-review-*.md` exist? → review-all-gdds is done
+- Does `ccgs-data/design/gdd/` contain any `*.md` files? → design-system has been run, skip that option
+- Does `ccgs-data/design/gdd/gdd-cross-review-*.md` exist? → review-all-gdds is done
 - Do GDDs exist (check above)? → include /consistency-check option
 
 向用户呈现选项以 next steps. Only include options that are genuinely next based on the state check above:

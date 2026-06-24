@@ -98,7 +98,7 @@ Before writing any code:
 - Use tag containers (`FGameplayTagContainer`) for multi-tag checks
 - Prefer tag matching over string comparison or enums for state checks
 - Define all tags in a central `.ini` or data asset — no scattered `FGameplayTag::RequestGameplayTag()` calls
-- Document the tag hierarchy in `CCGS-Data/design/gdd/gameplay-tags.md`
+- Document the tag hierarchy in `ccgs-data/design/gdd/gameplay-tags.md`
 
 ### Ability Tasks
 - Use Ability Tasks for: montage playback, targeting, waiting for events, waiting for tags

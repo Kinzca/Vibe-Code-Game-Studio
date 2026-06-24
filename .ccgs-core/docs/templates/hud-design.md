@@ -5,9 +5,9 @@
 > **Last Updated**: [Date]
 > **Game**: [Game name — this is a single document per game, not per element]
 > **Platform Targets**: [All platforms this HUD must work on — e.g., PC, PS5, Xbox Series X, Steam Deck]
-> **Related GDDs**: [Every system that exposes information through the HUD — e.g., `CCGS-Data/design/gdd/combat.md`, `CCGS-Data/design/gdd/progression.md`, `CCGS-Data/design/gdd/quests.md`]
+> **Related GDDs**: [Every system that exposes information through the HUD — e.g., `ccgs-data/design/gdd/combat.md`, `ccgs-data/design/gdd/progression.md`, `ccgs-data/design/gdd/quests.md`]
 > **Accessibility Tier**: Basic | Standard | Comprehensive | Exemplary
-> **Style Reference**: [Link to art bible HUD section if it exists — e.g., `CCGS-Data/design/gdd/art-bible.md § HUD Visual Language`]
+> **Style Reference**: [Link to art bible HUD section if it exists — e.g., `ccgs-data/design/gdd/art-bible.md § HUD Visual Language`]
 
 > **Note — Scope boundary**: This document specifies all elements that overlay the
 > game world during active gameplay — health bars, ammo counters, minimaps, quest

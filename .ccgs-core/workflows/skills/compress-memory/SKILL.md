@@ -12,9 +12,9 @@ agent: technical-director
 This skill summarizes the achievements, architecture changes, and API additions of a completed Sprint into a single snapshot file, allowing older granular files to be ignored in subsequent runs.
 
 ## 1. Load Inputs
-- Read `CCGS-Data/production/sprints/sprint-[N].md` and `CCGS-Data/production/sprint-status.yaml`
+- Read `ccgs-data/production/sprints/sprint-[N].md` and `ccgs-data/production/sprint-status.yaml`
 - Find all `DONE` stories in that Sprint. Read their contents to extract API additions and architectural changes.
-- Read current `CCGS-Data/project-docs/architecture/architecture.md`.
+- Read current `ccgs-data/project-docs/architecture/architecture.md`.
 
 ## 2. Generate Snapshot
 Extract the following information:
@@ -25,7 +25,7 @@ Extract the following information:
 Present the snapshot for review.
 
 ## 3. Write Snapshot
-After approval, write to `CCGS-Data/project-docs/architecture/snapshots/architecture-snapshot-[N].md`.
+After approval, write to `ccgs-data/project-docs/architecture/snapshots/architecture-snapshot-[N].md`.
 Use the template from `.ccgs-core/docs/templates/architecture-snapshot.md`.
 
 ## 4. Archive Old Files

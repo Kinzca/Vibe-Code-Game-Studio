@@ -19,7 +19,7 @@ Two modes:
 
 Also resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
@@ -32,15 +32,15 @@ Read the game concept and any existing design work. This provides the raw materi
 for systems decomposition.
 
 **Required:**
-- Read `CCGS-Data/design/gdd/game-concept.md` — **fail with a clear message if missing**:
-  > "No game concept found at `CCGS-Data/design/gdd/game-concept.md`. Run `/brainstorm` first
+- Read `ccgs-data/design/gdd/game-concept.md` — **fail with a clear message if missing**:
+  > "No game concept found at `ccgs-data/design/gdd/game-concept.md`. Run `/brainstorm` first
   > to create one, then come back to decompose it into systems."
 
 **Optional (read if they exist):**
-- Read `CCGS-Data/design/gdd/game-pillars.md` — pillars constrain priority and scope
-- Read `CCGS-Data/design/gdd/systems-index.md` — if exists, **resume** from where it left off
+- Read `ccgs-data/design/gdd/game-pillars.md` — pillars constrain priority and scope
+- Read `ccgs-data/design/gdd/systems-index.md` — if exists, **resume** from where it left off
   (update, don't recreate from scratch)
-- Glob `CCGS-Data/design/gdd/*.md` — check which system GDDs already exist
+- Glob `ccgs-data/design/gdd/*.md` — check which system GDDs already exist
 
 **If the systems index already exists:**
 - Read it and present current status to the user
@@ -232,7 +232,7 @@ Present a summary of the document:
 - First 3 systems in the design order
 - Any high-risk items
 
-Ask: "May I write the systems index to `CCGS-Data/design/gdd/systems-index.md`?"
+Ask: "May I write the systems index to `ccgs-data/design/gdd/systems-index.md`?"
 
 Wait for approval. Write the file only after "yes."
 
@@ -243,19 +243,19 @@ Wait for approval. Write the file only after "yes."
 
 **After the systems index is written, spawn `creative-director` via Task using gate CD-SYSTEMS (`.ccgs-core/docs/director-gates.md`).**
 
-Pass: systems index path, game pillars and core fantasy (from `CCGS-Data/design/gdd/game-concept.md`), MVP priority tier system list.
+Pass: systems index path, game pillars and core fantasy (from `ccgs-data/design/gdd/game-concept.md`), MVP priority tier system list.
 
 Present the assessment. If REJECT, revise the system set with the user before GDD authoring begins. If CONCERNS, record them in the systems index as a `> **Creative Director Note**` at the top of the relevant tier section.
 
 ### Step 5c: Update Session State
 
-After writing, create `CCGS-Data/production/session-state/active.md` if it does not exist, then update it with:
+After writing, create `ccgs-data/production/session-state/active.md` if it does not exist, then update it with:
 - Task: Systems decomposition
 - Status: Systems index created
-- File: CCGS-Data/design/gdd/systems-index.md
+- File: ccgs-data/design/gdd/systems-index.md
 - Next: Design individual system GDDs
 
-**Verdict: COMPLETE** — systems index written to `CCGS-Data/design/gdd/systems-index.md`.
+**Verdict: COMPLETE** — systems index written to `ccgs-data/design/gdd/systems-index.md`.
 If the user declined: **Verdict: BLOCKED** — user did not approve the write.
 
 ---
@@ -318,7 +318,7 @@ After the systems index is created (or after designing some systems), present ne
 **The director review option ([B]) is worth highlighting**: having a Creative Director or Technical Director review the completed systems index before starting GDD authoring catches scope issues, missing systems, and boundary problems before they're locked in across many documents. It is optional but recommended for new projects.
 
 After any individual GDD is completed:
-- "Run `/design-review CCGS-Data/design/gdd/[system].md` in a fresh session to validate quality"
+- "Run `/design-review ccgs-data/design/gdd/[system].md` in a fresh session to validate quality"
 - "Run `/gate-check systems-design` when all MVP GDDs are complete"
 
 ---
@@ -338,7 +338,7 @@ This skill follows the collaborative design principle at every phase:
 4. **Incremental writing**: Update the systems index after each system is designed
 5. **Handoff**: Individual GDD authoring is owned by `/design-system`, which handles
    incremental section writing, cross-referencing, design review, and index updates
-6. **Session state updates**: Write to `CCGS-Data/production/session-state/active.md` after
+6. **Session state updates**: Write to `ccgs-data/production/session-state/active.md` after
    each milestone (index created, system designed, priorities changed)
 
 **Never** auto-generate the full systems list and write it without review.
@@ -350,7 +350,7 @@ This skill follows the collaborative design principle at every phase:
 If context reaches or exceeds 70% at any point, append this notice:
 
 > **Context is approaching the limit (≥70%).** The systems index is saved to
-> `CCGS-Data/design/gdd/systems-index.md`. Open a fresh Claude Code session to continue
+> `ccgs-data/design/gdd/systems-index.md`. Open a fresh Claude Code session to continue
 > designing individual GDDs — run `/map-systems next` to pick up where you left off.
 
 ---
@@ -359,5 +359,5 @@ If context reaches or exceeds 70% at any point, append this notice:
 
 - Run `/design-system [first-system-in-order]` to author the first GDD (use design order from the index)
 - Run `/map-systems next` to always pick the highest-priority undesigned system automatically
-- Run `/design-review CCGS-Data/design/gdd/[system].md` in a fresh session after each GDD is authored
+- Run `/design-review ccgs-data/design/gdd/[system].md` in a fresh session after each GDD is authored
 - Run `/gate-check pre-production` when all MVP GDDs are authored and reviewed

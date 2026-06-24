@@ -12,7 +12,7 @@ isolation: worktree
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
@@ -123,7 +123,7 @@ If yes, write the file.
 
 Spawn `creative-director` via Task using gate **CD-PLAYTEST** (`.ccgs-core/docs/director-gates.md`).
 
-Pass: the full REPORT.md content, the original design question, game pillars and core fantasy from `CCGS-Data/design/gdd/game-concept.md` (if it exists).
+Pass: the full REPORT.md content, the original design question, game pillars and core fantasy from `ccgs-data/design/gdd/game-concept.md` (if it exists).
 
 The creative director evaluates the prototype result against the game's creative vision and pillars, then confirms, modifies, or overrides the prototyper's PROCEED / PIVOT / KILL recommendation. Their verdict is final. Update the REPORT.md `Recommendation` section if the creative director's verdict differs from the prototyper's.
 

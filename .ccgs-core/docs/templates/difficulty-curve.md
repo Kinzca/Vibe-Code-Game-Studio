@@ -3,8 +3,8 @@
 > **Status**: Draft | In Review | Approved
 > **Author**: [game-designer / systems-designer]
 > **Last Updated**: [Date]
-> **Links To**: `CCGS-Data/design/gdd/game-concept.md`
-> **Relevant GDDs**: [e.g., `CCGS-Data/design/gdd/combat.md`, `CCGS-Data/design/gdd/progression.md`]
+> **Links To**: `ccgs-data/design/gdd/game-concept.md`
+> **Relevant GDDs**: [e.g., `ccgs-data/design/gdd/combat.md`, `ccgs-data/design/gdd/progression.md`]
 
 ---
 

@@ -19,14 +19,14 @@ If no version is provided, ask the user before proceeding.
 
 ## Phase 2: Gather Change Data
 
-- Read the internal changelog at `CCGS-Data/production/releases/[version]/changelog.md` if it exists
+- Read the internal changelog at `ccgs-data/production/releases/[version]/changelog.md` if it exists
 - Also check `docs/CHANGELOG.md` for the relevant version entry
 - Run `git log` between the previous release tag and current tag/HEAD as a fallback
-- Read sprint retrospectives in `CCGS-Data/production/sprints/` for context
-- Read any balance change documents in `CCGS-Data/design/balance/`
+- Read sprint retrospectives in `ccgs-data/production/sprints/` for context
+- Read any balance change documents in `ccgs-data/design/balance/`
 - Read bug fix records from QA if available
 
-**If no changelog data is available** (neither `CCGS-Data/production/releases/[version]/changelog.md`
+**If no changelog data is available** (neither `ccgs-data/production/releases/[version]/changelog.md`
 nor a `docs/CHANGELOG.md` entry for this version exists, and git log is empty or unavailable):
 
 > "No changelog data found for [version]. Run `/changelog [version]` first to generate the
@@ -173,7 +173,7 @@ Present the completed patch notes to the user along with: a count of changes by 
 Ask: "May I write these patch notes to `docs/patch-notes/[version].md`?"
 
 If yes, write the file to `docs/patch-notes/[version].md`, creating the directory
-if needed. Also write to `CCGS-Data/production/releases/[version]/patch-notes.md` as the
+if needed. Also write to `ccgs-data/production/releases/[version]/patch-notes.md` as the
 internal archive copy.
 
 ---

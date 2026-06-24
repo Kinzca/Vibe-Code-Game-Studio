@@ -20,7 +20,7 @@ if [ -n "$BRANCH" ]; then
 fi
 
 # Architecture Snapshot Detection (Memory Compression)
-LATEST_SNAPSHOT=$(ls -t CCGS-Data/project-docs/architecture/snapshots/architecture-snapshot-*.md 2>/dev/null | head -1)
+LATEST_SNAPSHOT=$(ls -t ccgs-data/project-docs/architecture/snapshots/architecture-snapshot-*.md 2>/dev/null | head -1)
 if [ -n "$LATEST_SNAPSHOT" ]; then
     echo ""
     echo "=== ACTIVE ARCHITECTURE SNAPSHOT DETECTED ==="
@@ -37,21 +37,21 @@ echo "You are strictly FORBIDDEN from using Glob, Grep, or Read tools on paths o
 echo "======================================"
 
 # Current sprint (find most recent sprint file)
-LATEST_SPRINT=$(ls -t CCGS-Data/production/sprints/sprint-*.md 2>/dev/null | head -1)
+LATEST_SPRINT=$(ls -t ccgs-data/production/sprints/sprint-*.md 2>/dev/null | head -1)
 if [ -n "$LATEST_SPRINT" ]; then
     echo ""
     echo "Active sprint: $(basename "$LATEST_SPRINT" .md)"
 fi
 
 # Current milestone
-LATEST_MILESTONE=$(ls -t CCGS-Data/production/milestones/*.md 2>/dev/null | head -1)
+LATEST_MILESTONE=$(ls -t ccgs-data/production/milestones/*.md 2>/dev/null | head -1)
 if [ -n "$LATEST_MILESTONE" ]; then
     echo "Active milestone: $(basename "$LATEST_MILESTONE" .md)"
 fi
 
 # Open bug count
 BUG_COUNT=0
-for dir in CCGS-Data/tests/playtest CCGS-Data/production; do
+for dir in ccgs-data/tests/playtest ccgs-data/production; do
     if [ -d "$dir" ]; then
         count=$(find "$dir" -name "BUG-*.md" 2>/dev/null | wc -l)
         BUG_COUNT=$((BUG_COUNT + count))
@@ -72,7 +72,7 @@ if [ -d "src" ]; then
 fi
 
 # --- Active session state recovery ---
-STATE_FILE="CCGS-Data/production/session-state/active.md"
+STATE_FILE="ccgs-data/production/session-state/active.md"
 if [ -f "$STATE_FILE" ]; then
     echo ""
     echo "=== ACTIVE SESSION STATE DETECTED ==="

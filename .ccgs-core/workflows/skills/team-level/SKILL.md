@@ -17,10 +17,10 @@ The user must approve before moving to the next step.
    `forest dungeon`, `hub town`, `final boss arena`).
 
 2. **Gather context**:
-   - Read the game concept at `CCGS-Data/design/gdd/game-concept.md`
-   - Read game pillars at `CCGS-Data/design/gdd/game-pillars.md`
-   - Read existing level docs in `CCGS-Data/design/levels/`
-   - Read relevant narrative docs in `CCGS-Data/design/narrative/`
+   - Read the game concept at `ccgs-data/design/gdd/game-concept.md`
+   - Read game pillars at `ccgs-data/design/gdd/game-pillars.md`
+   - Read existing level docs in `ccgs-data/design/levels/`
+   - Read relevant narrative docs in `ccgs-data/design/narrative/`
    - Read world-building docs for the area's region/faction
 
 ## How to Delegate
@@ -57,7 +57,7 @@ Spawn the `art-director` agent to:
 - Define the color temperature and lighting mood for this area (how does it differ from adjacent areas?)
 - Specify shape language direction (angular fortress? organic cave? decayed grandeur?)
 - Name the primary visual landmarks that will orient the player
-- Read `CCGS-Data/design/art/art-bible.md` if it exists — anchor all direction in the established art bible
+- Read `ccgs-data/design/art/art-bible.md` if it exists — anchor all direction in the established art bible
 
 **The art-director's visual targets from Step 1 must be passed to the level-designer in Step 2** as explicit constraints. Layout decisions happen within the visual direction, not before it.
 
@@ -77,8 +77,8 @@ The level-designer should:
 - Define points of interest and landmarks for wayfinding — these must match the visual landmarks the art-director specified
 - Specify entry/exit points and connections to adjacent areas
 
-**Adjacent area dependency check**: After the layout is produced, check `CCGS-Data/design/levels/` for each adjacent area referenced by the level-designer. If any referenced area's `.md` file does not exist, surface the gap:
-> "Level references [area-name] as an adjacent area but `CCGS-Data/design/levels/[area-name].md` does not exist."
+**Adjacent area dependency check**: After the layout is produced, check `ccgs-data/design/levels/` for each adjacent area referenced by the level-designer. If any referenced area's `.md` file does not exist, surface the gap:
+> "Level references [area-name] as an adjacent area but `ccgs-data/design/levels/[area-name].md` does not exist."
 
 Use Markdown 编号列表 with options:
 - (a) Proceed with a placeholder reference — mark the connection as UNRESOLVED in the level doc and list it in the open cross-level dependencies section of the summary report
@@ -134,7 +134,7 @@ Spawn the `qa-tester` agent to:
 4. **Compile the level design document** combining all team outputs into the
    level design template format.
 
-5. **Save to** `CCGS-Data/design/levels/[level-name].md`.
+5. **Save to** `ccgs-data/design/levels/[level-name].md`.
 
 6. **Output a summary** with: area overview, encounter count, estimated asset
    list, narrative beats, any cross-team dependencies or open questions, open
@@ -152,7 +152,7 @@ Verdict: **BLOCKED** — one or more agents blocked; partial report produced wit
 
 ## Next Steps
 
-- Run `/design-review CCGS-Data/design/levels/[level-name].md` to validate the completed level design doc.
+- Run `/design-review ccgs-data/design/levels/[level-name].md` to validate the completed level design doc.
 - Run `/dev-story` to implement level content once the design is approved.
 - Run `/qa-plan` to generate a QA test plan for this level.
 

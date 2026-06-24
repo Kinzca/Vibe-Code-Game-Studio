@@ -19,7 +19,7 @@ Run this before a sprint begins so the team knows upfront what testing work
 is required. A test plan written after implementation is a post-mortem, not a
 plan.
 
-**Output:** `CCGS-Data/production/qa/plans/qa-plan-[sprint-slug]-[date].md`
+**Output:** `ccgs-data/production/qa/plans/qa-plan-[sprint-slug]-[date].md`
 
 ---
 
@@ -29,11 +29,11 @@ plan.
 
 Determine scope from the argument:
 
-- **`sprint`** — read the most recent file in `CCGS-Data/production/sprints/`, extract
-  every story file path referenced. If `CCGS-Data/production/sprint-status.yaml` exists,
+- **`sprint`** — read the most recent file in `ccgs-data/production/sprints/`, extract
+  every story file path referenced. If `ccgs-data/production/sprint-status.yaml` exists,
   use it as the primary story list and fall back to the sprint plan for story
   metadata.
-- **`feature: [system-name]`** — glob `CCGS-Data/production/epics/*/story-*.md`, filter
+- **`feature: [system-name]`** — glob `ccgs-data/production/epics/*/story-*.md`, filter
   to stories whose file path or title contains the system name. Also check the
   epic index file (`EPIC.md`) in that system's directory.
 - **`story: [path]`** — validate that the path exists and load that single file.
@@ -66,12 +66,12 @@ For each in-scope story file, read the full file and extract:
 
 After reading stories, load supporting context once (not per story):
 
-- `CCGS-Data/design/gdd/systems-index.md` — to understand system priorities and which
+- `ccgs-data/design/gdd/systems-index.md` — to understand system priorities and which
   GDDs are approved
 - For each unique GDD referenced across all stories: read only the
   **Acceptance Criteria** and **Formulas** sections. Do not load full GDD text —
   these two sections contain the testable requirements and the math to verify.
-- `CCGS-Data/project-docs/architecture/control-manifest.md` — scan for forbidden patterns that
+- `ccgs-data/project-docs/architecture/control-manifest.md` — scan for forbidden patterns that
   automated tests should guard against (if the file exists)
 
 If no GDD is referenced in a story, note it as a gap but do not block the plan.
@@ -195,7 +195,7 @@ list when running that skill.*
 | [story] | [What question must the session answer?] | [N] | [new player / experienced] |
 
 **Sign-off requirement**: Playtest notes must be written to
-`CCGS-Data/production/session-logs/playtest-[sprint]-[story-slug].md` and reviewed by
+`ccgs-data/production/session-logs/playtest-[sprint]-[story-slug].md` and reviewed by
 the [designer / qa-lead] before the story can be marked COMPLETE.
 
 If no stories require playtest validation: *No playtest sessions required for
@@ -228,13 +228,13 @@ test entry should reflect the real requirements of these specific stories.
 Show the complete plan in conversation (or a summary if the plan is very long),
 then ask:
 
-"May I write this QA plan to `CCGS-Data/production/qa/plans/qa-plan-[sprint-slug]-[date].md`?"
+"May I write this QA plan to `ccgs-data/production/qa/plans/qa-plan-[sprint-slug]-[date].md`?"
 
 Write the plan exactly as generated — do not truncate.
 
 After writing:
 
-"QA plan written to `CCGS-Data/production/qa/plans/qa-plan-[sprint-slug]-[date].md`.
+"QA plan written to `ccgs-data/production/qa/plans/qa-plan-[sprint-slug]-[date].md`.
 
 Next steps:
 - Share this plan with the team before sprint implementation begins

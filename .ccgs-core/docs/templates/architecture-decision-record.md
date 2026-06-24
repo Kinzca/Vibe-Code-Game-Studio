@@ -32,7 +32,7 @@ chosen approach.]
 | **Engine** | [e.g. Godot 4.6 / Unity 6 / Unreal Engine 5.4] |
 | **Domain** | [Physics / Rendering / UI / Audio / Navigation / Animation / Networking / Core / Input / Scripting] |
 | **Knowledge Risk** | [LOW — in training data / MEDIUM — near cutoff, verify / HIGH — post-cutoff, must verify] |
-| **References Consulted** | [e.g. `CCGS-Data/project-docs/engine-reference/godot/modules/physics.md`, `breaking-changes.md`] |
+| **References Consulted** | [e.g. `ccgs-data/project-docs/engine-reference/godot/modules/physics.md`, `breaking-changes.md`] |
 | **Post-Cutoff APIs Used** | [Specific APIs from post-cutoff engine versions this decision depends on, or "None"] |
 | **Verification Required** | [Concrete behaviours to test against the target engine version before shipping, or "None"] |
 
@@ -164,7 +164,7 @@ creates. These become the contracts that implementers must respect.]
 
 | GDD Document | System | Requirement | How This ADR Satisfies It |
 |-------------|--------|-------------|--------------------------|
-| [e.g. `CCGS-Data/design/gdd/combat.md`] | [e.g. Combat] | [e.g. "Hitbox detection must resolve within 1 frame"] | [e.g. "Jolt physics collision queries run synchronously in _physics_process"] |
+| [e.g. `ccgs-data/design/gdd/combat.md`] | [e.g. Combat] | [e.g. "Hitbox detection must resolve within 1 frame"] | [e.g. "Jolt physics collision queries run synchronously in _physics_process"] |
 
 > If this is a foundational decision with no direct GDD dependency, write:
 > "Foundational — no GDD requirement. Enables: [list what GDD systems this

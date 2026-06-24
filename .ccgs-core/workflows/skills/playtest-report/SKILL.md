@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Write, Task
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
@@ -123,7 +123,7 @@ Present the categorized list, then route:
 
 After categorising findings, spawn `creative-director` via Task using gate **CD-PLAYTEST** (`.ccgs-core/docs/director-gates.md`).
 
-Pass: the structured report content, game pillars and core fantasy (from `CCGS-Data/design/gdd/game-concept.md`), the specific hypothesis being tested.
+Pass: the structured report content, game pillars and core fantasy (from `ccgs-data/design/gdd/game-concept.md`), the specific hypothesis being tested.
 
 Present the creative director's assessment before saving the report. If CONCERNS or REJECT, add a `## Creative Director Assessment` section to the report capturing the verdict and feedback. If APPROVE, note the approval in the report.
 
@@ -131,7 +131,7 @@ Present the creative director's assessment before saving the report. If CONCERNS
 
 ## Phase 4: Save Report
 
-Ask: "May I write this playtest report to `CCGS-Data/production/qa/playtests/playtest-[date]-[tester].md`?"
+Ask: "May I write this playtest report to `ccgs-data/production/qa/playtests/playtest-[date]-[tester].md`?"
 
 If yes, write the file, creating the directory if needed.
 

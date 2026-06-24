@@ -41,26 +41,26 @@ Always provide full context in each agent's prompt (feature requirements, existi
 ### Phase 1a: Context Gathering
 
 Before designing anything, read and synthesize:
-- `CCGS-Data/design/gdd/game-concept.md` — platform targets and intended audience
+- `ccgs-data/design/gdd/game-concept.md` — platform targets and intended audience
 - `design/player-journey.md` — player's state and context when they reach this screen
 - All GDD UI Requirements sections relevant to this feature
-- `CCGS-Data/design/ux/interaction-patterns.md` — existing patterns to reuse (not reinvent)
+- `ccgs-data/design/ux/interaction-patterns.md` — existing patterns to reuse (not reinvent)
 - `design/accessibility-requirements.md` — committed accessibility tier (e.g., Basic, Enhanced, Full)
 
-**If `CCGS-Data/design/ux/interaction-patterns.md` does not exist**, surface the gap immediately:
+**If `ccgs-data/design/ux/interaction-patterns.md` does not exist**, surface the gap immediately:
 > "interaction-patterns.md does not exist — no existing patterns to reuse."
 
 然后向用户呈现以下选项（使用编号列表）:
 - (a) Run `/ux-design patterns` first to establish the pattern library, then continue
-- (b) Proceed without the pattern library — ui-programmer will treat all patterns created as new and add each to a new `CCGS-Data/design/ux/interaction-patterns.md` at completion
+- (b) Proceed without the pattern library — ui-programmer will treat all patterns created as new and add each to a new `ccgs-data/design/ux/interaction-patterns.md` at completion
 
-Do NOT invent or assume patterns from the feature name or GDD alone. If the user chooses (b), explicitly instruct ui-programmer in Phase 3 to treat all patterns as new and document them in `CCGS-Data/design/ux/interaction-patterns.md` when implementation is complete. Note the pattern library status (created / absent / updated) in the final summary report.
+Do NOT invent or assume patterns from the feature name or GDD alone. If the user chooses (b), explicitly instruct ui-programmer in Phase 3 to treat all patterns as new and document them in `ccgs-data/design/ux/interaction-patterns.md` when implementation is complete. Note the pattern library status (created / absent / updated) in the final summary report.
 
 Summarize the context in a brief for the ux-designer: what the player is doing, what they need, what constraints apply, and which existing patterns are relevant.
 
 ### Phase 1b: UX Spec Authoring
 
-Invoke `/ux-design [feature name]` skill OR delegate directly to ux-designer to produce `CCGS-Data/design/ux/[feature-name].md` following the `ux-spec.md` template.
+Invoke `/ux-design [feature name]` skill OR delegate directly to ux-designer to produce `ccgs-data/design/ux/[feature-name].md` following the `ux-spec.md` template.
 
 If designing the HUD, use the `hud-design.md` template instead of `ux-spec.md`.
 
@@ -68,11 +68,11 @@ If designing the HUD, use the `hud-design.md` template instead of `ux-spec.md`.
 > - For HUD design specifically, invoke `/ux-design` with `argument: hud` (e.g., `/ux-design hud`).
 > - For the interaction pattern library, run `/ux-design patterns` once at project start and update it whenever new patterns are introduced during later phases.
 
-Output: `CCGS-Data/design/ux/[feature-name].md` with all required spec sections filled.
+Output: `ccgs-data/design/ux/[feature-name].md` with all required spec sections filled.
 
 ### Phase 1c: UX Review
 
-After the spec is complete, invoke `/ux-review CCGS-Data/design/ux/[feature-name].md`.
+After the spec is complete, invoke `/ux-review ccgs-data/design/ux/[feature-name].md`.
 
 **Gate**: Do not proceed to Phase 2 until the verdict is APPROVED. If the verdict is NEEDS REVISION, the ux-designer must address the flagged issues and re-run the review. The user may explicitly accept a NEEDS REVISION risk and proceed, but this must be a conscious decision — 在继续之前先以编号列表呈现具体顾虑 asking whether to proceed.
 
@@ -98,13 +98,13 @@ If no engine is configured, skip this step.
 
 Delegate to **ui-programmer**:
 - Implement the UI following the UX spec and visual design spec
-- **Use patterns from `CCGS-Data/design/ux/interaction-patterns.md`** — do not reinvent patterns that are already specified. If a pattern almost fits but needs modification, note the deviation and flag it for ux-designer review.
+- **Use patterns from `ccgs-data/design/ux/interaction-patterns.md`** — do not reinvent patterns that are already specified. If a pattern almost fits but needs modification, note the deviation and flag it for ux-designer review.
 - **UI NEVER owns or modifies game state** — display only; emit events for all player actions
 - All text through the localization system — no hardcoded player-facing strings
 - Support both input methods (keyboard/mouse AND gamepad)
 - Implement accessibility features per the committed tier in `design/accessibility-requirements.md`
 - Wire up data binding to game state
-- **If any new interaction pattern is created during implementation** (i.e., something not already in the pattern library), add it to `CCGS-Data/design/ux/interaction-patterns.md` before marking implementation complete
+- **If any new interaction pattern is created during implementation** (i.e., something not already in the pattern library), add it to `ccgs-data/design/ux/interaction-patterns.md` before marking implementation complete
 - Output: implemented UI feature
 
 ### Phase 4: Review (parallel)
@@ -122,8 +122,8 @@ All three review streams must report before proceeding to Phase 5.
 - Verify animations are skippable and respect the player's motion reduction preferences
 - Confirm UI sounds trigger through the audio event system (no direct audio calls)
 - Test at all supported resolutions and aspect ratios
-- **Verify `CCGS-Data/design/ux/interaction-patterns.md` is up to date** — if any new patterns were introduced during this feature's implementation, confirm they have been added to the library
-- **Confirm all HUD elements respect the visual budget** defined in `CCGS-Data/design/ux/hud.md` (element count, screen region allocations, maximum opacity values)
+- **Verify `ccgs-data/design/ux/interaction-patterns.md` is up to date** — if any new patterns were introduced during this feature's implementation, confirm they have been added to the library
+- **Confirm all HUD elements respect the visual budget** defined in `ccgs-data/design/ux/hud.md` (element count, screen region allocations, maximum opacity values)
 
 ## Quick Reference — When to Use Which Skill
 

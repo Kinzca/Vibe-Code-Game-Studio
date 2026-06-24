@@ -19,7 +19,7 @@ Read the relevant agent definition from `.ccgs-core/workflows/` if a specific ro
 
 - For programmers: scan `src/` for architecture, patterns, key files
 - For designers: scan `design/` for existing design documents
-- For narrative: scan `CCGS-Data/design/narrative/` for world-building and story docs
+- For narrative: scan `ccgs-data/design/narrative/` for world-building and story docs
 - For QA: scan `tests/` for existing test coverage
 - For production: scan `production/` for current sprint and milestone
 

@@ -71,7 +71,7 @@ def main() -> None:
 
     root = find_root(Path(args.repo))
     env = parse_env(root / ".ccgs-core/ccgs.env")
-    data_dir = env.get("DATA_DIR", "CCGS-Data")
+    data_dir = env.get("DATA_DIR", "ccgs-data")
     active_rel = args.active or f"{data_dir}/production/session-state/active.md"
     archive_rel = args.archive_dir or f"{data_dir}/production/session-state/archive"
 

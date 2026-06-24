@@ -9,7 +9,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 # Consistency Check
 
 Detects cross-document inconsistencies by comparing all GDDs against the
-entity registry (`CCGS-Data/design/registry/entities.yaml`). Uses a grep-first approach:
+entity registry (`ccgs-data/design/registry/entities.yaml`). Uses a grep-first approach:
 reads the registry once, then targets only the GDD sections that mention
 registered names — no full document reads unless a conflict needs investigation.
 
@@ -38,7 +38,7 @@ catches too late.
 **Load the registry:**
 
 Markdown 编号列表`
-Read path="CCGS-Data/design/registry/entities.yaml"
+Read path="ccgs-data/design/registry/entities.yaml"
 Markdown 编号列表`
 
 If the file does not exist or has no entries:
@@ -64,7 +64,7 @@ Markdown 编号列表`
 ## Phase 2: Locate In-Scope GDDs
 
 Markdown 编号列表`
-Glob pattern="CCGS-Data/design/gdd/*.md"
+Glob pattern="ccgs-data/design/gdd/*.md"
 Markdown 编号列表`
 
 Exclude: `game-concept.md`, `systems-index.md`, `game-pillars.md` — these are
@@ -72,9 +72,9 @@ not system GDDs.
 
 For `since-last-review` mode:
 Markdown 编号列表`bash
-git log --name-only --pretty=format: -- CCGS-Data/design/gdd/ | grep "\.md$" | sort -u
+git log --name-only --pretty=format: -- ccgs-data/design/gdd/ | grep "\.md$" | sort -u
 Markdown 编号列表`
-Limit to GDDs modified since the most recent `CCGS-Data/design/gdd/gdd-cross-review-*.md`
+Limit to GDDs modified since the most recent `ccgs-data/design/gdd/gdd-cross-review-*.md`
 file's creation date.
 
 Report the in-scope GDD list before scanning.
@@ -96,7 +96,7 @@ each returning ~10 lines on a hit).
 For each entity in entity_map:
 
 Markdown 编号列表`
-Grep pattern="[entity_name]" glob="CCGS-Data/design/gdd/*.md" output_mode="content" -C 3
+Grep pattern="[entity_name]" glob="ccgs-data/design/gdd/*.md" output_mode="content" -C 3
 Markdown 编号列表`
 
 For each GDD hit, extract the values mentioned near the entity name:
@@ -148,7 +148,7 @@ For each conflict found in Phase 3, do a targeted full-section read of the
 conflicting GDD to get precise context:
 
 Markdown 编号列表`
-Read path="CCGS-Data/design/gdd/[conflicting_gdd].md"
+Read path="ccgs-data/design/gdd/[conflicting_gdd].md"
 Markdown 编号列表`
 (Or use Grep with wider context if the file is large)
 
@@ -225,7 +225,7 @@ Markdown 编号列表`
 ## Phase 6: Registry Corrections
 
 If stale registry entries were found, ask:
-> "May I update `CCGS-Data/design/registry/entities.yaml` to fix the [N] stale entries?"
+> "May I update `ccgs-data/design/registry/entities.yaml` to fix the [N] stale entries?"
 
 For each stale entry:
 - Update the `value` / attribute field
@@ -234,7 +234,7 @@ For each stale entry:
 
 If new entries were found in GDDs that are not in the registry, ask:
 > "Found [N] entities/items mentioned in GDDs that aren't in the registry yet.
-> May I add them to `CCGS-Data/design/registry/entities.yaml`?"
+> May I add them to `ccgs-data/design/registry/entities.yaml`?"
 
 Only add entries that appear in more than one GDD (true cross-system facts).
 

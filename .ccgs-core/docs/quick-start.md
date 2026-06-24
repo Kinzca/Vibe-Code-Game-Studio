@@ -293,7 +293,7 @@ python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "current task/request
 ```
 
 Then read only the recommended files. If
-`CCGS-Data/production/session-state/active.md` has become large, preview a safe
+`ccgs-data/production/session-state/active.md` has become large, preview a safe
 archive pass:
 
 ```bash

@@ -16,7 +16,7 @@ report.
 The rule is simple: **a build that fails smoke check does not go to QA.**
 Handing a broken build to QA wastes their time and demoralises the team.
 
-**Output:** `CCGS-Data/production/qa/smoke/smoke-[date].md`
+**Output:** `ccgs-data/production/qa/smoke/smoke-[date].md`
 
 ---
 
@@ -57,12 +57,12 @@ Before running anything, understand the environment:
    extract the `Engine:` value. Store this for test command selection in
    Phase 2.
 
-4. **Smoke test list**: check whether `CCGS-Data/production/qa/smoke/smoke-tests.md` or
+4. **Smoke test list**: check whether `ccgs-data/production/qa/smoke/smoke-tests.md` or
    `tests/smoke/` exists. If a smoke test list is found, load it for use in
    Phase 4. If neither exists, smoke tests will be drawn from the current QA
    plan (Phase 4 fallback).
 
-5. **QA plan check**: glob `CCGS-Data/production/qa/plans/qa-plan-*.md` and take the most
+5. **QA plan check**: glob `ccgs-data/production/qa/plans/qa-plan-*.md` and take the most
    recently modified file. If found, note the path — it will be used in
    Phase 3 and Phase 4. If not found, note: "No QA plan found. Run
    `/qa-plan sprint` before smoke-checking for best results."
@@ -134,7 +134,7 @@ Parse runner output and extract:
 Draw the story list from, in priority order:
 1. The QA plan found in Phase 1 (its Test Summary table lists expected test
    file paths per story)
-2. The current sprint plan from `CCGS-Data/production/sprints/` (most recently modified
+2. The current sprint plan from `ccgs-data/production/sprints/` (most recently modified
    file)
 3. If the `quick` argument was passed, skip this phase entirely and note:
    "Coverage scan skipped — run `/smoke-check sprint` for full coverage
@@ -143,7 +143,7 @@ Draw the story list from, in priority order:
 For each story in scope:
 
 1. Extract the system slug from the story's file path
-   (e.g., `CCGS-Data/production/epics/combat/story-001.md` → `combat`)
+   (e.g., `ccgs-data/production/epics/combat/story-001.md` → `combat`)
 2. Glob `tests/unit/[system]/` and `tests/integration/[system]/` for files
    whose name contains the story slug or a closely related term
 3. Check the story file itself for a `Test file:` header field or a
@@ -169,7 +169,7 @@ fully close those stories.
 
 Draw the smoke test checklist from, in priority order:
 1. The QA plan's "Smoke Test Scope" section (if QA plan was found in Phase 1)
-2. `CCGS-Data/production/qa/smoke/smoke-tests.md` (if it exists)
+2. `ccgs-data/production/qa/smoke/smoke-tests.md` (if it exists)
 3. `tests/smoke/` directory contents (if it exists)
 4. The standard fallback list below (used only when none of the above exist)
 
@@ -367,7 +367,7 @@ Markdown 编号列表Markdown 编号列表
 
 Present the full report in conversation, then ask:
 
-"May I write this smoke check report to `CCGS-Data/production/qa/smoke/smoke-[date].md`?"
+"May I write this smoke check report to `ccgs-data/production/qa/smoke/smoke-[date].md`?"
 
 Write only after approval.
 
@@ -389,14 +389,14 @@ Fix the failures and run `/smoke-check` again to re-gate before QA hand-off."
 Advisory items to resolve before running `/story-done` on affected stories:
 [list MISSING test evidence entries]
 
-QA hand-off: share `CCGS-Data/production/qa/plans/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `ccgs-data/production/qa/plans/qa-plan-[sprint].md` with the qa-tester
 agent to begin manual verification."
 
 **If verdict is PASS:**
 
 "Smoke check passed cleanly. The build is ready for manual QA.
 
-QA hand-off: share `CCGS-Data/production/qa/plans/qa-plan-[sprint].md` with the qa-tester
+QA hand-off: share `ccgs-data/production/qa/plans/qa-plan-[sprint].md` with the qa-tester
 agent to begin manual verification."
 
 ---

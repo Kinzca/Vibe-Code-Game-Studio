@@ -58,7 +58,7 @@
 ### [Story Title] — Visual/Feel
 
 **Verification method**: Screenshot + [designer / art-lead] sign-off
-**Evidence file**: `CCGS-Data/production/qa/evidence/[story-slug]-evidence.md`
+**Evidence file**: `ccgs-data/production/qa/evidence/[story-slug]-evidence.md`
 **Who must sign off**: [designer / lead-programmer / art-lead]
 
 - [ ] [Specific observable condition — e.g., "hit flash appears on frame of impact, not the frame after"]
@@ -67,7 +67,7 @@
 ### [Story Title] — UI
 
 **Verification method**: Manual step-through
-**Evidence file**: `CCGS-Data/production/qa/evidence/[story-slug]-evidence.md`
+**Evidence file**: `ccgs-data/production/qa/evidence/[story-slug]-evidence.md`
 
 - [ ] [Every acceptance criterion translated into a manual check item]
 
@@ -92,7 +92,7 @@ Critical paths to verify before QA hand-off (run via `/smoke-check`):
 |-------|--------------|--------------|-------------------|
 | [story] | [What question must be answered?] | [N] | [new player / experienced / etc.] |
 
-Sign-off requirement: Playtest notes → `CCGS-Data/production/session-logs/playtest-[sprint]-[story-slug].md`
+Sign-off requirement: Playtest notes → `ccgs-data/production/session-logs/playtest-[sprint]-[story-slug].md`
 
 If no playtest sessions required: *No playtest sessions required for this sprint.*
 

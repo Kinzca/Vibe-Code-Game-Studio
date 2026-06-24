@@ -37,7 +37,7 @@ Before writing any code:
    - Ask about ambiguities rather than assuming
    - Flag potential issues or edge cases for user input
    - Write each section to the file as soon as it's approved
-   - Update `CCGS-Data/production/session-state/active.md` after each section with:
+   - Update `ccgs-data/production/session-state/active.md` after each section with:
      current task, completed sections, key decisions, next section
    - After writing a section, earlier discussion can be safely compacted
 

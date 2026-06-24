@@ -12,13 +12,13 @@ When this skill is invoked:
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `CCGS-Data/production/review-mode.txt` → use that value
+2. Else read `ccgs-data/production/review-mode.txt` → use that value
 3. Else → default to `lean`
 
 See `.ccgs-core/docs/director-gates.md` for the full check pattern.
 
 **If the argument starts with `retrofit` followed by a file path**
-(e.g., `/architecture-decision retrofit CCGS-Data/project-docs/architecture/adr-0001-event-system.md`):
+(e.g., `/architecture-decision retrofit ccgs-data/project-docs/architecture/adr-0001-event-system.md`):
 
 Enter **retrofit mode**:
 
@@ -74,7 +74,7 @@ Use the user's response as the title, then proceed to Step 0.
 
 Before doing anything else, establish the engine environment:
 
-1. Read `CCGS-Data/project-docs/engine-reference/[engine]/VERSION.md` to get:
+1. Read `ccgs-data/project-docs/engine-reference/[engine]/VERSION.md` to get:
    - Engine name and version
    - LLM knowledge cutoff date
    - Post-cutoff version risk levels (LOW / MEDIUM / HIGH)
@@ -84,12 +84,12 @@ Before doing anything else, establish the engine environment:
    Animation, Networking, Core, Input, Scripting.
 
 3. Read the corresponding module reference if it exists:
-   `CCGS-Data/project-docs/engine-reference/[engine]/modules/[domain].md`
+   `ccgs-data/project-docs/engine-reference/[engine]/modules/[domain].md`
 
-4. Read `CCGS-Data/project-docs/engine-reference/[engine]/breaking-changes.md` — flag any
+4. Read `ccgs-data/project-docs/engine-reference/[engine]/breaking-changes.md` — flag any
    changes in the relevant domain that post-date the LLM's training cutoff.
 
-5. Read `CCGS-Data/project-docs/engine-reference/[engine]/deprecated-apis.md` — flag any APIs
+5. Read `ccgs-data/project-docs/engine-reference/[engine]/deprecated-apis.md` — flag any APIs
    in the relevant domain that should not be used.
 
 6. **Display a knowledge gap warning** before proceeding if the domain carries
@@ -116,13 +116,13 @@ Before doing anything else, establish the engine environment:
 
 ## 1. Determine the next ADR number
 
-Scan `CCGS-Data/project-docs/architecture/` for existing ADRs to find the next number.
+Scan `ccgs-data/project-docs/architecture/` for existing ADRs to find the next number.
 
 ---
 
 ## 2. Gather context
 
-Read related code, existing ADRs, and relevant GDDs from `CCGS-Data/design/gdd/`.
+Read related code, existing ADRs, and relevant GDDs from `ccgs-data/design/gdd/`.
 
 ### 2a: Architecture Registry Check (BLOCKING gate)
 
@@ -245,7 +245,7 @@ Markdown 编号列表`markdown
 | **Engine** | [e.g. Godot 4.6] |
 | **Domain** | [Physics / Rendering / UI / Audio / Navigation / Animation / Networking / Core / Input] |
 | **Knowledge Risk** | [LOW / MEDIUM / HIGH — from VERSION.md] |
-| **References Consulted** | [List engine-reference docs read, e.g. `CCGS-Data/project-docs/engine-reference/godot/modules/physics.md`] |
+| **References Consulted** | [List engine-reference docs read, e.g. `ccgs-data/project-docs/engine-reference/godot/modules/physics.md`] |
 | **Post-Cutoff APIs Used** | [Any APIs from post-LLM-cutoff versions this decision depends on, or "None"] |
 | **Verification Required** | [Specific behaviours to test before shipping, or "None"] |
 
@@ -381,7 +381,7 @@ If GDD sync issues were found:
 
 If no GDD sync issues:
 - "ADR draft is complete. May I write it?"
-  - [A] Write ADR to `CCGS-Data/project-docs/architecture/adr-[NNNN]-[slug].md`
+  - [A] Write ADR to `ccgs-data/project-docs/architecture/adr-[NNNN]-[slug].md`
   - [B] Not yet — I need to review further
 
 If yes to any write option, write the file, creating the directory if needed.
