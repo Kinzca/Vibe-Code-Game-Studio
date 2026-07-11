@@ -6,6 +6,19 @@
 
 ## 快速开始
 
+### Windows / Codex
+
+```powershell
+$env:CCGS_PYTHON = "C:\path\to\python.exe" # only needed when Python is not on PATH
+.\ccgs.cmd doctor
+.\ccgs.cmd doctor --project-root D:\path\to\consumer --json
+.\ccgs.cmd policy --project-root D:\path\to\consumer --target Client\Assets\Game.cs
+```
+
+`doctor` and `policy` are read-only. Framework development belongs in this
+repository; a consumer game repository is changed only by an explicit future
+bootstrap or upgrade command.
+
 ```bash
 # 1. 克隆框架
 git clone https://github.com/Kinzca/CCGS_Universal_Version.git my-game
