@@ -1,0 +1,32 @@
+schema_version: 1
+
+framework:
+  core_dir: .ccgs-core
+  data_dir: ccgs-data
+  minimum_python: "3.10"
+
+repository_boundary:
+  framework_source: framework-repository
+  consumer_project: explicit-project-root
+  default_mode: read-only
+  allowed_project_write_roots:
+    - ccgs-data
+    - .agents
+    - AGENTS.md
+    - CLAUDE.md
+    - GEMINI.md
+    - .cursorrules
+  protected_project_paths:
+    - Client/Assets
+    - Server
+
+commands:
+  doctor:
+    mutates_project: false
+  policy:
+    mutates_project: false
+
+automation:
+  require_explicit_project_root_for_writes: true
+  require_dry_run_support: true
+  require_machine_readable_output: true

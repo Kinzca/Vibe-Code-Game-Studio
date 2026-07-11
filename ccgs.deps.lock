@@ -1,0 +1,11 @@
+schema_version: 1
+
+runtime:
+  python:
+    version: ">=3.10"
+    source: system-or-codex-runtime
+  git:
+    version: ">=2.30"
+    source: system
+
+external_services: []
