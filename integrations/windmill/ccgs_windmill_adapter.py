@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Windmill adapter that delegates all workflow decisions to ccgs.cmd."""
+"""Windmill adapter that delegates all workflow decisions to the CCGS CLI."""
 
 from __future__ import annotations
 
@@ -98,7 +98,7 @@ def _deduplicate_failures(items: Sequence[dict[str, Any]]) -> list[dict[str, Any
 
 
 class CcgsCmdRunner:
-    """Invoke a fixed ccgs.cmd command set without shell interpolation."""
+    """Invoke a fixed CCGS command set without shell interpolation."""
 
     def __init__(
         self,
@@ -113,26 +113,29 @@ class CcgsCmdRunner:
     ) -> None:
         self.framework_root = _validate_root(framework_root, "framework_root")
         self.project_root = _validate_root(project_root, "project_root")
-        self.entrypoint = self.framework_root / "ccgs.cmd"
+        self.platform = platform or os.name
+        entrypoint_name = "ccgs.cmd" if self.platform == "nt" else "ccgs.sh"
+        self.entrypoint = self.framework_root / entrypoint_name
         if not self.entrypoint.is_file():
-            raise WindmillAdapterError("framework_root does not contain ccgs.cmd")
+            raise WindmillAdapterError(
+                f"framework_root does not contain {entrypoint_name}"
+            )
         self.policy = retry_policy or RetryPolicy()
         self.policy.validate()
         self.executor = executor
         self.sleeper = sleeper
-        self.platform = platform or os.name
         self.comspec = comspec or os.environ.get("COMSPEC", "cmd.exe")
-        _validate_shell_value(str(self.entrypoint), "ccgs.cmd path")
+        _validate_shell_value(str(self.entrypoint), "CCGS entrypoint path")
         _validate_shell_value(str(self.project_root), "project_root")
 
-    def _command_line(self, command: str, arguments: Sequence[str]) -> str:
+    def _process_command(
+        self, command: str, arguments: Sequence[str]
+    ) -> str | list[str]:
         if command not in ALLOWED_COMMANDS:
             raise WindmillAdapterError(f"unsupported CCGS command: {command}")
-        if self.platform != "nt":
-            raise WindmillAdapterError(
-                "ccgs.cmd requires a Windmill Windows worker"
-            )
-        safe_arguments = [_validate_shell_value(str(item), "CLI argument") for item in arguments]
+        safe_arguments = [
+            _validate_shell_value(str(item), "CLI argument") for item in arguments
+        ]
         ccgs_arguments = [
             str(self.entrypoint),
             command,
@@ -140,6 +143,8 @@ class CcgsCmdRunner:
             str(self.project_root),
             *safe_arguments,
         ]
+        if self.platform != "nt":
+            return ccgs_arguments
         quoted = " ".join(f'"{item}"' for item in ccgs_arguments)
         executable = subprocess.list2cmdline([self.comspec])
         return f'{executable} /d /s /c "{quoted}"'
@@ -147,7 +152,7 @@ class CcgsCmdRunner:
     def invoke(self, command: str, arguments: Sequence[str]) -> dict[str, Any]:
         """Run one CLI operation and retry transport/protocol failures only."""
 
-        process_command = self._command_line(command, arguments)
+        process_command = self._process_command(command, arguments)
         attempts: list[dict[str, Any]] = []
         for attempt in range(1, self.policy.max_attempts + 1):
             try:

@@ -105,7 +105,7 @@ def build_workflow_event(
     retrieval_references: Sequence[str] = (),
     failure_codes: Sequence[str] = (),
     timestamp: str = "",
-    workflow_version: str = "0.8.0",
+    workflow_version: str = "0.8.1",
 ) -> dict[str, Any]:
     """Create one privacy-bounded event from CCGS-owned inputs."""
 

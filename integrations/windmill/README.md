@@ -1,8 +1,8 @@
 # CCGS Windmill Adapter
 
-This adapter lets a Windmill Windows worker orchestrate CCGS without owning any
-game workflow rules. Windmill calls the mounted framework ccgs.cmd entrypoint;
-the Batch 4 CLI remains the only component that reads Story or Evidence content
+This adapter lets a Windmill worker orchestrate CCGS without owning any game
+workflow rules. Windows workers call ccgs.cmd; Linux workers call ccgs.sh.
+The Batch 4 CLI remains the only component that reads Story or Evidence content
 and the only component that writes a Story closeout block.
 
 ## Boundary
@@ -19,13 +19,14 @@ The adapter permits only these commands:
 
 It does not accept arbitrary commands, shell fragments, absolute Story paths,
 path traversal, report destinations, test commands, or game source paths.
-Arguments are passed as a fixed list to cmd.exe and then ccgs.cmd. The adapter
+Arguments are passed without shell interpolation to the platform entrypoint.
+The adapter
 does not open files under the consumer project.
 
 ## Worker Requirements
 
-- A Windmill Windows worker. The adapter intentionally targets ccgs.cmd.
-- Python 3.10 or newer available to ccgs.cmd.
+- A Windmill Windows worker or an OSS Linux container worker.
+- Python 3.10 or newer available to ccgs.cmd or ccgs.sh.
 - The CCGS framework repository mounted read-only or read-write at a stable path.
 - The consumer project mounted at a separate explicit path.
 - Write access only when closeout automation should update CCGS-owned Story data.
@@ -61,7 +62,7 @@ Trace ID, Span ID, and Score IDs without rewriting its timestamp. Retrieval text
 is removed from the Windmill result; only project-relative source references are
 forwarded to the event builder.
 
-Set `CCGS_PYTHON` on the Windows worker to a dedicated environment containing
+Set `CCGS_PYTHON` on the worker to a dedicated environment containing
 `fastembed`, `opentelemetry-sdk`, and
 `opentelemetry-exporter-otlp-proto-http`. Langfuse credentials stay in
 `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY`; they are never Flow inputs.
@@ -114,7 +115,8 @@ Every successful script invocation returns JSON containing:
 - failures: deduplicated reason codes and messages
 - advance: the closeout --write result when apply is true
 
-Passing evidence advances review to done through ccgs.cmd. Failed evidence keeps
+Passing evidence advances review to done through the stable CCGS CLI. Failed
+evidence keeps
 the current Story state and lets ccgs.cmd update the managed failure block.
 Exhausted adapter errors are raised with CCGS_RETRYABLE or CCGS_PERMANENT markers
 so the Flow retry_if expression can distinguish them.

@@ -1,6 +1,6 @@
 {
   "summary": "Check a CCGS Story",
-  "description": "Calls doctor, evidence-validate, and closeout --dry-run through ccgs.cmd.",
+  "description": "Calls doctor, evidence-validate, and closeout --dry-run through the stable CCGS CLI.",
   "lock": "",
   "kind": "script",
   "schema": {
@@ -18,11 +18,11 @@
     "properties": {
       "framework_root": {
         "type": "string",
-        "description": "Mounted CCGS framework repository containing ccgs.cmd."
+        "description": "Mounted CCGS framework repository containing ccgs.cmd and ccgs.sh."
       },
       "project_root": {
         "type": "string",
-        "description": "Explicit consumer project root mounted on the Windows worker."
+        "description": "Explicit consumer project root mounted on the worker."
       },
       "story": {
         "type": "string",

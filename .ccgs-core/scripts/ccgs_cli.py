@@ -109,7 +109,7 @@ from ccgs_story_workflow import (
 )
 
 
-VERSION = "0.8.0"
+VERSION = "0.8.1"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -387,7 +387,13 @@ def build_doctor_report(project: Path) -> dict[str, object]:
         ]
     )
 
-    for relative in ("ccgs.workflow.yaml", "ccgs.deps.lock", "ccgs.cmd", "ccgs.ps1"):
+    for relative in (
+        "ccgs.workflow.yaml",
+        "ccgs.deps.lock",
+        "ccgs.cmd",
+        "ccgs.ps1",
+        "ccgs.sh",
+    ):
         path = framework / relative
         checks.append(
             Check(

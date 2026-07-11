@@ -442,6 +442,36 @@ class WindmillAdapterRetryTests(unittest.TestCase):
 
 
 class WindmillAdapterSafetyTests(unittest.TestCase):
+    def test_posix_runner_uses_argument_list_and_shell_script(self) -> None:
+        calls = []
+
+        def executor(command, **kwargs):
+            calls.append((command, kwargs))
+            return subprocess.CompletedProcess(
+                command,
+                0,
+                json.dumps({"read_only": True}),
+                "",
+            )
+
+        with materialized_fixture("mature-project") as project:
+            runner = CcgsCmdRunner(
+                str(ROOT),
+                str(project),
+                retry_policy=RetryPolicy(1, 0, 10),
+                executor=executor,
+                platform="posix",
+            )
+            result = runner.invoke("doctor", ["--json"])
+
+        command, kwargs = calls[0]
+        self.assertEqual(Path(command[0]).name, "ccgs.sh")
+        self.assertEqual(command[1], "doctor")
+        self.assertEqual(command[2], "--project-root")
+        self.assertEqual(command[-1], "--json")
+        self.assertFalse(kwargs["shell"])
+        self.assertEqual(result["status"], "passed")
+
     def test_relative_path_policy_blocks_escape_and_shell_characters(self) -> None:
         self.assertEqual(validate_relative_path(STORY, "story"), STORY)
         for value in (

@@ -21,7 +21,8 @@ runtime layout.
 
 ## Decision
 
-- Windmill runs on a Windows worker and invokes the mounted framework ccgs.cmd.
+- Windmill invokes the mounted framework through ccgs.cmd on Windows or
+  ccgs.sh on Linux OSS workers.
 - The adapter permits only doctor, evidence-validate, and closeout.
 - Story and Evidence inputs must be relative, non-traversing, and safe for
   cmd.exe. Arbitrary shell fragments and commands are rejected.
@@ -81,7 +82,7 @@ both policies.
 
 ### Negative
 
-- ccgs.cmd requires a Windmill Windows worker.
+- Workers need Python 3.10+ and the optional adapter dependencies.
 - Framework and consumer project paths must be mounted on the same worker.
 - Non-admin Windmill workspaces may need local folder owner configuration before
   sync.

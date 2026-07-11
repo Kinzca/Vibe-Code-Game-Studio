@@ -1,6 +1,6 @@
 {
   "summary": "Observed CCGS Story Closeout",
-  "description": "Retrieves Qdrant context, checks and closes a Story, writes a bounded event, and exports it to Langfuse through ccgs.cmd.",
+  "description": "Retrieves Qdrant context, checks and closes a Story, writes a bounded event, and exports it to Langfuse through the stable CCGS CLI.",
   "lock": "",
   "kind": "script",
   "schema": {

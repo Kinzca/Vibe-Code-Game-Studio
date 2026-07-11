@@ -1,6 +1,6 @@
 {
   "summary": "Close out a CCGS Story",
-  "description": "Checks evidence, advances passing Stories, and persists failure reasons through ccgs.cmd.",
+  "description": "Checks evidence, advances passing Stories, and persists failure reasons through the stable CCGS CLI.",
   "lock": "",
   "kind": "script",
   "schema": {
@@ -19,11 +19,11 @@
     "properties": {
       "framework_root": {
         "type": "string",
-        "description": "Mounted CCGS framework repository containing ccgs.cmd."
+        "description": "Mounted CCGS framework repository containing ccgs.cmd and ccgs.sh."
       },
       "project_root": {
         "type": "string",
-        "description": "Explicit consumer project root mounted on the Windows worker."
+        "description": "Explicit consumer project root mounted on the worker."
       },
       "story": {
         "type": "string",
@@ -36,7 +36,7 @@
       },
       "apply": {
         "type": "boolean",
-        "description": "Apply closeout through ccgs.cmd after the read-only check.",
+        "description": "Apply closeout through the stable CCGS CLI after the read-only check.",
         "default": true
       },
       "max_attempts": {
