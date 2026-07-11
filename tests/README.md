@@ -56,3 +56,10 @@ Evidence steps and attachments, stable history/test-case identifiers, unique run
 UUIDs, dry-run isolation, atomic immutable writes, idempotence, conflict refusal,
 status mapping, scoped paths, strict input validation, and identical reports
 across Unity, Godot, and Cocos overlays.
+## Qdrant Adapter Tests
+
+The Batch 5C suite verifies all five semantic source families, deterministic
+heading-aware chunks, payload Schema, stable project-scoped point IDs, offline
+dry-run, incremental zero-work reruns, changed-source updates, stale deletion,
+upsert-before-delete failure safety, model migrations, REST request shapes,
+bounded query results, URL security, and identical Unity/Godot/Cocos plans.

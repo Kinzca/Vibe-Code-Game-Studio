@@ -51,6 +51,19 @@ commands:
     requires_project_root: true
     supports_dry_run: true
     machine_readable_output: true
+  qdrant-index:
+    mutates_project: false
+    mutates_external: explicit-write-only
+    requires_project_root: true
+    requires_project_id: true
+    supports_dry_run: true
+    machine_readable_output: true
+  qdrant-query:
+    mutates_project: false
+    mutates_external: false
+    requires_project_root: true
+    requires_project_id: true
+    machine_readable_output: true
 
 automation:
   require_explicit_project_root_for_writes: true
@@ -169,5 +182,38 @@ allure:
   immutable_runs: true
   updates: atomic-and-idempotent
   executes_tests: false
+  direct_game_source_reads: false
+  direct_game_source_writes: false
+qdrant:
+  schema_version: "1.0"
+  adapter_root: integrations/qdrant
+  point_schema: schemas/semantic-index-point.schema.json
+  collection: ccgs-context
+  project_namespace: required-project-id
+  sources:
+    story: "{data_dir}/production/epics/**/*.md"
+    gdd: "{data_dir}/design/gdd/**/*.md"
+    adr: "{data_dir}/project-docs/**/ADR-*.md"
+    evidence:
+      - "{data_dir}/production/qa/evidence/**/*.md"
+      - "{data_dir}/production/qa/evidence/**/*.json"
+    context_pack: "{data_dir}/production/context/**/*.md"
+  chunking:
+    strategy: heading-aware-bounded-overlap
+    default_max_chars: 2400
+    default_overlap: 240
+  embedding:
+    provider: fastembed
+    default_model: sentence-transformers/all-MiniLM-L6-v2
+    dry_run_loads_model: false
+  incremental:
+    point_id: uuid5-project-path-index
+    compare: record-hash
+    upsert_before_delete: true
+    prune_scope: project-id
+    unchanged_work: zero
+  transport: qdrant-rest
+  remote_http_requires_opt_in: true
+  api_key_source: environment-only
   direct_game_source_reads: false
   direct_game_source_writes: false

@@ -198,3 +198,16 @@ create one immutable result directory:
 The adapter never executes tests or reads game source. See
 `integrations/allure/README.md` for the input contract, JUnit support, stable
 history identifiers, output files, and HTML generation command.
+## Batch 5C Qdrant Adapter
+
+The Qdrant integration under `integrations/qdrant` creates an incremental,
+project-scoped semantic index for Story, GDD, ADR, Evidence, and Context Pack
+documents. Dry-run is offline and read-only; write mode embeds only changed
+chunks, upserts before pruning stale points, and never scans game source.
+
+    .\ccgs.cmd qdrant-index --project-root D:\path\to\consumer --project-id my-game --dry-run
+    .\ccgs.cmd qdrant-index --project-root D:\path\to\consumer --project-id my-game --write
+    .\ccgs.cmd qdrant-query --project-root D:\path\to\consumer --project-id my-game --query "current Story constraints" --limit 10
+
+See `integrations/qdrant/README.md` for FastEmbed/Qdrant setup, source roots,
+incremental behavior, security boundaries, and query output.

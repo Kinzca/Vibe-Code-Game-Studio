@@ -49,6 +49,27 @@ from ccgs_allure_adapter import (
     write_allure_bundle,
 )
 
+QDRANT_DIR = Path(__file__).resolve().parents[2] / "integrations" / "qdrant"
+if str(QDRANT_DIR) not in sys.path:
+    sys.path.insert(0, str(QDRANT_DIR))
+
+from ccgs_qdrant_adapter import (
+    DEFAULT_BATCH_SIZE,
+    DEFAULT_COLLECTION,
+    DEFAULT_MAX_CHARS,
+    DEFAULT_MODEL,
+    DEFAULT_OVERLAP,
+    FastEmbedder,
+    QdrantAdapterError,
+    QdrantHttpStore,
+    api_key_from_environment,
+    build_index_plan,
+    plan_report,
+    query_index,
+    sync_index,
+    validate_identifier,
+)
+
 from ccgs_story_workflow import (
     StoryWorkflowError,
     advance_report,
@@ -62,7 +83,7 @@ from ccgs_story_workflow import (
 )
 
 
-VERSION = "0.5.0"
+VERSION = "0.6.0"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -629,6 +650,78 @@ def command_allure_export(args: argparse.Namespace) -> int:
     return 0
 
 
+def _qdrant_store(args: argparse.Namespace) -> QdrantHttpStore:
+    return QdrantHttpStore(
+        args.qdrant_url,
+        api_key=api_key_from_environment(args.api_key_env),
+        timeout_seconds=args.timeout_seconds,
+        allow_insecure_http=args.allow_insecure_http,
+    )
+
+
+def command_qdrant_index(args: argparse.Namespace) -> int:
+    """Build a local plan or incrementally synchronize CCGS semantic points."""
+
+    project = Path(args.project_root).resolve()
+    try:
+        if not project.is_dir():
+            raise QdrantAdapterError("explicit project root is not a directory")
+        collection = validate_identifier(args.collection, "collection")
+        data_dir = configured_data_dir(project, framework_root())
+        plan = build_index_plan(
+            project,
+            data_dir,
+            args.project_id,
+            embedding_model=args.embedding_model,
+            max_chars=args.max_chars,
+            overlap=args.overlap,
+        )
+        sync = None
+        if args.write:
+            sync = sync_index(
+                plan,
+                collection,
+                _qdrant_store(args),
+                FastEmbedder(args.embedding_model),
+                batch_size=args.batch_size,
+            )
+        report = plan_report(
+            plan,
+            collection,
+            "write" if args.write else "dry-run",
+            sync,
+        )
+    except (QdrantAdapterError, OSError) as exc:
+        print(f"qdrant-index: {exc}", file=sys.stderr)
+        return 2
+
+    _print_json(report)
+    return 0
+
+
+def command_qdrant_query(args: argparse.Namespace) -> int:
+    """Run one project-scoped semantic query without changing Qdrant."""
+
+    project = Path(args.project_root).resolve()
+    try:
+        if not project.is_dir():
+            raise QdrantAdapterError("explicit project root is not a directory")
+        report = query_index(
+            args.project_id,
+            args.collection,
+            args.query,
+            args.limit,
+            _qdrant_store(args),
+            FastEmbedder(args.embedding_model),
+        )
+    except (QdrantAdapterError, OSError) as exc:
+        print(f"qdrant-query: {exc}", file=sys.stderr)
+        return 2
+
+    _print_json(report)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create the stable repository-safe CCGS CLI surface."""
 
@@ -799,6 +892,84 @@ def build_parser() -> argparse.ArgumentParser:
         "--write", action="store_true", help="Atomically create the immutable result directory."
     )
     allure_export.set_defaults(handler=command_allure_export)
+
+    qdrant_index = subcommands.add_parser(
+        "qdrant-index",
+        help="Plan or synchronize the incremental CCGS semantic index.",
+    )
+    qdrant_index.add_argument(
+        "--project-root", required=True, help="Explicit consumer project root."
+    )
+    qdrant_index.add_argument(
+        "--project-id", required=True, help="Stable project namespace stored in payloads."
+    )
+    qdrant_index.add_argument(
+        "--collection", default=DEFAULT_COLLECTION, help="Qdrant collection name."
+    )
+    qdrant_index.add_argument(
+        "--qdrant-url", default="http://127.0.0.1:6333", help="Qdrant base URL."
+    )
+    qdrant_index.add_argument(
+        "--embedding-model", default=DEFAULT_MODEL, help="FastEmbed model name."
+    )
+    qdrant_index.add_argument(
+        "--api-key-env", default="QDRANT_API_KEY", help="Environment variable holding the API key."
+    )
+    qdrant_index.add_argument(
+        "--allow-insecure-http", action="store_true", help="Allow HTTP for non-loopback Qdrant hosts."
+    )
+    qdrant_index.add_argument(
+        "--max-chars", type=int, default=DEFAULT_MAX_CHARS, help="Maximum characters per chunk."
+    )
+    qdrant_index.add_argument(
+        "--overlap", type=int, default=DEFAULT_OVERLAP, help="Character overlap between split chunks."
+    )
+    qdrant_index.add_argument(
+        "--batch-size", type=int, default=DEFAULT_BATCH_SIZE, help="Embedding and upsert batch size."
+    )
+    qdrant_index.add_argument(
+        "--timeout-seconds", type=float, default=30.0, help="Qdrant request timeout."
+    )
+    qdrant_mode = qdrant_index.add_mutually_exclusive_group(required=True)
+    qdrant_mode.add_argument(
+        "--dry-run", action="store_true", help="Build a deterministic offline plan only."
+    )
+    qdrant_mode.add_argument(
+        "--write", action="store_true", help="Embed and incrementally synchronize Qdrant."
+    )
+    qdrant_index.set_defaults(handler=command_qdrant_index)
+
+    qdrant_query = subcommands.add_parser(
+        "qdrant-query",
+        help="Query the project-scoped CCGS semantic index.",
+    )
+    qdrant_query.add_argument(
+        "--project-root", required=True, help="Explicit consumer project root."
+    )
+    qdrant_query.add_argument("--project-id", required=True, help="Project namespace filter.")
+    qdrant_query.add_argument("--query", required=True, help="Semantic search text.")
+    qdrant_query.add_argument(
+        "--limit", type=int, default=10, help="Maximum matching chunks, from 1 to 50."
+    )
+    qdrant_query.add_argument(
+        "--collection", default=DEFAULT_COLLECTION, help="Qdrant collection name."
+    )
+    qdrant_query.add_argument(
+        "--qdrant-url", default="http://127.0.0.1:6333", help="Qdrant base URL."
+    )
+    qdrant_query.add_argument(
+        "--embedding-model", default=DEFAULT_MODEL, help="FastEmbed model name."
+    )
+    qdrant_query.add_argument(
+        "--api-key-env", default="QDRANT_API_KEY", help="Environment variable holding the API key."
+    )
+    qdrant_query.add_argument(
+        "--allow-insecure-http", action="store_true", help="Allow HTTP for non-loopback Qdrant hosts."
+    )
+    qdrant_query.add_argument(
+        "--timeout-seconds", type=float, default=30.0, help="Qdrant request timeout."
+    )
+    qdrant_query.set_defaults(handler=command_qdrant_query)
     return parser
 
 

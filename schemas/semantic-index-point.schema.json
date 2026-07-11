@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ccgs.dev/schemas/semantic-index-point.schema.json",
+  "title": "CCGS Semantic Index Point Payload",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "source_kind",
+    "source_path",
+    "source_hash",
+    "chunk_index",
+    "heading",
+    "text",
+    "content_hash",
+    "embedding_model",
+    "record_hash"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "project_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "source_kind": {
+      "enum": ["story", "gdd", "adr", "evidence", "context-pack"]
+    },
+    "source_path": { "type": "string", "minLength": 1 },
+    "source_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "chunk_index": { "type": "integer", "minimum": 0 },
+    "heading": { "type": "string" },
+    "text": { "type": "string", "minLength": 1 },
+    "content_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "embedding_model": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "record_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+  }
+}
