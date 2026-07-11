@@ -40,10 +40,20 @@ class WritePolicyTests(unittest.TestCase):
                 result = CCGS_CLI.validate_write_target(self.project, target, "ccgs-data")
                 self.assertTrue(result.is_relative_to(self.project.resolve()))
 
-    def test_denies_runtime_and_server_paths(self) -> None:
+    def test_denies_non_ccgs_paths_across_engines(self) -> None:
         denied = [
+            # Unity
             Path("Client/Assets/Game.cs"),
-            Path("client/assets/Game.cs"),
+            Path("Assets/Scripts/Game.cs"),
+            # Godot
+            Path("project.godot"),
+            Path("addons/ccgs_test/plugin.gd"),
+            Path("scenes/main.tscn"),
+            # Cocos Creator
+            Path("assets/scripts/main.ts"),
+            Path("settings/v2/packages/project.json"),
+            # Generic runtime and repository files
+            Path("src/main.py"),
             Path("Server/config.json"),
             Path("README.md"),
             self.project.parent / "outside.txt",
@@ -74,6 +84,8 @@ class DoctorTests(unittest.TestCase):
 
             self.assertEqual(process.returncode, 0, process.stderr)
             self.assertTrue(report["read_only"])
+            self.assertTrue(report["engine_agnostic"])
+            self.assertEqual(report["write_policy"], "allowlist")
             self.assertEqual(report["data_dir"], "ccgs-data")
             self.assertEqual(before, after)
 

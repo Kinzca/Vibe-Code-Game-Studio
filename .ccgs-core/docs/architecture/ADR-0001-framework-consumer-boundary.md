@@ -29,8 +29,9 @@ project receiving generated CCGS artifacts.
   `--dry-run`.
 - Project writes are limited to `ccgs-data`, `.agents`, and generated AI entry
   files.
-- `Client/Assets` and `Server` are protected paths and cannot be CCGS write
-  targets.
+- The write policy is engine-agnostic and allowlist-based. Every path not owned
+  by CCGS is protected by default, including Unity, Godot, Cocos Creator, server,
+  tool, and arbitrary source directories.
 - Windows uses `ccgs.cmd` as the stable entrypoint, backed by the same Python
   implementation used by other platforms.
 - External services integrate through the CLI contract rather than importing
@@ -60,6 +61,7 @@ source or game runtime files.
 - Consumer upgrades remain explicit and reviewable.
 - Windmill and other orchestrators gain one stable command contract.
 - Repository safety can be tested independently from workflow behavior.
+- New engines do not require changes to the core write-safety policy.
 
 ### Negative
 
@@ -71,6 +73,20 @@ source or game runtime files.
 
 - `ccgs doctor` identifies standalone, embedded, and external layouts.
 - `ccgs doctor --json` provides stable machine-readable results.
-- Policy tests reject writes under `Client/Assets`, `Server`, and outside the
-  explicit project root.
+- Policy tests reject representative Unity, Godot, Cocos Creator, generic source,
+  and out-of-root paths.
 - Doctor and policy commands leave the consumer tree unchanged.
+## Fixture Strategy
+
+Batch 2 uses four engine-neutral lifecycle fixtures:
+
+- `empty-project`
+- `minimal-project`
+- `mature-project`
+- `malformed-project`
+
+Engine details are supplied as small overlays for Unity, Godot, and Cocos
+Creator. Repository-layout tests remain a separate dimension covering
+standalone, embedded-submodule, and external framework use. This keeps lifecycle
+behavior, engine detection, and repository topology independently testable
+without maintaining a full Cartesian product of copied projects.

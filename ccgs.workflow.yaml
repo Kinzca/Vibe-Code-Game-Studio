@@ -9,6 +9,8 @@ repository_boundary:
   framework_source: framework-repository
   consumer_project: explicit-project-root
   default_mode: read-only
+  write_policy: allowlist
+  engine_agnostic: true
   allowed_project_write_roots:
     - ccgs-data
     - .agents
@@ -16,9 +18,6 @@ repository_boundary:
     - CLAUDE.md
     - GEMINI.md
     - .cursorrules
-  protected_project_paths:
-    - Client/Assets
-    - Server
 
 commands:
   doctor:

@@ -12,12 +12,15 @@
 $env:CCGS_PYTHON = "C:\path\to\python.exe" # only needed when Python is not on PATH
 .\ccgs.cmd doctor
 .\ccgs.cmd doctor --project-root D:\path\to\consumer --json
-.\ccgs.cmd policy --project-root D:\path\to\consumer --target Client\Assets\Game.cs
+.\ccgs.cmd policy --project-root D:\path\to\consumer --target src\Game.cs
 ```
 
 `doctor` and `policy` are read-only. Framework development belongs in this
 repository; a consumer game repository is changed only by an explicit future
 bootstrap or upgrade command.
+The repository safety policy is engine-agnostic: only CCGS-owned data and AI
+entry paths are writable. Unity, Godot, Cocos Creator, and other engine-specific
+paths are covered by the same default-deny rule.
 
 ```bash
 # 1. 克隆框架

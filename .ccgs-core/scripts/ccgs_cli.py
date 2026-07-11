@@ -14,11 +14,10 @@ from pathlib import Path
 from typing import Sequence
 
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
-PROTECTED_PREFIXES = (("client", "assets"), ("server",))
 
 
 @dataclass(frozen=True)
@@ -114,12 +113,8 @@ def validate_write_target(project: Path, target: Path, data_dir: str) -> Path:
     except ValueError as exc:
         raise PolicyError("target escapes the explicit project root") from exc
 
-    parts = tuple(part.casefold() for part in relative.parts)
-    if not parts:
+    if not relative.parts:
         raise PolicyError("project root itself is not a valid write target")
-    for protected in PROTECTED_PREFIXES:
-        if parts[: len(protected)] == protected:
-            raise PolicyError(f"target is protected: {relative.as_posix()}")
 
     first = relative.parts[0]
     if first.casefold() == data_dir.casefold() or first == ".agents":
@@ -196,6 +191,14 @@ def build_doctor_report(project: Path) -> dict[str, object]:
             "pass" if project.is_dir() else "error",
             "consumer project root found" if project.is_dir() else "consumer project root is missing",
             str(project),
+        )
+    )
+    checks.append(
+        Check(
+            "policy.write_scope",
+            "pass",
+            "engine-agnostic allowlist protects every non-CCGS project path",
+            f"{data_dir}, .agents, generated entry files",
         )
     )
 
@@ -275,6 +278,8 @@ def build_doctor_report(project: Path) -> dict[str, object]:
         "repository_mode": mode,
         "data_dir": data_dir,
         "read_only": True,
+        "write_policy": "allowlist",
+        "engine_agnostic": True,
         "summary": summary,
         "checks": [asdict(check) for check in checks],
     }
