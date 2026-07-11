@@ -161,3 +161,17 @@ python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "当前任务"
 A special and heartfelt thanks to **[Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios)**.
 
 While this universal version features a significantly diverged structure to support data-driven decoupling, the original repository served as the foundational inspiration and conceptual origin for this framework. We are deeply grateful for the groundbreaking work that made this possible.
+
+## Batch 4 Story Automation
+
+Batch 4 adds an engine-agnostic Story state machine and machine-readable
+evidence contract. Inspect transitions and closeouts before applying them:
+
+    .\ccgs.cmd story-advance --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --to in-progress --dry-run
+    .\ccgs.cmd evidence-validate --project-root D:\path\to\consumer --evidence ccgs-data\production\qa\evidence\story-001.json
+    .\ccgs.cmd closeout --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --dry-run
+    .\ccgs.cmd closeout --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --write
+
+A passing closeout advances review to done. A failing write preserves the Story
+state and updates only the CCGS-managed closeout block with stable failure
+reasons. The evidence schema is schemas/evidence.schema.json.

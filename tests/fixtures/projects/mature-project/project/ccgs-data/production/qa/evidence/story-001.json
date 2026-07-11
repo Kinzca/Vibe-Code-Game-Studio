@@ -1,0 +1,31 @@
+{
+  "schema_version": "1.0",
+  "story_id": "STORY-001",
+  "result": "pass",
+  "acceptance_criteria": [
+    {
+      "id": "AC-1",
+      "status": "pass",
+      "evidence": "Context Pack golden test selects only bounded synthetic sources."
+    },
+    {
+      "id": "AC-2",
+      "status": "pass",
+      "evidence": "Synthetic QA evidence is committed under the fixture evidence root."
+    }
+  ],
+  "checks": [
+    {
+      "id": "fixture-tests",
+      "type": "automated-test",
+      "status": "pass",
+      "summary": "Repository fixture tests pass without consumer project data."
+    },
+    {
+      "id": "boundary-review",
+      "type": "review",
+      "status": "pass",
+      "summary": "Writes remain inside the explicit CCGS data root."
+    }
+  ]
+}

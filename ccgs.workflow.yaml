@@ -35,6 +35,17 @@ commands:
     supports_dry_run: true
     bridges:
       - codex
+  story-advance:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+  evidence-validate:
+    mutates_project: false
+    requires_project_root: true
+  closeout:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
 
 automation:
   require_explicit_project_root_for_writes: true
@@ -95,3 +106,25 @@ codex_bridge:
   skill_collision: refuse-unmanaged
   updates: atomic-and-hash-verified
   unchanged_files: preserve
+
+story_workflow:
+  schema_version: "1.0"
+  states:
+    - draft
+    - ready
+    - in-progress
+    - review
+    - blocked
+    - done
+  story_root: "{data_dir}/production/epics"
+  successful_closeout: review-to-done
+  failed_closeout: preserve-state-and-write-reasons
+  updates: atomic-and-idempotent
+
+evidence:
+  schema: schemas/evidence.schema.json
+  schema_version: "1.0"
+  root: "{data_dir}/production/qa/evidence"
+  format: json
+  requires_acceptance_coverage: true
+  requires_passing_checks: true

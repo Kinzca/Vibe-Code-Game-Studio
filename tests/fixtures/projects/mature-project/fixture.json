@@ -8,6 +8,7 @@
     "ccgs-data/project-docs/architecture/ADR-0001-deterministic-loop.md",
     "ccgs-data/production/epics/sample/story-001.md",
     "ccgs-data/production/qa/evidence/story-001.md",
+    "ccgs-data/production/qa/evidence/story-001.json",
     "ccgs-data/production/session-state/active.md"
   ]
 }

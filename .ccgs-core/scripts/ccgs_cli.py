@@ -37,8 +37,20 @@ from ccgs_context_pack import (
     build_context_pack,
 )
 
+from ccgs_story_workflow import (
+    StoryWorkflowError,
+    advance_report,
+    apply_advance,
+    apply_closeout,
+    closeout_report,
+    default_evidence_path,
+    evidence_report,
+    load_evidence,
+    load_story,
+)
 
-VERSION = "0.2.1"
+
+VERSION = "0.3.0"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -478,6 +490,91 @@ def command_bootstrap(args: argparse.Namespace) -> int:
     return 0
 
 
+def _print_json(payload: dict[str, object]) -> None:
+    """Emit stable machine-readable workflow output."""
+
+    print(json.dumps(payload, ensure_ascii=False, indent=2))
+
+
+def command_story_advance(args: argparse.Namespace) -> int:
+    """Preview or atomically apply one Story state transition."""
+
+    project = Path(args.project_root).resolve()
+    data_dir = configured_data_dir(project, framework_root())
+    try:
+        story_path, story = load_story(project, args.story, data_dir)
+        validate_write_target(project, story_path, data_dir)
+        report = advance_report(story, args.to, args.reason)
+        report["mode"] = "write" if args.write else "dry-run"
+        report["written"] = False
+        if args.write and report["allowed"]:
+            report["written"] = apply_advance(
+                story_path, story, report, atomic_write_text
+            )
+    except (StoryWorkflowError, PolicyError, OSError) as exc:
+        print(f"story-advance: {exc}", file=sys.stderr)
+        return 2
+
+    _print_json(report)
+    return 0 if report["allowed"] else 1
+
+
+def command_evidence_validate(args: argparse.Namespace) -> int:
+    """Validate one Evidence JSON document without writing."""
+
+    project = Path(args.project_root).resolve()
+    data_dir = configured_data_dir(project, framework_root())
+    try:
+        relative, document, errors = load_evidence(
+            project, args.evidence, data_dir
+        )
+    except (StoryWorkflowError, OSError) as exc:
+        print(f"evidence-validate: {exc}", file=sys.stderr)
+        return 2
+    report = evidence_report(relative, document, errors)
+    _print_json(report)
+    return 0 if report["valid"] else 1
+
+
+def command_closeout(args: argparse.Namespace) -> int:
+    """Evaluate evidence, advance passing Stories, and write stable failures."""
+
+    project = Path(args.project_root).resolve()
+    data_dir = configured_data_dir(project, framework_root())
+    try:
+        story_path, story = load_story(project, args.story, data_dir)
+        validate_write_target(project, story_path, data_dir)
+        evidence_path = args.evidence or default_evidence_path(
+            data_dir, story.relative_path
+        )
+        try:
+            evidence_relative, evidence, errors = load_evidence(
+                project, evidence_path, data_dir
+            )
+        except StoryWorkflowError as exc:
+            message = str(exc)
+            if "must stay under" in message or "must use the .json extension" in message:
+                raise
+            evidence_relative = Path(evidence_path).as_posix()
+            evidence = {}
+            errors = [{"path": "$", "message": message}]
+        report = closeout_report(
+            story, evidence_relative, evidence, errors
+        )
+        report["mode"] = "write" if args.write else "dry-run"
+        report["written"] = False
+        if args.write:
+            report["written"] = apply_closeout(
+                story_path, story, report, atomic_write_text
+            )
+    except (StoryWorkflowError, PolicyError, OSError) as exc:
+        print(f"closeout: {exc}", file=sys.stderr)
+        return 2
+
+    _print_json(report)
+    return 0 if report["verdict"] == "pass" else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create the stable repository-safe CCGS CLI surface."""
 
@@ -537,6 +634,71 @@ def build_parser() -> argparse.ArgumentParser:
     bootstrap_mode.add_argument("--write", action="store_true", help="Atomically apply changed bridge files.")
     bootstrap.add_argument("--json", action="store_true", help="Emit a machine-readable write manifest.")
     bootstrap.set_defaults(handler=command_bootstrap)
+
+    story_advance = subcommands.add_parser(
+        "story-advance",
+        help="Preview or apply one allowed Story state transition.",
+    )
+    story_advance.add_argument(
+        "--project-root", required=True, help="Explicit consumer project root."
+    )
+    story_advance.add_argument(
+        "--story", required=True, help="Story Markdown path inside production/epics."
+    )
+    story_advance.add_argument(
+        "--to", required=True, help="Target Story state."
+    )
+    story_advance.add_argument(
+        "--reason", default="", help="Stable reason recorded in the transition report."
+    )
+    advance_mode = story_advance.add_mutually_exclusive_group(required=True)
+    advance_mode.add_argument(
+        "--dry-run", action="store_true", help="Validate without changing the Story."
+    )
+    advance_mode.add_argument(
+        "--write", action="store_true", help="Atomically update an allowed transition."
+    )
+    story_advance.set_defaults(handler=command_story_advance)
+
+    evidence_validate = subcommands.add_parser(
+        "evidence-validate",
+        help="Validate machine-readable Story evidence.",
+    )
+    evidence_validate.add_argument(
+        "--project-root", required=True, help="Explicit consumer project root."
+    )
+    evidence_validate.add_argument(
+        "--evidence",
+        required=True,
+        help="Evidence JSON path inside production/qa/evidence.",
+    )
+    evidence_validate.set_defaults(handler=command_evidence_validate)
+
+    closeout = subcommands.add_parser(
+        "closeout",
+        help="Check Story evidence and atomically persist the closeout result.",
+    )
+    closeout.add_argument(
+        "--project-root", required=True, help="Explicit consumer project root."
+    )
+    closeout.add_argument(
+        "--story", required=True, help="Story Markdown path inside production/epics."
+    )
+    closeout.add_argument(
+        "--evidence",
+        default="",
+        help="Evidence JSON path. Defaults to the Story stem under production/qa/evidence.",
+    )
+    closeout_mode = closeout.add_mutually_exclusive_group(required=True)
+    closeout_mode.add_argument(
+        "--dry-run", action="store_true", help="Evaluate without changing the Story."
+    )
+    closeout_mode.add_argument(
+        "--write",
+        action="store_true",
+        help="Atomically write done state or stable failure reasons.",
+    )
+    closeout.set_defaults(handler=command_closeout)
     return parser
 
 

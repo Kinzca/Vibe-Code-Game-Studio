@@ -56,3 +56,15 @@ python3 .ccgs-core/scripts/workflow/archive-session-state.py --keep 10 --brief
 The archive tool keeps the newest top-level sections in
 `ccgs-data/production/session-state/active.md` and appends older sections to a
 monthly archive file. Use `--dry-run` before the first real archive on a project.
+
+## Story Automation and Closeout
+
+The public CLI owns state and evidence safety rules:
+
+    .\ccgs.cmd story-advance --project-root D:\path\to\consumer --story ccgs-data\production\epics\example\story-001.md --to review --dry-run
+    .\ccgs.cmd evidence-validate --project-root D:\path\to\consumer --evidence ccgs-data\production\qa\evidence\story-001.json
+    .\ccgs.cmd closeout --project-root D:\path\to\consumer --story ccgs-data\production\epics\example\story-001.md --dry-run
+
+Use write mode only after inspecting the JSON report. External orchestrators
+must call these commands instead of editing Story status or closeout blocks
+directly.
