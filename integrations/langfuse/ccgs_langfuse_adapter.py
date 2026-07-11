@@ -48,7 +48,11 @@ STATUS_LEVEL = {
 
 
 class LangfuseAdapterError(ValueError):
-    """Raised when an event, credential, or transport violates the contract."""
+    """Raised when an event or configuration violates the contract."""
+
+
+class LangfuseTransportError(LangfuseAdapterError):
+    """Raised for transient Langfuse transport failures that may be retried."""
 
 
 @dataclass(frozen=True)
@@ -695,7 +699,7 @@ class OtelLangfuseExporter:
         success = recording.result == SpanExportResult.SUCCESS
         provider.shutdown()
         if not success:
-            raise LangfuseAdapterError("Langfuse OTLP exporter did not acknowledge the span")
+            raise LangfuseTransportError("Langfuse OTLP exporter did not acknowledge the span")
         return {"endpoint": self.endpoint, "trace_sent": True}
 
 
@@ -736,11 +740,12 @@ class LangfuseScoreClient:
                 raw = response.read()
         except HTTPError as exc:
             message = exc.read().decode("utf-8", errors="replace")[:1000]
-            raise LangfuseAdapterError(
-                f"Langfuse Score HTTP {exc.code}: {message or exc.reason}"
-            ) from exc
+            error = f"Langfuse Score HTTP {exc.code}: {message or exc.reason}"
+            if exc.code in {408, 425, 429} or exc.code >= 500:
+                raise LangfuseTransportError(error) from exc
+            raise LangfuseAdapterError(error) from exc
         except (URLError, TimeoutError, OSError) as exc:
-            raise LangfuseAdapterError(f"Langfuse Score request failed: {exc}") from exc
+            raise LangfuseTransportError(f"Langfuse Score request failed: {exc}") from exc
         if not raw:
             return {}
         try:
@@ -766,7 +771,7 @@ def send_bundle(
 ) -> dict[str, Any]:
     trace_result = trace_exporter.export(bundle)
     if not trace_result.get("trace_sent"):
-        raise LangfuseAdapterError("Langfuse trace export was not acknowledged")
+        raise LangfuseTransportError("Langfuse trace export was not acknowledged")
     scores_sent = score_sender.send_scores(bundle.score_payloads)
     return {
         "trace_sent": True,

@@ -71,3 +71,11 @@ secret and absolute-path rejection, timezone/status handling, read-only dry-run,
 trace-before-Score ordering, negative acknowledgement behavior, retry-stable
 Scores, environment-only credentials, host security, and identical
 Unity/Godot/Cocos reports.
+
+## Workflow Observer Tests
+
+`test_workflow_observer.py` verifies bounded Story/Evidence/Context/Qdrant event
+construction, two derived Scores, engine-neutral output, dry-run read-only
+behavior, event identity conflicts, and first-write-wins retry idempotency. The
+Windmill suite also verifies the complete CLI order, retrieval-text redaction,
+space-safe Windows argument quoting, and retryable exit code 3 handling.

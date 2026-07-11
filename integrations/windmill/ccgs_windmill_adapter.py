@@ -14,8 +14,15 @@ from typing import Any, Callable, Sequence
 
 SCHEMA_VERSION = "1.0"
 ADAPTER_NAME = "windmill"
-ALLOWED_COMMANDS = {"doctor", "evidence-validate", "closeout"}
-FORBIDDEN_CMD_CHARS = frozenset("&|<>^%!\r\n\0")
+ALLOWED_COMMANDS = {
+    "doctor",
+    "evidence-validate",
+    "closeout",
+    "qdrant-query",
+    "workflow-observe",
+    "langfuse-export",
+}
+FORBIDDEN_CMD_CHARS = frozenset("&|<>^%!\"\r\n\0")
 DRIVE_RE = re.compile(r"^[A-Za-z]:")
 
 
@@ -118,7 +125,7 @@ class CcgsCmdRunner:
         _validate_shell_value(str(self.entrypoint), "ccgs.cmd path")
         _validate_shell_value(str(self.project_root), "project_root")
 
-    def _command_line(self, command: str, arguments: Sequence[str]) -> list[str]:
+    def _command_line(self, command: str, arguments: Sequence[str]) -> str:
         if command not in ALLOWED_COMMANDS:
             raise WindmillAdapterError(f"unsupported CCGS command: {command}")
         if self.platform != "nt":
@@ -133,13 +140,9 @@ class CcgsCmdRunner:
             str(self.project_root),
             *safe_arguments,
         ]
-        return [
-            self.comspec,
-            "/d",
-            "/s",
-            "/c",
-            subprocess.list2cmdline(ccgs_arguments),
-        ]
+        quoted = " ".join(f'"{item}"' for item in ccgs_arguments)
+        executable = subprocess.list2cmdline([self.comspec])
+        return f'{executable} /d /s /c "{quoted}"'
 
     def invoke(self, command: str, arguments: Sequence[str]) -> dict[str, Any]:
         """Run one CLI operation and retry transport/protocol failures only."""
@@ -271,6 +274,25 @@ def _public_invocation(invocation: dict[str, Any]) -> dict[str, Any]:
             "read_only": payload.get("read_only", False),
             "engine_agnostic": payload.get("engine_agnostic", False),
             "summary": payload.get("summary", {}),
+        }
+    elif invocation["command"] == "qdrant-query" and isinstance(payload, dict):
+        payload = {
+            **{key: value for key, value in payload.items() if key != "results"},
+            "results": [
+                {
+                    key: item.get(key)
+                    for key in (
+                        "id",
+                        "score",
+                        "source_kind",
+                        "source_path",
+                        "heading",
+                        "chunk_index",
+                    )
+                }
+                for item in payload.get("results", [])
+                if isinstance(item, dict)
+            ],
         }
     return {
         "command": invocation["command"],
@@ -491,6 +513,220 @@ def run_story_closeout(
         "advance": _public_invocation(advance),
     }
 
+
+def _safe_failure_code(value: str) -> str:
+    rendered = re.sub(r"[^A-Za-z0-9._:-]+", "-", value).strip("-.")
+    return (rendered or "workflow.failed")[:128]
+
+
+def run_observed_story_closeout(
+    framework_root: str,
+    project_root: str,
+    story: str,
+    evidence: str,
+    project_id: str,
+    event_id: str,
+    trace_key: str,
+    session_id: str,
+    environment: str = "automation",
+    query: str = "",
+    apply: bool = True,
+    qdrant_url: str = "http://127.0.0.1:6333",
+    qdrant_collection: str = "ccgs-context",
+    qdrant_embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
+    qdrant_limit: int = 8,
+    langfuse_host: str = "https://cloud.langfuse.com",
+    langfuse_send: bool = True,
+    allow_insecure_http: bool = False,
+    max_attempts: int = 3,
+    retry_delay_seconds: float = 1.0,
+    timeout_seconds: float = 120.0,
+    *,
+    executor: Callable[..., subprocess.CompletedProcess[str]] = subprocess.run,
+    sleeper: Callable[[float], None] = time.sleep,
+    platform: str | None = None,
+    comspec: str | None = None,
+) -> dict[str, Any]:
+    """Retrieve context, close out a Story, materialize an event, and export it."""
+
+    story = validate_relative_path(story, "story")
+    evidence = validate_relative_path(evidence, "evidence")
+    for value, label in (
+        (project_id, "project_id"),
+        (event_id, "event_id"),
+        (trace_key, "trace_key"),
+        (session_id, "session_id"),
+        (environment, "environment"),
+        (qdrant_collection, "qdrant_collection"),
+        (qdrant_embedding_model, "qdrant_embedding_model"),
+        (qdrant_url, "qdrant_url"),
+        (langfuse_host, "langfuse_host"),
+    ):
+        _validate_shell_value(value, label)
+    query = query.strip() or f"Is {Path(story).stem} ready to close?"
+    _validate_shell_value(query, "query")
+    if not 1 <= qdrant_limit <= 20:
+        raise WindmillAdapterError("qdrant_limit must be between 1 and 20")
+
+    runner = CcgsCmdRunner(
+        framework_root,
+        project_root,
+        retry_policy=_policy(max_attempts, retry_delay_seconds, timeout_seconds),
+        executor=executor,
+        sleeper=sleeper,
+        platform=platform,
+        comspec=comspec,
+    )
+    retrieval_args = [
+        "--project-id",
+        project_id,
+        "--query",
+        query,
+        "--limit",
+        str(qdrant_limit),
+        "--collection",
+        qdrant_collection,
+        "--qdrant-url",
+        qdrant_url,
+        "--embedding-model",
+        qdrant_embedding_model,
+        "--timeout-seconds",
+        str(timeout_seconds),
+    ]
+    if allow_insecure_http:
+        retrieval_args.append("--allow-insecure-http")
+    retrieval = runner.invoke("qdrant-query", retrieval_args)
+    if retrieval["status"] == "error":
+        failures = _invocation_failures(retrieval)
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "adapter": ADAPTER_NAME,
+            "operation": "observed-story-closeout",
+            "status": "error",
+            "ok": False,
+            "retryable": bool(retrieval.get("retryable", False)),
+            "story": story,
+            "evidence": evidence,
+            "retrieval": _public_invocation(retrieval),
+            "closeout": None,
+            "observation": None,
+            "telemetry": None,
+            "failures": _deduplicate_failures(failures),
+        }
+
+    closeout = run_story_closeout(
+        framework_root,
+        project_root,
+        story,
+        evidence,
+        apply,
+        max_attempts,
+        retry_delay_seconds,
+        timeout_seconds,
+        executor=executor,
+        sleeper=sleeper,
+        platform=platform,
+        comspec=comspec,
+    )
+    retrieval_payload = retrieval.get("payload")
+    retrieval_results = (
+        retrieval_payload.get("results", [])
+        if isinstance(retrieval_payload, dict)
+        else []
+    )
+    references = list(
+        dict.fromkeys(
+            validate_relative_path(str(item.get("source_path", "")), "retrieval reference")
+            for item in retrieval_results
+            if isinstance(item, dict) and item.get("source_path")
+        )
+    )[:20]
+    failure_codes = [
+        _safe_failure_code(str(item.get("code", "workflow.failed")))
+        for item in closeout.get("failures", [])
+        if isinstance(item, dict)
+    ]
+    observe_args = [
+        "--story",
+        story,
+        "--evidence",
+        evidence,
+        "--project-id",
+        project_id,
+        "--event-id",
+        event_id,
+        "--trace-key",
+        trace_key,
+        "--session-id",
+        session_id,
+        "--environment",
+        environment,
+        "--surface",
+        "windmill",
+        "--operation",
+        "story-closeout",
+        "--status",
+        str(closeout.get("status", "error")),
+        "--query",
+        query,
+    ]
+    for reference in references:
+        observe_args.extend(["--retrieval-reference", reference])
+    for code in failure_codes:
+        observe_args.extend(["--failure-code", code])
+    observe_args.append("--write")
+    observation = runner.invoke("workflow-observe", observe_args)
+    if observation["status"] == "error":
+        failures = [*closeout.get("failures", []), *_invocation_failures(observation)]
+        return {
+            "schema_version": SCHEMA_VERSION,
+            "adapter": ADAPTER_NAME,
+            "operation": "observed-story-closeout",
+            "status": "error",
+            "ok": False,
+            "retryable": bool(observation.get("retryable", False)),
+            "story": story,
+            "evidence": evidence,
+            "retrieval": _public_invocation(retrieval),
+            "closeout": closeout,
+            "observation": _public_invocation(observation),
+            "telemetry": None,
+            "failures": _deduplicate_failures(failures),
+        }
+
+    observation_payload = observation.get("payload")
+    if not isinstance(observation_payload, dict) or not observation_payload.get("event"):
+        raise WindmillAdapterError("workflow-observe did not return an event path")
+    telemetry_args = [
+        "--event",
+        validate_relative_path(str(observation_payload["event"]), "event"),
+        "--host",
+        langfuse_host,
+        "--timeout-seconds",
+        str(timeout_seconds),
+    ]
+    if allow_insecure_http:
+        telemetry_args.append("--allow-insecure-http")
+    telemetry_args.append("--send" if langfuse_send else "--dry-run")
+    telemetry = runner.invoke("langfuse-export", telemetry_args)
+    failures = list(closeout.get("failures", []))
+    failures.extend(_invocation_failures(telemetry))
+    status = "error" if telemetry["status"] == "error" else str(closeout["status"])
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "adapter": ADAPTER_NAME,
+        "operation": "observed-story-closeout",
+        "status": status,
+        "ok": status == "passed",
+        "retryable": bool(telemetry.get("retryable", False)),
+        "story": story,
+        "evidence": evidence,
+        "retrieval": _public_invocation(retrieval),
+        "closeout": closeout,
+        "observation": _public_invocation(observation),
+        "telemetry": _public_invocation(telemetry),
+        "failures": _deduplicate_failures(failures),
+    }
 
 def _result(
     operation: str,

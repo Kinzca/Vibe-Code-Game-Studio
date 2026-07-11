@@ -51,6 +51,29 @@ keys resembling secrets, API keys, tokens, credentials, passwords, or
 authorization headers are rejected. Absolute Windows paths and URLs containing
 credentials are also rejected.
 
+## Automatic Event Generation
+
+`workflow-observe` builds events from a Story, machine-readable Evidence,
+Context Pack selection, Qdrant source references, and the actual Closeout
+status. It writes only below
+`{data_dir}/production/observability/events`.
+
+```powershell
+.\ccgs.cmd workflow-observe `
+  --project-root D:\path\to\consumer `
+  --story ccgs-data\production\epics\sample\story-001.md `
+  --evidence ccgs-data\production\qa\evidence\story-001.json `
+  --project-id my-project `
+  --event-id story-001-run-001 `
+  --trace-key story-001-workflow `
+  --session-id sprint-001 `
+  --status passed `
+  --write
+```
+
+The first write for an `event_id` wins. Retries reuse the existing event after
+checking project, trace, operation, and Story identity. This preserves stable
+Trace, Span, and Score IDs even if a retry happens later.
 ## Dry Run
 
 Dry-run validates the event and prints the deterministic trace/span IDs, exact

@@ -1,0 +1,60 @@
+{
+  "summary": "Observed CCGS Story Closeout",
+  "description": "Runs the Qdrant, Story, Evidence, Closeout, event, and Langfuse loop with selective transport retry.",
+  "value": {
+    "modules": [
+      {
+        "id": "ccgs_observed_story_closeout",
+        "summary": "Run observed Story Closeout",
+        "value": {
+          "type": "script",
+          "path": "f/ccgs/story_observed_closeout",
+          "input_transforms": {
+            "framework_root": {"type": "javascript", "expr": "flow_input.framework_root"},
+            "project_root": {"type": "javascript", "expr": "flow_input.project_root"},
+            "story": {"type": "javascript", "expr": "flow_input.story"},
+            "evidence": {"type": "javascript", "expr": "flow_input.evidence"},
+            "project_id": {"type": "javascript", "expr": "flow_input.project_id"},
+            "event_id": {"type": "javascript", "expr": "flow_input.event_id"},
+            "trace_key": {"type": "javascript", "expr": "flow_input.trace_key"},
+            "session_id": {"type": "javascript", "expr": "flow_input.session_id"},
+            "environment": {"type": "javascript", "expr": "flow_input.environment"},
+            "query": {"type": "javascript", "expr": "flow_input.query"},
+            "apply": {"type": "javascript", "expr": "flow_input.apply"},
+            "qdrant_url": {"type": "javascript", "expr": "flow_input.qdrant_url"},
+            "qdrant_collection": {"type": "javascript", "expr": "flow_input.qdrant_collection"},
+            "qdrant_embedding_model": {"type": "javascript", "expr": "flow_input.qdrant_embedding_model"},
+            "qdrant_limit": {"type": "javascript", "expr": "flow_input.qdrant_limit"},
+            "langfuse_host": {"type": "javascript", "expr": "flow_input.langfuse_host"},
+            "langfuse_send": {"type": "javascript", "expr": "flow_input.langfuse_send"},
+            "allow_insecure_http": {"type": "javascript", "expr": "flow_input.allow_insecure_http"},
+            "max_attempts": {"type": "static", "value": 1},
+            "retry_delay_seconds": {"type": "static", "value": 0},
+            "timeout_seconds": {"type": "javascript", "expr": "flow_input.timeout_seconds"}
+          }
+        },
+        "retry": {
+          "constant": {"attempts": 2, "seconds": 5},
+          "retry_if": {"expr": "error.message.includes('[CCGS_RETRYABLE]')"}
+        }
+      }
+    ],
+    "same_worker": true
+  },
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "order": ["framework_root", "project_root", "story", "evidence", "project_id", "event_id", "trace_key", "session_id", "environment", "query", "apply", "qdrant_url", "qdrant_collection", "qdrant_embedding_model", "qdrant_limit", "langfuse_host", "langfuse_send", "allow_insecure_http", "timeout_seconds"],
+    "properties": {
+      "framework_root": {"type": "string"}, "project_root": {"type": "string"}, "story": {"type": "string"}, "evidence": {"type": "string"},
+      "project_id": {"type": "string"}, "event_id": {"type": "string"}, "trace_key": {"type": "string"}, "session_id": {"type": "string"},
+      "environment": {"type": "string", "default": "automation"}, "query": {"type": "string", "default": ""}, "apply": {"type": "boolean", "default": true},
+      "qdrant_url": {"type": "string", "default": "http://127.0.0.1:6333"}, "qdrant_collection": {"type": "string", "default": "ccgs-context"},
+      "qdrant_embedding_model": {"type": "string", "default": "sentence-transformers/all-MiniLM-L6-v2"}, "qdrant_limit": {"type": "integer", "minimum": 1, "maximum": 20, "default": 8},
+      "langfuse_host": {"type": "string", "default": "https://cloud.langfuse.com"}, "langfuse_send": {"type": "boolean", "default": true},
+      "allow_insecure_http": {"type": "boolean", "default": false}, "timeout_seconds": {"type": "number", "minimum": 1, "maximum": 3600, "default": 120}
+    },
+    "required": ["framework_root", "project_root", "story", "evidence", "project_id", "event_id", "trace_key", "session_id"]
+  },
+  "ws_error_handler_muted": false
+}

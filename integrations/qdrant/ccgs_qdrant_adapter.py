@@ -35,6 +35,10 @@ class QdrantAdapterError(ValueError):
     """Raised when source data or Qdrant behavior violates the adapter contract."""
 
 
+class QdrantTransportError(QdrantAdapterError):
+    """Raised for transient Qdrant transport failures that may be retried."""
+
+
 class QdrantHttpError(QdrantAdapterError):
     """An actionable HTTP failure returned by Qdrant."""
 
@@ -506,9 +510,13 @@ class QdrantHttpStore:
                 raw = response.read()
         except HTTPError as exc:
             message = exc.read().decode("utf-8", errors="replace")[:1000]
+            if exc.code in {408, 425, 429} or exc.code >= 500:
+                raise QdrantTransportError(
+                    f"Qdrant HTTP {exc.code}: {message or exc.reason}"
+                ) from exc
             raise QdrantHttpError(exc.code, message or exc.reason) from exc
         except (URLError, TimeoutError, OSError) as exc:
-            raise QdrantAdapterError(f"Qdrant request failed: {exc}") from exc
+            raise QdrantTransportError(f"Qdrant request failed: {exc}") from exc
         if not raw:
             return {}
         try:

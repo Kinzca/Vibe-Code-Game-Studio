@@ -218,8 +218,15 @@ workflow events through the current OpenTelemetry endpoint. It traces Context
 Pack, retrieval, Story, Closeout, Evidence, and failure decisions without
 pretending to capture private Codex prompts, tokens, or costs.
 
+    .\ccgs.cmd workflow-observe --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --evidence ccgs-data\production\qa\evidence\story-001.json --project-id my-project --event-id story-001-run-001 --trace-key story-001-workflow --session-id sprint-001 --status passed --write
     .\ccgs.cmd langfuse-export --project-root D:\path\to\consumer --event ccgs-data\production\observability\events\story-closeout.json --dry-run
     .\ccgs.cmd langfuse-export --project-root D:\path\to\consumer --event ccgs-data\production\observability\events\story-closeout.json --send
 
 See `integrations/langfuse/README.md` for the Event Schema, OpenTelemetry
 dependencies, credentials, Score behavior, retry semantics, and privacy policy.
+
+The observed Windmill Flow `f/ccgs/story_observed_closeout` now composes the
+full `Qdrant query -> Story/Evidence Closeout -> workflow event -> Langfuse
+Trace and Scores` path. It forwards project-relative references rather than
+retrieved document text, reuses `event_id` for retries, and treats CLI exit code
+3 as transient while permanent validation failures are not retried.

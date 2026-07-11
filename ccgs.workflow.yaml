@@ -64,6 +64,12 @@ commands:
     requires_project_root: true
     requires_project_id: true
     machine_readable_output: true
+  workflow-observe:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+    machine_readable_output: true
+    idempotency_key: event-id
   langfuse-export:
     mutates_project: false
     mutates_external: explicit-send-only
@@ -162,13 +168,17 @@ windmill:
     - doctor
     - evidence-validate
     - closeout
+    - qdrant-query
+    - workflow-observe
+    - langfuse-export
   direct_project_reads: false
   direct_game_source_writes: false
   business_failures_retryable: false
   transport_failures_retryable: true
   sync_root: integrations/windmill/f
   sync_secrets: false
-  flow: f/ccgs/story_closeout
+  flow: f/ccgs/story_observed_closeout
+  legacy_closeout_flow: f/ccgs/story_closeout
 
 allure:
   schema_version: "1.0"
@@ -252,9 +262,25 @@ langfuse:
     source: environment-only
     public_key_env: LANGFUSE_PUBLIC_KEY
     secret_key_env: LANGFUSE_SECRET_KEY
+  event_generation:
+    command: workflow-observe
+    inputs:
+      - story
+      - evidence
+      - context-pack
+      - qdrant-references
+      - closeout-result
+    first_write_wins: true
+    retry_reuses_event_id: true
   ordering:
+    qdrant_before_closeout: true
+    closeout_before_event: true
+    event_before_trace: true
     trace_before_scores: true
     negative_trace_ack_blocks_scores: true
+  transport_exit_codes:
+    retryable: 3
+    permanent: 2
   optional_dependencies:
     - opentelemetry-sdk
     - opentelemetry-exporter-otlp-proto-http

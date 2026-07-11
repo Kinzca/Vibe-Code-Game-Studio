@@ -13,6 +13,9 @@ The adapter permits only these commands:
 - evidence-validate
 - closeout --dry-run
 - closeout --write
+- qdrant-query
+- workflow-observe --write
+- langfuse-export --dry-run or --send
 
 It does not accept arbitrary commands, shell fragments, absolute Story paths,
 path traversal, report destinations, test commands, or game source paths.
@@ -36,12 +39,35 @@ The f/ tree contains:
 
 - f/ccgs/story_check.py: read-only Doctor, Evidence, and Closeout inspection.
 - f/ccgs/story_closeout.py: inspection followed by closeout --write.
-- f/ccgs/story_closeout__flow/flow.yaml: importable Flow with selective retry.
+- f/ccgs/story_closeout__flow/flow.yaml: importable Closeout-only Flow.
+- f/ccgs/story_observed_closeout.py: bounded end-to-end orchestration wrapper.
+- f/ccgs/story_observed_closeout__flow/flow.yaml: Qdrant, Closeout, event, and Langfuse Flow with selective retry.
 - f/ccgs/folder.meta.yaml: folder declaration required by Windmill sync.
 
 The files ending in .yaml use strict JSON syntax, which is valid YAML 1.2 and
 can be validated with the Python standard library.
 
+## Observed Closeout Loop
+
+The observed Flow calls only stable `ccgs.cmd` commands in this order:
+
+1. `qdrant-query` retrieves project-scoped references.
+2. Doctor, Evidence validation, and Closeout run through the existing adapter.
+3. `workflow-observe --write` creates one bounded event under the configured CCGS data root.
+4. `langfuse-export --send` sends the Trace first and then the two explicit Scores.
+
+The `event_id` is the retry key. A repeated Flow run reuses the original event,
+Trace ID, Span ID, and Score IDs without rewriting its timestamp. Retrieval text
+is removed from the Windmill result; only project-relative source references are
+forwarded to the event builder.
+
+Set `CCGS_PYTHON` on the Windows worker to a dedicated environment containing
+`fastembed`, `opentelemetry-sdk`, and
+`opentelemetry-exporter-otlp-proto-http`. Langfuse credentials stay in
+`LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY`; they are never Flow inputs.
+Transient network failures exit with code 3 and are marked `CCGS_RETRYABLE`.
+Configuration, credential, Schema, and path failures exit with code 2 and are
+not retried.
 ## Sync
 
 Install the current Windmill CLI separately, then run these commands from this

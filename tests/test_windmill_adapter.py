@@ -23,6 +23,7 @@ from ccgs_windmill_adapter import (
     raise_for_windmill,
     run_story_check,
     run_story_closeout,
+    run_observed_story_closeout,
     validate_relative_path,
 )
 
@@ -165,6 +166,160 @@ class WindmillAdapterIntegrationTests(unittest.TestCase):
         self.assertEqual(reports[0], reports[1])
         self.assertEqual(reports[1], reports[2])
 
+    def test_observed_closeout_runs_qdrant_event_and_langfuse_through_cli(self) -> None:
+        calls = []
+
+        def executor(command, **kwargs):
+            rendered = command
+            calls.append(rendered)
+            if "qdrant-query" in rendered:
+                payload = {
+                    "schema_version": "1.0",
+                    "adapter": "qdrant",
+                    "mode": "query",
+                    "project_id": "fixture-project",
+                    "collection": "ccgs-context",
+                    "query": "Is STORY-001 ready to close?",
+                    "limit": 8,
+                    "result_count": 1,
+                    "results": [{
+                        "id": "point-1",
+                        "score": 0.9,
+                        "source_kind": "gdd",
+                        "source_path": "ccgs-data/design/gdd/core-loop.md",
+                        "heading": "Core Loop",
+                        "chunk_index": 0,
+                        "text": "bounded source text is not returned by Windmill",
+                    }],
+                }
+            elif '"doctor"' in rendered:
+                payload = {
+                    "cli_version": "0.8.0",
+                    "repository_mode": "external",
+                    "data_dir": "ccgs-data",
+                    "read_only": True,
+                    "engine_agnostic": True,
+                    "summary": {"pass": 1, "warn": 0, "error": 0, "info": 0},
+                }
+            elif "evidence-validate" in rendered:
+                payload = {"valid": True, "errors": []}
+            elif '"closeout"' in rendered:
+                payload = {"verdict": "pass", "failures": [], "written": "--write" in rendered}
+            elif "workflow-observe" in rendered:
+                payload = {
+                    "operation": "workflow-observe",
+                    "event": "ccgs-data/production/observability/events/wm-run-001.json",
+                    "event_id": "wm-run-001",
+                    "status": "pass",
+                    "written": True,
+                    "score_count": 2,
+                }
+            elif "langfuse-export" in rendered:
+                payload = {"adapter": "langfuse", "mode": "dry-run", "sent": False}
+            else:
+                raise AssertionError(rendered)
+            return subprocess.CompletedProcess(command, 0, json.dumps(payload), "")
+
+        with materialized_fixture("mature-project") as project:
+            result = run_observed_story_closeout(
+                str(ROOT),
+                str(project),
+                STORY,
+                EVIDENCE,
+                "fixture-project",
+                "wm-run-001",
+                "story-001-workflow",
+                "fixture-session-001",
+                "fixture",
+                "Is STORY-001 ready to close?",
+                True,
+                langfuse_send=False,
+                max_attempts=1,
+                retry_delay_seconds=0,
+                executor=executor,
+                platform="nt",
+                comspec="cmd.exe",
+            )
+
+        self.assertEqual(result["status"], "passed")
+        self.assertEqual(result["observation"]["payload"]["score_count"], 2)
+        self.assertNotIn("text", result["retrieval"]["payload"]["results"][0])
+        def command_name(call: str) -> str:
+            if "qdrant-query" in call:
+                return "qdrant-query"
+            if "workflow-observe" in call:
+                return "workflow-observe"
+            if "langfuse-export" in call:
+                return "langfuse-export"
+            if "evidence-validate" in call:
+                return "evidence-validate"
+            if '"doctor"' in call:
+                return "doctor"
+            if '"closeout"' in call and "--dry-run" in call:
+                return "closeout-dry"
+            if '"closeout"' in call and "--write" in call:
+                return "closeout-write"
+            raise AssertionError(call)
+
+        sequence = [command_name(call) for call in calls]
+        self.assertEqual(
+            sequence,
+            [
+                "qdrant-query",
+                "doctor",
+                "evidence-validate",
+                "closeout-dry",
+                "closeout-write",
+                "workflow-observe",
+                "langfuse-export",
+            ],
+        )
+
+    def test_observed_closeout_retries_transient_langfuse_cli_exit(self) -> None:
+        langfuse_attempts = 0
+
+        def executor(command, **kwargs):
+            nonlocal langfuse_attempts
+            rendered = command
+            if "qdrant-query" in rendered:
+                payload = {"results": [], "result_count": 0}
+            elif '"doctor"' in rendered:
+                payload = {"data_dir": "ccgs-data"}
+            elif "evidence-validate" in rendered:
+                payload = {"valid": True, "errors": []}
+            elif '"closeout"' in rendered:
+                payload = {"verdict": "pass", "failures": [], "written": True}
+            elif "workflow-observe" in rendered:
+                payload = {"event": "ccgs-data/production/observability/events/wm-run-002.json"}
+            elif "langfuse-export" in rendered:
+                langfuse_attempts += 1
+                if langfuse_attempts == 1:
+                    return subprocess.CompletedProcess(command, 3, "", "temporary outage")
+                payload = {"sent": True, "score_count": 2}
+            else:
+                raise AssertionError(rendered)
+            return subprocess.CompletedProcess(command, 0, json.dumps(payload), "")
+
+        with materialized_fixture("mature-project") as project:
+            result = run_observed_story_closeout(
+                str(ROOT),
+                str(project),
+                STORY,
+                EVIDENCE,
+                "fixture-project",
+                "wm-run-002",
+                "story-001-workflow",
+                "fixture-session-001",
+                max_attempts=2,
+                retry_delay_seconds=0,
+                executor=executor,
+                platform="nt",
+                comspec="cmd.exe",
+            )
+
+        self.assertEqual(result["status"], "passed")
+        self.assertEqual(result["telemetry"]["attempt_count"], 2)
+        self.assertEqual(langfuse_attempts, 2)
     def test_windmill_entrypoint_delegates_to_adapter(self) -> None:
         script_path = WINDMILL_ROOT / "f/ccgs/story_check.py"
         spec = importlib.util.spec_from_file_location("ccgs_wm_story_check", script_path)
@@ -339,6 +494,16 @@ class WindmillAdapterSafetyTests(unittest.TestCase):
                 encoding="utf-8"
             )
         )
+        observed_meta = json.loads(
+            (WINDMILL_ROOT / "f/ccgs/story_observed_closeout.script.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        observed_flow = json.loads(
+            (WINDMILL_ROOT / "f/ccgs/story_observed_closeout__flow/flow.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
         flow = json.loads(
             (WINDMILL_ROOT / "f/ccgs/story_closeout__flow/flow.yaml").read_text(
                 encoding="utf-8"
@@ -360,6 +525,11 @@ class WindmillAdapterSafetyTests(unittest.TestCase):
         self.assertEqual(folder["display_name"], "CCGS Automation")
         self.assertEqual(check_meta["kind"], "script")
         self.assertEqual(closeout_meta["kind"], "script")
+        self.assertEqual(observed_meta["kind"], "script")
+        self.assertEqual(
+            observed_flow["value"]["modules"][0]["value"]["path"],
+            "f/ccgs/story_observed_closeout",
+        )
         self.assertEqual(
             check_meta["schema"]["required"],
             ["framework_root", "project_root", "story"],
@@ -378,6 +548,7 @@ class WindmillAdapterSafetyTests(unittest.TestCase):
         wrappers = [
             WINDMILL_ROOT / "f/ccgs/story_check.py",
             WINDMILL_ROOT / "f/ccgs/story_closeout.py",
+            WINDMILL_ROOT / "f/ccgs/story_observed_closeout.py",
         ]
         for path in wrappers:
             text = path.read_text(encoding="utf-8")
@@ -391,7 +562,8 @@ class WindmillAdapterSafetyTests(unittest.TestCase):
         )
         self.assertNotIn("Client/Assets", adapter)
         self.assertNotIn("Server/", adapter)
-        self.assertIn('ALLOWED_COMMANDS = {"doctor", "evidence-validate", "closeout"}', adapter)
+        for command in ("doctor", "evidence-validate", "closeout", "qdrant-query", "workflow-observe", "langfuse-export"):
+            self.assertIn(f'"{command}"', adapter)
 
 
 if __name__ == "__main__":

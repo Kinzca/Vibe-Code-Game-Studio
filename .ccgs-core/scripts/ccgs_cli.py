@@ -62,6 +62,7 @@ from ccgs_qdrant_adapter import (
     FastEmbedder,
     QdrantAdapterError,
     QdrantHttpStore,
+    QdrantTransportError,
     api_key_from_environment,
     build_index_plan,
     plan_report,
@@ -78,6 +79,7 @@ from ccgs_langfuse_adapter import (
     DEFAULT_HOST as DEFAULT_LANGFUSE_HOST,
     LangfuseAdapterError,
     LangfuseScoreClient,
+    LangfuseTransportError,
     OtelLangfuseExporter,
     build_langfuse_bundle,
     bundle_report as langfuse_bundle_report,
@@ -85,6 +87,13 @@ from ccgs_langfuse_adapter import (
     load_workflow_event,
     send_bundle as send_langfuse_bundle,
     validate_host as validate_langfuse_host,
+)
+from ccgs_workflow_observer import (
+    WorkflowObserverError,
+    build_workflow_event,
+    event_relative_path,
+    materialize_workflow_event,
+    workflow_event_report,
 )
 
 from ccgs_story_workflow import (
@@ -100,7 +109,7 @@ from ccgs_story_workflow import (
 )
 
 
-VERSION = "0.7.0"
+VERSION = "0.8.0"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -708,6 +717,9 @@ def command_qdrant_index(args: argparse.Namespace) -> int:
             "write" if args.write else "dry-run",
             sync,
         )
+    except QdrantTransportError as exc:
+        print(f"qdrant-index: {exc}", file=sys.stderr)
+        return 3
     except (QdrantAdapterError, OSError) as exc:
         print(f"qdrant-index: {exc}", file=sys.stderr)
         return 2
@@ -731,6 +743,9 @@ def command_qdrant_query(args: argparse.Namespace) -> int:
             _qdrant_store(args),
             FastEmbedder(args.embedding_model),
         )
+    except QdrantTransportError as exc:
+        print(f"qdrant-query: {exc}", file=sys.stderr)
+        return 3
     except (QdrantAdapterError, OSError) as exc:
         print(f"qdrant-query: {exc}", file=sys.stderr)
         return 2
@@ -738,6 +753,55 @@ def command_qdrant_query(args: argparse.Namespace) -> int:
     _print_json(report)
     return 0
 
+
+def command_workflow_observe(args: argparse.Namespace) -> int:
+    """Create or reuse one bounded workflow event under the CCGS data root."""
+
+    project = Path(args.project_root).resolve()
+    try:
+        if not project.is_dir():
+            raise WorkflowObserverError("explicit project root is not a directory")
+        data_dir = configured_data_dir(project, framework_root())
+        relative = event_relative_path(data_dir, args.event_id)
+        validate_write_target(project, project / relative, data_dir)
+        document = build_workflow_event(
+            project,
+            data_dir,
+            story_path=args.story,
+            evidence_path=args.evidence,
+            project_id=args.project_id,
+            event_id=args.event_id,
+            trace_key=args.trace_key,
+            session_id=args.session_id or args.event_id,
+            environment=args.environment,
+            surface=args.surface,
+            operation=args.operation,
+            status=args.status,
+            query=args.query,
+            retrieval_references=args.retrieval_reference,
+            failure_codes=args.failure_code,
+            timestamp=args.timestamp,
+            workflow_version=VERSION,
+        )
+        relative, written, document = materialize_workflow_event(
+            project,
+            data_dir,
+            document,
+            write=args.write,
+            atomic_write=atomic_write_text,
+        )
+        report = workflow_event_report(
+            relative,
+            document,
+            mode="write" if args.write else "dry-run",
+            written=written,
+        )
+    except (WorkflowObserverError, LangfuseAdapterError, PolicyError, OSError) as exc:
+        print(f"workflow-observe: {exc}", file=sys.stderr)
+        return 2
+
+    _print_json(report)
+    return 0
 
 def command_langfuse_export(args: argparse.Namespace) -> int:
     """Preview or send one privacy-bounded CCGS workflow observation."""
@@ -777,6 +841,9 @@ def command_langfuse_export(args: argparse.Namespace) -> int:
             send_result,
             allow_insecure_http=args.allow_insecure_http,
         )
+    except LangfuseTransportError as exc:
+        print(f"langfuse-export: {exc}", file=sys.stderr)
+        return 3
     except (LangfuseAdapterError, OSError) as exc:
         print(f"langfuse-export: {exc}", file=sys.stderr)
         return 2
@@ -1034,6 +1101,35 @@ def build_parser() -> argparse.ArgumentParser:
     )
     qdrant_query.set_defaults(handler=command_qdrant_query)
 
+    workflow_observe = subcommands.add_parser(
+        "workflow-observe",
+        help="Create or reuse one bounded Langfuse workflow event.",
+    )
+    workflow_observe.add_argument("--project-root", required=True)
+    workflow_observe.add_argument("--story", required=True)
+    workflow_observe.add_argument("--evidence", required=True)
+    workflow_observe.add_argument("--project-id", required=True)
+    workflow_observe.add_argument("--event-id", required=True)
+    workflow_observe.add_argument("--trace-key", required=True)
+    workflow_observe.add_argument("--session-id", default="")
+    workflow_observe.add_argument("--environment", default="automation")
+    workflow_observe.add_argument("--surface", default="windmill")
+    workflow_observe.add_argument("--operation", default="story-closeout")
+    workflow_observe.add_argument(
+        "--status",
+        required=True,
+        choices=("pass", "fail", "blocked", "error", "unknown", "passed", "failed"),
+    )
+    workflow_observe.add_argument("--query", default="")
+    workflow_observe.add_argument(
+        "--retrieval-reference", action="append", default=[]
+    )
+    workflow_observe.add_argument("--failure-code", action="append", default=[])
+    workflow_observe.add_argument("--timestamp", default="")
+    workflow_observe_mode = workflow_observe.add_mutually_exclusive_group(required=True)
+    workflow_observe_mode.add_argument("--dry-run", action="store_true")
+    workflow_observe_mode.add_argument("--write", action="store_true")
+    workflow_observe.set_defaults(handler=command_workflow_observe)
     langfuse_export = subcommands.add_parser(
         "langfuse-export",
         help="Preview or send a bounded CCGS workflow observation.",

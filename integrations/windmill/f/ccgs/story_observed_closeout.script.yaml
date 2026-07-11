@@ -1,0 +1,35 @@
+{
+  "summary": "Observed CCGS Story Closeout",
+  "description": "Retrieves Qdrant context, checks and closes a Story, writes a bounded event, and exports it to Langfuse through ccgs.cmd.",
+  "lock": "",
+  "kind": "script",
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "order": ["framework_root", "project_root", "story", "evidence", "project_id", "event_id", "trace_key", "session_id", "environment", "query", "apply", "qdrant_url", "qdrant_collection", "qdrant_embedding_model", "qdrant_limit", "langfuse_host", "langfuse_send", "allow_insecure_http", "max_attempts", "retry_delay_seconds", "timeout_seconds"],
+    "properties": {
+      "framework_root": {"type": "string"},
+      "project_root": {"type": "string"},
+      "story": {"type": "string"},
+      "evidence": {"type": "string"},
+      "project_id": {"type": "string"},
+      "event_id": {"type": "string"},
+      "trace_key": {"type": "string"},
+      "session_id": {"type": "string"},
+      "environment": {"type": "string", "default": "automation"},
+      "query": {"type": "string", "default": ""},
+      "apply": {"type": "boolean", "default": true},
+      "qdrant_url": {"type": "string", "default": "http://127.0.0.1:6333"},
+      "qdrant_collection": {"type": "string", "default": "ccgs-context"},
+      "qdrant_embedding_model": {"type": "string", "default": "sentence-transformers/all-MiniLM-L6-v2"},
+      "qdrant_limit": {"type": "integer", "minimum": 1, "maximum": 20, "default": 8},
+      "langfuse_host": {"type": "string", "default": "https://cloud.langfuse.com"},
+      "langfuse_send": {"type": "boolean", "default": true},
+      "allow_insecure_http": {"type": "boolean", "default": false},
+      "max_attempts": {"type": "integer", "minimum": 1, "maximum": 5, "default": 3},
+      "retry_delay_seconds": {"type": "number", "minimum": 0, "maximum": 60, "default": 1},
+      "timeout_seconds": {"type": "number", "minimum": 1, "maximum": 3600, "default": 120}
+    },
+    "required": ["framework_root", "project_root", "story", "evidence", "project_id", "event_id", "trace_key", "session_id"]
+  }
+}
