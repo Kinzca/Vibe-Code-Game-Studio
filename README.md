@@ -211,3 +211,15 @@ chunks, upserts before pruning stale points, and never scans game source.
 
 See `integrations/qdrant/README.md` for FastEmbed/Qdrant setup, source roots,
 incremental behavior, security boundaries, and query output.
+## Batch 5D Langfuse Adapter
+
+The Langfuse integration under `integrations/langfuse` exports bounded CCGS
+workflow events through the current OpenTelemetry endpoint. It traces Context
+Pack, retrieval, Story, Closeout, Evidence, and failure decisions without
+pretending to capture private Codex prompts, tokens, or costs.
+
+    .\ccgs.cmd langfuse-export --project-root D:\path\to\consumer --event ccgs-data\production\observability\events\story-closeout.json --dry-run
+    .\ccgs.cmd langfuse-export --project-root D:\path\to\consumer --event ccgs-data\production\observability\events\story-closeout.json --send
+
+See `integrations/langfuse/README.md` for the Event Schema, OpenTelemetry
+dependencies, credentials, Score behavior, retry semantics, and privacy policy.

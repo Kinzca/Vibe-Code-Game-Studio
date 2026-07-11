@@ -63,3 +63,11 @@ heading-aware chunks, payload Schema, stable project-scoped point IDs, offline
 dry-run, incremental zero-work reruns, changed-source updates, stale deletion,
 upsert-before-delete failure safety, model migrations, REST request shapes,
 bounded query results, URL security, and identical Unity/Godot/Cocos plans.
+## Langfuse Adapter Tests
+
+The Batch 5D suite verifies strict Workflow Event validation, deterministic
+trace/span/Score IDs, current Langfuse OTel attributes, summary-only privacy,
+secret and absolute-path rejection, timezone/status handling, read-only dry-run,
+trace-before-Score ordering, negative acknowledgement behavior, retry-stable
+Scores, environment-only credentials, host security, and identical
+Unity/Godot/Cocos reports.

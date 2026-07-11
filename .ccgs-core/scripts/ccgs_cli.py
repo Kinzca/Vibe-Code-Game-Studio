@@ -70,6 +70,23 @@ from ccgs_qdrant_adapter import (
     validate_identifier,
 )
 
+LANGFUSE_DIR = Path(__file__).resolve().parents[2] / "integrations" / "langfuse"
+if str(LANGFUSE_DIR) not in sys.path:
+    sys.path.insert(0, str(LANGFUSE_DIR))
+
+from ccgs_langfuse_adapter import (
+    DEFAULT_HOST as DEFAULT_LANGFUSE_HOST,
+    LangfuseAdapterError,
+    LangfuseScoreClient,
+    OtelLangfuseExporter,
+    build_langfuse_bundle,
+    bundle_report as langfuse_bundle_report,
+    credentials_from_environment as langfuse_credentials,
+    load_workflow_event,
+    send_bundle as send_langfuse_bundle,
+    validate_host as validate_langfuse_host,
+)
+
 from ccgs_story_workflow import (
     StoryWorkflowError,
     advance_report,
@@ -83,7 +100,7 @@ from ccgs_story_workflow import (
 )
 
 
-VERSION = "0.6.0"
+VERSION = "0.7.0"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -722,6 +739,52 @@ def command_qdrant_query(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_langfuse_export(args: argparse.Namespace) -> int:
+    """Preview or send one privacy-bounded CCGS workflow observation."""
+
+    project = Path(args.project_root).resolve()
+    try:
+        if not project.is_dir():
+            raise LangfuseAdapterError("explicit project root is not a directory")
+        data_dir = configured_data_dir(project, framework_root())
+        _, event = load_workflow_event(project, data_dir, args.event)
+        host = validate_langfuse_host(args.host, args.allow_insecure_http)
+        bundle = build_langfuse_bundle(event)
+        send_result = None
+        if args.send:
+            public_key, secret_key = langfuse_credentials(
+                args.public_key_env, args.secret_key_env
+            )
+            exporter = OtelLangfuseExporter(
+                host,
+                public_key,
+                secret_key,
+                timeout_seconds=args.timeout_seconds,
+                allow_insecure_http=args.allow_insecure_http,
+            )
+            scores = LangfuseScoreClient(
+                host,
+                public_key,
+                secret_key,
+                timeout_seconds=args.timeout_seconds,
+                allow_insecure_http=args.allow_insecure_http,
+            )
+            send_result = send_langfuse_bundle(bundle, exporter, scores)
+        report = langfuse_bundle_report(
+            bundle,
+            host,
+            "send" if args.send else "dry-run",
+            send_result,
+            allow_insecure_http=args.allow_insecure_http,
+        )
+    except (LangfuseAdapterError, OSError) as exc:
+        print(f"langfuse-export: {exc}", file=sys.stderr)
+        return 2
+
+    _print_json(report)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create the stable repository-safe CCGS CLI surface."""
 
@@ -970,6 +1033,55 @@ def build_parser() -> argparse.ArgumentParser:
         "--timeout-seconds", type=float, default=30.0, help="Qdrant request timeout."
     )
     qdrant_query.set_defaults(handler=command_qdrant_query)
+
+    langfuse_export = subcommands.add_parser(
+        "langfuse-export",
+        help="Preview or send a bounded CCGS workflow observation.",
+    )
+    langfuse_export.add_argument(
+        "--project-root", required=True, help="Explicit consumer project root."
+    )
+    langfuse_export.add_argument(
+        "--event",
+        required=True,
+        help="Workflow Event JSON under production/observability/events.",
+    )
+    langfuse_export.add_argument(
+        "--host", default=DEFAULT_LANGFUSE_HOST, help="Langfuse base URL."
+    )
+    langfuse_export.add_argument(
+        "--public-key-env",
+        default="LANGFUSE_PUBLIC_KEY",
+        help="Environment variable holding the Langfuse public key.",
+    )
+    langfuse_export.add_argument(
+        "--secret-key-env",
+        default="LANGFUSE_SECRET_KEY",
+        help="Environment variable holding the Langfuse secret key.",
+    )
+    langfuse_export.add_argument(
+        "--allow-insecure-http",
+        action="store_true",
+        help="Allow HTTP for a non-loopback Langfuse host.",
+    )
+    langfuse_export.add_argument(
+        "--timeout-seconds",
+        type=float,
+        default=30.0,
+        help="Langfuse request timeout.",
+    )
+    langfuse_mode = langfuse_export.add_mutually_exclusive_group(required=True)
+    langfuse_mode.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate and print the deterministic outbound preview only.",
+    )
+    langfuse_mode.add_argument(
+        "--send",
+        action="store_true",
+        help="Send the OTLP span and explicit scores to Langfuse.",
+    )
+    langfuse_export.set_defaults(handler=command_langfuse_export)
     return parser
 
 

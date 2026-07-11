@@ -6,6 +6,7 @@
   "expected_paths": [
     "ccgs-data/design/gdd/core-loop.md",
     "ccgs-data/production/epics/sample/story-001.md",
+    "ccgs-data/production/observability/events/story-001-closeout.json",
     "ccgs-data/production/qa/evidence/story-001.json",
     "ccgs-data/production/qa/evidence/story-001.md",
     "ccgs-data/production/qa/test-results/story-001-junit.xml",
