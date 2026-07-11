@@ -37,6 +37,18 @@ from ccgs_context_pack import (
     build_context_pack,
 )
 
+ALLURE_DIR = Path(__file__).resolve().parents[2] / "integrations" / "allure"
+if str(ALLURE_DIR) not in sys.path:
+    sys.path.insert(0, str(ALLURE_DIR))
+
+from ccgs_allure_adapter import (
+    AllureAdapterError,
+    build_allure_bundle,
+    bundle_manifest,
+    resolve_output,
+    write_allure_bundle,
+)
+
 from ccgs_story_workflow import (
     StoryWorkflowError,
     advance_report,
@@ -50,7 +62,7 @@ from ccgs_story_workflow import (
 )
 
 
-VERSION = "0.4.0"
+VERSION = "0.5.0"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -575,6 +587,48 @@ def command_closeout(args: argparse.Namespace) -> int:
     return 0 if report["verdict"] == "pass" else 1
 
 
+def command_allure_export(args: argparse.Namespace) -> int:
+    """Convert automated test results and Closeout Evidence into Allure files."""
+
+    project = Path(args.project_root).resolve()
+    data_dir = configured_data_dir(project, framework_root())
+    try:
+        story_path, story = load_story(project, args.story, data_dir)
+        evidence_path = args.evidence or default_evidence_path(
+            data_dir, story.relative_path
+        )
+        target, output_relative = resolve_output(project, data_dir, args.run_id)
+        validate_write_target(project, target, data_dir)
+        bundle = build_allure_bundle(
+            project,
+            data_dir,
+            story_path.relative_to(project).as_posix(),
+            evidence_path,
+            args.test_result,
+            args.run_id,
+            engine=args.engine,
+            environment=args.environment,
+            build_name=args.build_name,
+            build_url=args.build_url,
+            report_url=args.report_url,
+            build_order=args.build_order,
+            start_ms=args.start_ms,
+        )
+        written = write_allure_bundle(target, bundle) if args.write else False
+        report = bundle_manifest(
+            bundle,
+            output_relative,
+            "write" if args.write else "dry-run",
+            written,
+        )
+    except (AllureAdapterError, StoryWorkflowError, PolicyError, OSError) as exc:
+        print(f"allure-export: {exc}", file=sys.stderr)
+        return 2
+
+    _print_json(report)
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create the stable repository-safe CCGS CLI surface."""
 
@@ -699,6 +753,52 @@ def build_parser() -> argparse.ArgumentParser:
         help="Atomically write done state or stable failure reasons.",
     )
     closeout.set_defaults(handler=command_closeout)
+
+    allure_export = subcommands.add_parser(
+        "allure-export",
+        help="Export automated tests and Closeout Evidence as Allure results.",
+    )
+    allure_export.add_argument(
+        "--project-root", required=True, help="Explicit consumer project root."
+    )
+    allure_export.add_argument(
+        "--story", required=True, help="Story Markdown path inside production/epics."
+    )
+    allure_export.add_argument(
+        "--evidence",
+        default="",
+        help="Evidence JSON path. Defaults to the Story stem under production/qa/evidence.",
+    )
+    allure_export.add_argument(
+        "--test-result",
+        action="append",
+        required=True,
+        help="Normalized JSON or JUnit XML under production/qa/test-results. Repeatable.",
+    )
+    allure_export.add_argument(
+        "--run-id", required=True, help="Immutable output directory identifier."
+    )
+    allure_export.add_argument("--engine", default="", help="Optional engine label.")
+    allure_export.add_argument(
+        "--environment", default="", help="Optional environment label."
+    )
+    allure_export.add_argument("--build-name", default="", help="Executor build name.")
+    allure_export.add_argument("--build-url", default="", help="Executor build URL.")
+    allure_export.add_argument("--report-url", default="", help="Published report URL.")
+    allure_export.add_argument(
+        "--build-order", type=int, default=None, help="Optional non-negative build order."
+    )
+    allure_export.add_argument(
+        "--start-ms", type=int, default=0, help="Evidence timestamp in Unix milliseconds."
+    )
+    allure_mode = allure_export.add_mutually_exclusive_group(required=True)
+    allure_mode.add_argument(
+        "--dry-run", action="store_true", help="Print the exact result manifest without writing."
+    )
+    allure_mode.add_argument(
+        "--write", action="store_true", help="Atomically create the immutable result directory."
+    )
+    allure_export.set_defaults(handler=command_allure_export)
     return parser
 
 

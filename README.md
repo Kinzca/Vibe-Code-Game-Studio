@@ -185,3 +185,16 @@ returned as structured reports; only marked transport failures are retried.
 
 See integrations/windmill/README.md for worker requirements, sync configuration,
 Flow input, retry behavior, and the result contract.
+## Batch 5B Allure Adapter
+
+The Allure integration under `integrations/allure` combines normalized JSON or
+JUnit XML automation results with machine-readable Closeout Evidence through the
+stable `ccgs.cmd allure-export` interface. Preview the exact file manifest, then
+create one immutable result directory:
+
+    .\ccgs.cmd allure-export --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --test-result ccgs-data\production\qa\test-results\logic.json --run-id build-001 --dry-run
+    .\ccgs.cmd allure-export --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --test-result ccgs-data\production\qa\test-results\logic.json --run-id build-001 --write
+
+The adapter never executes tests or reads game source. See
+`integrations/allure/README.md` for the input contract, JUnit support, stable
+history identifiers, output files, and HTML generation command.

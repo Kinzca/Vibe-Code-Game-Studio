@@ -49,3 +49,10 @@ The Batch 5A suite verifies real ccgs.cmd delegation, read-only Story checks,
 automatic passing and failing Closeout, idempotence, failure collection,
 transport-only retries, permanent-error behavior, path and command boundaries,
 strict JSON-compatible Windmill YAML, and identical engine-overlay reports.
+## Allure Adapter Tests
+
+The Batch 5B suite verifies normalized JSON and JUnit aggregation, Closeout
+Evidence steps and attachments, stable history/test-case identifiers, unique run
+UUIDs, dry-run isolation, atomic immutable writes, idempotence, conflict refusal,
+status mapping, scoped paths, strict input validation, and identical reports
+across Unity, Godot, and Cocos overlays.

@@ -46,6 +46,11 @@ commands:
     mutates_project: explicit-write-only
     requires_project_root: true
     supports_dry_run: true
+  allure-export:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+    machine_readable_output: true
 
 automation:
   require_explicit_project_root_for_writes: true
@@ -145,3 +150,24 @@ windmill:
   sync_root: integrations/windmill/f
   sync_secrets: false
   flow: f/ccgs/story_closeout
+
+allure:
+  schema_version: "1.0"
+  adapter_root: integrations/allure
+  automated_test_schema: schemas/automated-test-results.schema.json
+  input_roots:
+    story: "{data_dir}/production/epics"
+    evidence: "{data_dir}/production/qa/evidence"
+    test_results: "{data_dir}/production/qa/test-results"
+  output_root: "{data_dir}/production/qa/allure-results/{run_id}"
+  supported_inputs:
+    - normalized-json
+    - junit-xml
+  closeout_evidence_result: true
+  stable_history_ids: true
+  run_unique_uuids: true
+  immutable_runs: true
+  updates: atomic-and-idempotent
+  executes_tests: false
+  direct_game_source_reads: false
+  direct_game_source_writes: false
