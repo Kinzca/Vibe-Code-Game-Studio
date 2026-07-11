@@ -20,6 +20,15 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
+from ccgs_codex_bridge import (
+    CodexBridgeError,
+    apply_codex_plan,
+    build_codex_plan,
+    codex_target_paths,
+    render_plan,
+    verify_codex_plan,
+)
+
 from ccgs_context_pack import (
     DEFAULT_MAX_CHARS_PER_FILE,
     DEFAULT_MAX_FILES,
@@ -29,7 +38,7 @@ from ccgs_context_pack import (
 )
 
 
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -441,6 +450,34 @@ def command_context_pack(args: argparse.Namespace) -> int:
     return 0
 
 
+def command_bootstrap(args: argparse.Namespace) -> int:
+    """Plan or apply one project-local AI bridge."""
+
+    project = Path(args.project_root).resolve()
+    if not project.is_dir():
+        print("bootstrap: consumer project root is missing", file=sys.stderr)
+        return 2
+
+    data_dir = configured_data_dir(project, framework_root())
+    try:
+        for relative in codex_target_paths():
+            validate_write_target(project, Path(relative), data_dir)
+        plan = build_codex_plan(framework_root(), project, data_dir)
+        mode = "write" if args.write else "dry-run"
+        if args.write:
+            apply_codex_plan(project, plan, atomic_write_text)
+            verify_codex_plan(project, plan)
+    except (CodexBridgeError, PolicyError, OSError) as exc:
+        print(f"bootstrap: {exc}", file=sys.stderr)
+        return 2
+
+    if args.json:
+        print(json.dumps(plan.manifest(mode), ensure_ascii=False, indent=2))
+    else:
+        print(render_plan(plan, mode), end="")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     """Create the stable repository-safe CCGS CLI surface."""
 
@@ -488,6 +525,18 @@ def build_parser() -> argparse.ArgumentParser:
         help=f"Maximum source characters in the pack. Default: {DEFAULT_MAX_TOTAL_CHARS}.",
     )
     context_pack.set_defaults(handler=command_context_pack)
+
+    bootstrap = subcommands.add_parser(
+        "bootstrap",
+        help="Generate project-local AI bridge files from framework templates.",
+    )
+    bootstrap.add_argument("--project-root", required=True, help="Explicit consumer project root.")
+    bootstrap.add_argument("--codex", action="store_true", required=True, help="Generate the Codex bridge.")
+    bootstrap_mode = bootstrap.add_mutually_exclusive_group(required=True)
+    bootstrap_mode.add_argument("--dry-run", action="store_true", help="Print the write manifest without changes.")
+    bootstrap_mode.add_argument("--write", action="store_true", help="Atomically apply changed bridge files.")
+    bootstrap.add_argument("--json", action="store_true", help="Emit a machine-readable write manifest.")
+    bootstrap.set_defaults(handler=command_bootstrap)
     return parser
 
 

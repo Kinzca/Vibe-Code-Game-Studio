@@ -36,6 +36,17 @@ Preview is the default. Write mode is restricted to the configured
 production/context directory. The older ccgs-story-context.py entrypoint remains
 available for compatibility with existing projects.
 
+
+## Codex Bridge Bootstrap
+
+Preview the project-local AGENTS and Skill write plan before applying it:
+
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --dry-run
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --write
+
+Bootstrap preserves content outside the CCGS-managed AGENTS block and refuses
+to replace same-name Skills that do not carry the CCGS management marker.
+
 ## Session-State Archive
 
 ```bash

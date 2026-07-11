@@ -28,3 +28,10 @@ The mature project fixture provides one Story with GDD, ADR, QA evidence, and
 session references. Its deterministic preview is stored under
 tests/golden/context-packs. Preview, dry-run, write, failure, limit, and engine
 overlay behavior are exercised through the public ccgs context-pack command.
+
+## Codex Bridge Golden Tests
+
+The Codex bootstrap suite verifies the JSON write manifest, exact generated
+AGENTS and Skill files, repeated-run idempotence, mtime preservation, managed
+block merging, unmanaged collision refusal, atomic cleanup, and identical
+outputs across Unity, Godot, and Cocos overlays.

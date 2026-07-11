@@ -29,6 +29,12 @@ commands:
     mutates_project: explicit-write-only
     requires_project_root: true
     supports_dry_run: true
+  bootstrap:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+    bridges:
+      - codex
 
 automation:
   require_explicit_project_root_for_writes: true
@@ -72,3 +78,20 @@ context_pack:
     max_chars_per_file: 6000
     max_total_chars: 24000
   missing_references: block-write
+
+codex_bridge:
+  schema_version: "1.0"
+  bridge_version: "1.0"
+  template_root: templates/codex
+  framework_resolution:
+    - standalone
+    - embedded-submodule
+    - external-environment
+  managed_targets:
+    - AGENTS.md
+    - .agents/skills/ccgs-context/SKILL.md
+    - .agents/skills/ccgs-workflow/SKILL.md
+  agents_strategy: managed-block
+  skill_collision: refuse-unmanaged
+  updates: atomic-and-hash-verified
+  unchanged_files: preserve

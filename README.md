@@ -37,6 +37,16 @@ CCGS production/context directory:
     .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --dry-run
     .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --write
 
+Batch 3B adds a project-local Codex Bridge. Inspect the write list first, then
+apply it explicitly:
+
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --dry-run
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --dry-run --json
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --write
+
+The bridge preserves consumer-owned AGENTS.md content and manages only its
+delimited block plus .agents/skills/ccgs-context and ccgs-workflow.
+
 ```bash
 # 1. 克隆框架
 git clone https://github.com/Kinzca/CCGS_Universal_Version.git my-game
