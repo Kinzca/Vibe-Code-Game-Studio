@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "kind": "project",
+  "id": "empty-project",
+  "description": "A consumer directory with no CCGS initialization.",
+  "expected_paths": []
+}

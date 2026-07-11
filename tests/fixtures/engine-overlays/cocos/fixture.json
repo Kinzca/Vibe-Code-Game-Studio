@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "kind": "engine-overlay",
+  "id": "cocos",
+  "description": "Minimal synthetic Cocos Creator project markers.",
+  "expected_paths": [
+    "package.json",
+    "assets/scripts/main.ts",
+    "settings/v2/packages/project.json"
+  ]
+}

@@ -71,7 +71,7 @@ source or game runtime files.
 
 ## Validation Criteria
 
-- `ccgs doctor` identifies standalone, embedded, and external layouts.
+- `ccgs doctor` identifies standalone, embedded-submodule, and external layouts.
 - `ccgs doctor --json` provides stable machine-readable results.
 - Policy tests reject representative Unity, Godot, Cocos Creator, generic source,
   and out-of-root paths.

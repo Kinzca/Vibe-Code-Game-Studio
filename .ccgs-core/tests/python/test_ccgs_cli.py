@@ -64,6 +64,38 @@ class WritePolicyTests(unittest.TestCase):
                     CCGS_CLI.validate_write_target(self.project, target, "ccgs-data")
 
 
+class RepositoryModeTests(unittest.TestCase):
+    """Repository topology labels must remain stable for automation callers."""
+
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = Path(self.temp.name)
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_standalone_layout(self) -> None:
+        framework = self.root / "standalone"
+        framework.mkdir()
+        self.assertEqual(CCGS_CLI.repository_mode(framework, framework), "standalone")
+
+    def test_embedded_submodule_layout(self) -> None:
+        project = self.root / "consumer"
+        framework = project / ".ccgs-upstream"
+        framework.mkdir(parents=True)
+        self.assertEqual(
+            CCGS_CLI.repository_mode(project, framework),
+            "embedded-submodule",
+        )
+
+    def test_external_layout(self) -> None:
+        project = self.root / "consumer"
+        framework = self.root / "framework"
+        project.mkdir()
+        framework.mkdir()
+        self.assertEqual(CCGS_CLI.repository_mode(project, framework), "external")
+
+
 class DoctorTests(unittest.TestCase):
     """Doctor output must be structured and read-only."""
 

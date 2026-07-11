@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "kind": "project",
+  "id": "malformed-project",
+  "description": "An intentionally invalid CCGS project for failure-path tests.",
+  "expected_paths": [
+    "CCGS-Data/production/epics/broken/story-001.md",
+    "CCGS-Data/production/context/broken.json"
+  ]
+}

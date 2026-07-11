@@ -29,3 +29,21 @@ automation:
   require_explicit_project_root_for_writes: true
   require_dry_run_support: true
   require_machine_readable_output: true
+
+testing:
+  fixture_root: tests/fixtures
+  materialization: temporary-directory
+  cleanup: automatic
+  lifecycle_fixtures:
+    - empty-project
+    - minimal-project
+    - mature-project
+    - malformed-project
+  engine_overlays:
+    - unity
+    - godot
+    - cocos
+  repository_layouts:
+    - standalone
+    - embedded-submodule
+    - external

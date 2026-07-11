@@ -22,6 +22,12 @@ The repository safety policy is engine-agnostic: only CCGS-owned data and AI
 entry paths are writable. Unity, Godot, Cocos Creator, and other engine-specific
 paths are covered by the same default-deny rule.
 
+Batch 2 provides synthetic lifecycle fixtures and engine overlays under
+tests/fixtures. Tests materialize them in disposable operating-system temporary
+directories:
+
+    python tests/run_tests.py
+
 ```bash
 # 1. 克隆框架
 git clone https://github.com/Kinzca/CCGS_Universal_Version.git my-game

@@ -1,0 +1,23 @@
+# Isolated CCGS Fixtures
+
+This directory contains synthetic, engine-neutral project templates for CCGS
+workflow tests. The committed fixtures are stable source inputs. Tests must use
+fixture_workspace.materialized_fixture to copy them into an operating-system
+temporary directory before generating context packs, bootstrap files, state
+transitions, or evidence.
+
+Temporary workspaces are deleted automatically when the context manager exits.
+The committed fixture sources must remain unchanged.
+
+## Dimensions
+
+- Lifecycle: empty-project, minimal-project, mature-project, malformed-project
+- Engine overlays: unity, godot, cocos
+- Repository layouts: standalone, embedded-submodule, external
+
+Lifecycle fixtures and engine overlays are composed at test runtime. Repository
+layouts are constructed dynamically so tests do not commit nested Git metadata.
+
+## Run
+
+    python tests/run_tests.py

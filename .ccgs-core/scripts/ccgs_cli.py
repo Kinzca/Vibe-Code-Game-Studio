@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Sequence
 
 
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -82,11 +82,13 @@ def git_toplevel(path: Path) -> Path | None:
 def repository_mode(project: Path, framework: Path) -> str:
     """Classify standalone, embedded-submodule, or external framework use."""
 
+    project = project.resolve()
+    framework = framework.resolve()
     if project == framework:
         return "standalone"
     try:
         framework.relative_to(project)
-        return "embedded"
+        return "embedded-submodule"
     except ValueError:
         return "external"
 
@@ -227,15 +229,15 @@ def build_doctor_report(project: Path) -> dict[str, object]:
                 )
             )
 
-    if mode == "embedded":
+    if mode == "embedded-submodule":
         isolated = framework_git is not None and project_git is not None and framework_git != project_git
         checks.append(
             Check(
                 "boundary.git",
                 "pass" if isolated else "error",
-                "embedded framework has an independent Git boundary"
+                "embedded-submodule framework has an independent Git boundary"
                 if isolated
-                else "embedded framework resolves to the consumer Git repository",
+                else "embedded-submodule framework resolves to the consumer Git repository",
                 str(framework_git or framework),
             )
         )
