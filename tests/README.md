@@ -42,3 +42,10 @@ The Batch 4 suite covers the complete state transition matrix, Evidence Schema
 validation, dry-run isolation, atomic writes, repeated-run timestamp
 preservation, passing closeout, failure reason writeback, owned-tree boundaries,
 and identical Unity, Godot, and Cocos reports.
+
+## Windmill Adapter Tests
+
+The Batch 5A suite verifies real ccgs.cmd delegation, read-only Story checks,
+automatic passing and failing Closeout, idempotence, failure collection,
+transport-only retries, permanent-error behavior, path and command boundaries,
+strict JSON-compatible Windmill YAML, and identical engine-overlay reports.

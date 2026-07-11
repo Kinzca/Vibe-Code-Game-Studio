@@ -1,0 +1,108 @@
+{
+  "summary": "CCGS Story Closeout",
+  "description": "Runs the repository-safe CCGS closeout adapter. Business failures are returned as structured reports; only marked transport errors are retried.",
+  "value": {
+    "modules": [
+      {
+        "id": "ccgs_story_closeout",
+        "summary": "Check and close out Story",
+        "value": {
+          "type": "script",
+          "path": "f/ccgs/story_closeout",
+          "input_transforms": {
+            "framework_root": {
+              "type": "javascript",
+              "expr": "flow_input.framework_root"
+            },
+            "project_root": {
+              "type": "javascript",
+              "expr": "flow_input.project_root"
+            },
+            "story": {
+              "type": "javascript",
+              "expr": "flow_input.story"
+            },
+            "evidence": {
+              "type": "javascript",
+              "expr": "flow_input.evidence"
+            },
+            "apply": {
+              "type": "javascript",
+              "expr": "flow_input.apply"
+            },
+            "max_attempts": {
+              "type": "static",
+              "value": 1
+            },
+            "retry_delay_seconds": {
+              "type": "static",
+              "value": 0
+            },
+            "timeout_seconds": {
+              "type": "javascript",
+              "expr": "flow_input.timeout_seconds"
+            }
+          }
+        },
+        "retry": {
+          "constant": {
+            "attempts": 2,
+            "seconds": 5
+          },
+          "retry_if": {
+            "expr": "error.message.includes('[CCGS_RETRYABLE]')"
+          }
+        }
+      }
+    ],
+    "same_worker": true
+  },
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "order": [
+      "framework_root",
+      "project_root",
+      "story",
+      "evidence",
+      "apply",
+      "timeout_seconds"
+    ],
+    "properties": {
+      "framework_root": {
+        "type": "string",
+        "description": "Mounted CCGS framework repository containing ccgs.cmd."
+      },
+      "project_root": {
+        "type": "string",
+        "description": "Explicit consumer project root mounted on the Windows worker."
+      },
+      "story": {
+        "type": "string",
+        "description": "Project-relative Story path under the configured production/epics tree."
+      },
+      "evidence": {
+        "type": "string",
+        "description": "Optional project-relative Evidence JSON path.",
+        "default": ""
+      },
+      "apply": {
+        "type": "boolean",
+        "description": "Apply closeout through ccgs.cmd after the read-only check.",
+        "default": true
+      },
+      "timeout_seconds": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 3600,
+        "default": 120
+      }
+    },
+    "required": [
+      "framework_root",
+      "project_root",
+      "story"
+    ]
+  },
+  "ws_error_handler_muted": false
+}

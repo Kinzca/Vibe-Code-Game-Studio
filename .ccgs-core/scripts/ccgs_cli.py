@@ -50,7 +50,7 @@ from ccgs_story_workflow import (
 )
 
 
-VERSION = "0.3.0"
+VERSION = "0.4.0"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}

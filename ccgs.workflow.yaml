@@ -128,3 +128,20 @@ evidence:
   format: json
   requires_acceptance_coverage: true
   requires_passing_checks: true
+
+windmill:
+  schema_version: "1.0"
+  adapter_root: integrations/windmill
+  worker_platform: windows
+  entrypoint: ccgs.cmd
+  allowed_commands:
+    - doctor
+    - evidence-validate
+    - closeout
+  direct_project_reads: false
+  direct_game_source_writes: false
+  business_failures_retryable: false
+  transport_failures_retryable: true
+  sync_root: integrations/windmill/f
+  sync_secrets: false
+  flow: f/ccgs/story_closeout

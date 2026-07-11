@@ -175,3 +175,13 @@ evidence contract. Inspect transitions and closeouts before applying them:
 A passing closeout advances review to done. A failing write preserves the Story
 state and updates only the CCGS-managed closeout block with stable failure
 reasons. The evidence schema is schemas/evidence.schema.json.
+
+## Batch 5A Windmill Adapter
+
+The Windmill integration under integrations/windmill exposes read-only Story
+checks and automatic Closeout through the stable ccgs.cmd interface. Windmill
+does not parse CCGS documents or edit game source. Business failures are
+returned as structured reports; only marked transport failures are retried.
+
+See integrations/windmill/README.md for worker requirements, sync configuration,
+Flow input, retry behavior, and the result contract.
