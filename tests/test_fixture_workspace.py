@@ -45,11 +45,7 @@ class FixtureSourceTests(unittest.TestCase):
     """Committed fixture inputs must remain synthetic and structurally valid."""
 
     def test_repository_has_no_generated_test_artifacts(self) -> None:
-        generated = [
-            path
-            for root in (ROOT / "tests", ROOT / ".ccgs-core" / "tests" / "python")
-            for path in root.rglob("__pycache__")
-        ]
+        generated = list(ROOT.rglob("__pycache__"))
         self.assertEqual(generated, [])
 
     def test_engine_overlay_json_markers_are_valid(self) -> None:

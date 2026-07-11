@@ -18,6 +18,7 @@ $env:CCGS_PYTHON = "C:\path\to\python.exe" # only needed when Python is not on P
 `doctor` and `policy` are read-only. Framework development belongs in this
 repository; a consumer game repository is changed only by an explicit future
 bootstrap or upgrade command.
+
 The repository safety policy is engine-agnostic: only CCGS-owned data and AI
 entry paths are writable. Unity, Godot, Cocos Creator, and other engine-specific
 paths are covered by the same default-deny rule.
@@ -27,6 +28,14 @@ tests/fixtures. Tests materialize them in disposable operating-system temporary
 directories:
 
     python tests/run_tests.py
+
+Batch 3A adds a bounded Context Pack command. Preview is read-only; dry-run
+validates a target; write mode persists one Markdown pack under the consumer
+CCGS production/context directory:
+
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --dry-run
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --write
 
 ```bash
 # 1. 克隆框架
@@ -121,7 +130,7 @@ python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "当前任务"
 执行 Story 前可生成专属 context pack：
 
 ```bash
-python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/epics/<epic>/<story>.md --write
+.\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\<epic>\<story>.md --write
 ```
 
 生成文件位于 `ccgs-data/production/context/`，默认不加 `--write` 时只输出到终端。

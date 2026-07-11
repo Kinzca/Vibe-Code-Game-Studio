@@ -24,6 +24,11 @@ commands:
     mutates_project: false
   policy:
     mutates_project: false
+  context-pack:
+    default_mode: preview
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
 
 automation:
   require_explicit_project_root_for_writes: true
@@ -47,3 +52,23 @@ testing:
     - standalone
     - embedded-submodule
     - external
+
+context_pack:
+  schema_version: "1.0"
+  output_root: "{data_dir}/production/context"
+  default_output: "{data_dir}/production/context/packs/{story_stem}-context-pack.md"
+  reference_sources:
+    - frontmatter
+    - body-paths
+    - adr-ids
+  selection_order:
+    - story
+    - gdd
+    - adr
+    - evidence
+    - session
+  limits:
+    max_files: 8
+    max_chars_per_file: 6000
+    max_total_chars: 24000
+  missing_references: block-write

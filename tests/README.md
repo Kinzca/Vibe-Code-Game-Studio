@@ -21,3 +21,10 @@ layouts are constructed dynamically so tests do not commit nested Git metadata.
 ## Run
 
     python tests/run_tests.py
+
+## Context Pack Golden Tests
+
+The mature project fixture provides one Story with GDD, ADR, QA evidence, and
+session references. Its deterministic preview is stored under
+tests/golden/context-packs. Preview, dry-run, write, failure, limit, and engine
+overlay behavior are exercised through the public ccgs context-pack command.

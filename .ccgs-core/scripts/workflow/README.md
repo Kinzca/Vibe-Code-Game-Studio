@@ -27,14 +27,14 @@ Generate the current low-cost startup memo:
 python3 .ccgs-core/scripts/workflow/ccgs-current-context.py --write
 ```
 
-Generate a story-specific context pack before readiness/dev/done work:
+Generate a repository-safe Story Context Pack through the public CLI:
 
-```bash
-python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/epics/example/story-001-example.md --write
-```
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\example\story-001.md
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\example\story-001.md --write
 
-Default behavior prints to stdout. Add `--write` only when you want to persist
-the generated cache under `ccgs-data/production/context/`.
+Preview is the default. Write mode is restricted to the configured
+production/context directory. The older ccgs-story-context.py entrypoint remains
+available for compatibility with existing projects.
 
 ## Session-State Archive
 

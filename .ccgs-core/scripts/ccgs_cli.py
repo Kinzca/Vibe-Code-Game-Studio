@@ -9,12 +9,27 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Sequence
 
+sys.dont_write_bytecode = True
 
-VERSION = "0.1.2"
+SCRIPT_DIR = Path(__file__).resolve().parent
+if str(SCRIPT_DIR) not in sys.path:
+    sys.path.insert(0, str(SCRIPT_DIR))
+
+from ccgs_context_pack import (
+    DEFAULT_MAX_CHARS_PER_FILE,
+    DEFAULT_MAX_FILES,
+    DEFAULT_MAX_TOTAL_CHARS,
+    ContextPackError,
+    build_context_pack,
+)
+
+
+VERSION = "0.2.0"
 DEFAULT_DATA_DIR = "ccgs-data"
 MINIMUM_PYTHON = (3, 10)
 ENTRY_FILES = {"AGENTS.md", "CLAUDE.md", "GEMINI.md", ".cursorrules"}
@@ -127,6 +142,43 @@ def validate_write_target(project: Path, target: Path, data_dir: str) -> Path:
         "target is outside CCGS-owned project paths "
         f"({data_dir}, .agents, or generated entry files)"
     )
+
+
+def validate_context_output(project: Path, target: Path, data_dir: str) -> Path:
+    """Restrict Context Pack writes to Markdown under production/context."""
+
+    candidate = validate_write_target(project, target, data_dir)
+    context_root = (project.resolve() / data_dir / "production" / "context").resolve()
+    try:
+        candidate.relative_to(context_root)
+    except ValueError as exc:
+        raise PolicyError("Context Pack output must stay under the configured production/context directory") from exc
+    if candidate.suffix.casefold() != ".md":
+        raise PolicyError("Context Pack output must use the .md extension")
+    return candidate
+
+
+def atomic_write_text(target: Path, content: str) -> None:
+    """Atomically replace one UTF-8 text artifact in its destination directory."""
+
+    target.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            prefix=f".{target.name}.",
+            suffix=".tmp",
+            dir=target.parent,
+            delete=False,
+        ) as handle:
+            handle.write(content)
+            temporary_path = Path(handle.name)
+        temporary_path.replace(target)
+    finally:
+        if temporary_path and temporary_path.exists():
+            temporary_path.unlink()
 
 
 def utf8_check(path: Path, key: str) -> Check:
@@ -345,8 +397,52 @@ def command_policy(args: argparse.Namespace) -> int:
     return exit_code
 
 
+def command_context_pack(args: argparse.Namespace) -> int:
+    """Preview or persist one bounded Story Context Pack."""
+
+    project = Path(args.project_root).resolve()
+    data_dir = configured_data_dir(project, framework_root())
+    if args.output and not (args.write or args.dry_run):
+        print("context-pack: --output requires --write or --dry-run", file=sys.stderr)
+        return 2
+
+    try:
+        pack = build_context_pack(
+            project,
+            args.story,
+            data_dir,
+            max_files=args.max_files,
+            max_chars_per_file=args.max_chars_per_file,
+            max_total_chars=args.max_total_chars,
+        )
+        requested_output = Path(args.output or pack.output_path)
+        target = None
+        if args.write or args.dry_run:
+            target = validate_context_output(project, requested_output, data_dir)
+    except (ContextPackError, PolicyError) as exc:
+        print(f"context-pack: {exc}", file=sys.stderr)
+        return 2
+
+    if pack.missing_references:
+        if not args.write:
+            print(pack.markdown, end="")
+        print(
+            "context-pack: explicit references are missing; refusing to write",
+            file=sys.stderr,
+        )
+        return 1
+
+    if args.write:
+        assert target is not None
+        atomic_write_text(target, pack.markdown)
+        print(target.relative_to(project).as_posix())
+    else:
+        print(pack.markdown, end="")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
-    """Create the stable batch 0/1 CLI surface."""
+    """Create the stable repository-safe CCGS CLI surface."""
 
     parser = argparse.ArgumentParser(prog="ccgs", description="CCGS repository-safe workflow CLI.")
     parser.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
@@ -362,6 +458,36 @@ def build_parser() -> argparse.ArgumentParser:
     policy.add_argument("--target", required=True, help="Prospective absolute or project-relative write target.")
     policy.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     policy.set_defaults(handler=command_policy)
+
+    context_pack = subcommands.add_parser(
+        "context-pack",
+        help="Build a bounded Story Context Pack.",
+    )
+    context_pack.add_argument("--project-root", required=True, help="Explicit consumer project root.")
+    context_pack.add_argument("--story", required=True, help="Story Markdown path inside production/epics.")
+    mode = context_pack.add_mutually_exclusive_group()
+    mode.add_argument("--write", action="store_true", help="Persist the pack under production/context.")
+    mode.add_argument("--dry-run", action="store_true", help="Validate the output target without writing.")
+    context_pack.add_argument("--output", default="", help="Custom Markdown output under production/context.")
+    context_pack.add_argument(
+        "--max-files",
+        type=int,
+        default=DEFAULT_MAX_FILES,
+        help=f"Maximum selected files. Default: {DEFAULT_MAX_FILES}.",
+    )
+    context_pack.add_argument(
+        "--max-chars-per-file",
+        type=int,
+        default=DEFAULT_MAX_CHARS_PER_FILE,
+        help=f"Maximum characters per source. Default: {DEFAULT_MAX_CHARS_PER_FILE}.",
+    )
+    context_pack.add_argument(
+        "--max-total-chars",
+        type=int,
+        default=DEFAULT_MAX_TOTAL_CHARS,
+        help=f"Maximum source characters in the pack. Default: {DEFAULT_MAX_TOTAL_CHARS}.",
+    )
+    context_pack.set_defaults(handler=command_context_pack)
     return parser
 
 
