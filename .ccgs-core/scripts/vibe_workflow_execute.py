@@ -609,12 +609,39 @@ def _terminate_process_tree(process: Any, grace_seconds: float) -> None:
             return
 
     if os.name == "nt":
-        descendants = _snapshot_windows_descendants(process.pid)
+        try:
+            descendants = _snapshot_windows_descendants(process.pid)
+        except (AttributeError, ImportError, OSError):
+            # Some native Windows Python distributions can execute subprocesses
+            # while their optional ctypes extension is unavailable. Keep the
+            # parent alive long enough for taskkill /T /F to reclaim its tree.
+            _signal_process_tree(process, force=True)
+            try:
+                process.wait(timeout=grace_seconds)
+            except (subprocess.TimeoutExpired, TimeoutError):
+                try:
+                    process.kill()
+                    process.wait()
+                except (OSError, ProcessLookupError):
+                    pass
+            return
         _signal_process_tree(process, force=False)
         deadline = time.monotonic() + grace_seconds
         while time.monotonic() < deadline:
             process.poll()
-            descendants.update(_snapshot_windows_descendants(process.pid))
+            try:
+                descendants.update(_snapshot_windows_descendants(process.pid))
+            except (AttributeError, ImportError, OSError):
+                _signal_process_tree(process, force=True)
+                try:
+                    process.wait(timeout=grace_seconds)
+                except (subprocess.TimeoutExpired, TimeoutError):
+                    try:
+                        process.kill()
+                        process.wait()
+                    except (OSError, ProcessLookupError):
+                        pass
+                return
             time.sleep(_POLL_SECONDS)
         _signal_process_tree(process, force=True)
         _force_terminate_windows_pids(tuple(descendants))

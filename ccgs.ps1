@@ -1,9 +1,4 @@
-[CmdletBinding()]
-param(
-    [Parameter(ValueFromRemainingArguments = $true)]
-    [AllowEmptyString()]
-    [string[]] $Arguments
-)
+$Arguments = @($args)
 
 $ErrorActionPreference = "Stop"
 $cli = Join-Path $PSScriptRoot ".ccgs-core\scripts\ccgs_cli.py"
