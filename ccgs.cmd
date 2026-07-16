@@ -5,7 +5,7 @@ set "CCGS_ROOT=%~dp0"
 set "CCGS_CLI=%CCGS_ROOT%.ccgs-core\scripts\ccgs_cli.py"
 
 if not exist "%CCGS_CLI%" (
-  echo VIBE_LAUNCHER_ERROR CLI_NOT_FOUND 1>&2
+  1>&2 echo VIBE_LAUNCHER_ERROR CLI_NOT_FOUND
   exit /b 2
 )
 
@@ -38,5 +38,5 @@ python.exe "%CCGS_CLI%" %*
 exit /b %ERRORLEVEL%
 
 :python_missing
-echo VIBE_LAUNCHER_ERROR PYTHON_NOT_FOUND 1>&2
+1>&2 echo VIBE_LAUNCHER_ERROR PYTHON_NOT_FOUND
 exit /b 2

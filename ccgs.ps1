@@ -1,6 +1,7 @@
 [CmdletBinding()]
 param(
     [Parameter(ValueFromRemainingArguments = $true)]
+    [AllowEmptyString()]
     [string[]] $Arguments
 )
 
