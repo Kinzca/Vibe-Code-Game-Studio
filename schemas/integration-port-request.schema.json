@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/integration-port-request.schema.json",
+  "title": "Integration Port Request Contract 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "request_id",
+    "project_id",
+    "port",
+    "operation",
+    "capability",
+    "payload",
+    "references"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "1.0"
+    },
+    "request_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "project_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "port": {
+      "$ref": "#/$defs/port"
+    },
+    "operation": {
+      "$ref": "#/$defs/operation"
+    },
+    "capability": {
+      "$ref": "#/$defs/identifier"
+    },
+    "payload": {
+      "type": "object",
+      "x-vibe-runtime-validation": {
+        "finite_json": true,
+        "max_canonical_utf8_bytes": 1048576,
+        "max_depth": 64,
+        "sensitive_payload_rules": "1.0"
+      }
+    },
+    "references": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1024,
+        "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*\\\\)[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "orchestration"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "trigger"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "retrieval"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "retrieve"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "observability"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "export_trace"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "reporting"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "export_report"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "port": {
+      "enum": [
+        "orchestration",
+        "retrieval",
+        "observability",
+        "reporting"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "trigger",
+        "retrieve",
+        "export_trace",
+        "export_report"
+      ]
+    }
+  }
+}

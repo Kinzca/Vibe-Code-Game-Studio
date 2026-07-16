@@ -1,0 +1,30 @@
+---
+name: ccgs-context
+description: Build and use a bounded CCGS Story Context Pack before focused work.
+argument-hint: "[story path]"
+user-invocable: true
+allowed-tools: Read, Glob, Grep, Bash
+---
+
+<!-- CCGS CODEX BRIDGE:MANAGED -->
+
+# CCGS Context
+
+Project data root: ccgs-data
+Bridge version: 1.0
+
+## Invocation Protocol
+
+1. Resolve the CCGS CLI from the project root, .ccgs-upstream, or the
+   CCGS_FRAMEWORK_ROOT environment variable.
+2. Run context-pack in preview mode with an explicit --project-root and --story.
+3. Inspect the Source Manifest and Missing References sections before opening
+   additional project documents.
+4. Read only the selected sources unless the task clearly requires more.
+5. Use --write only when the user or workflow requires a persisted pack.
+6. If explicit references are missing, repair the Story or referenced documents
+   before implementation.
+
+Example arguments:
+
+    context-pack --project-root <consumer-project> --story ccgs-data/production/epics/<epic>/<story>.md

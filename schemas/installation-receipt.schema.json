@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/installation-receipt.schema.json",
+  "title": "Installation Receipt 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "framework_version", "bridge_version", "manifest_schema_version", "managed_files"],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "framework_version": {"$ref": "#/$defs/version"},
+    "bridge_version": {"$ref": "#/$defs/version"},
+    "manifest_schema_version": {"$ref": "#/$defs/version"},
+    "managed_files": {
+      "type": "array",
+      "maxItems": 1000,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/managed_file"}
+    }
+  },
+  "$defs": {
+    "version": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"},
+    "path": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^(?!.*(?:^|/)\\.{1,2}(?:/|$))[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "managed_file": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/$defs/path"}, "sha256": {"$ref": "#/$defs/sha256"}}
+    }
+  }
+}

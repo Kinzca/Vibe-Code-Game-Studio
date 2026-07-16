@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "kind": "project",
+  "id": "mature-project",
+  "description": "A synthetic project with design, architecture, story, and QA evidence.",
+  "expected_paths": [
+    "ccgs-data/design/gdd/core-loop.md",
+    "ccgs-data/production/epics/sample/story-001.md",
+    "ccgs-data/production/observability/events/story-001-closeout.json",
+    "ccgs-data/production/qa/evidence/story-001.json",
+    "ccgs-data/production/qa/evidence/story-001.md",
+    "ccgs-data/production/qa/test-results/story-001-junit.xml",
+    "ccgs-data/production/qa/test-results/story-001-tests.json",
+    "ccgs-data/production/session-state/active.md",
+    "ccgs-data/project-docs/architecture/ADR-0001-deterministic-loop.md"
+  ]
+}

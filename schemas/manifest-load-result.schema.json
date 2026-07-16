@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/manifest-load-result.schema.json",
+  "title": "Manifest Load Result 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "ok", "mode", "schema_version", "schema_path", "manifest_path", "steps"],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "ok": {"const": true},
+    "mode": {"enum": ["diagnostic", "execution-request"]},
+    "schema_version": {"const": "1.0"},
+    "schema_path": {"const": "schemas/project-workflow-manifest.schema.json"},
+    "manifest_path": {"type": "string", "minLength": 1},
+    "steps": {"type": "array", "items": {"$ref": "project-workflow-manifest.schema.json#/$defs/step"}},
+    "retrieval": {"$ref": "project-workflow-manifest.schema.json#/$defs/retrieval"}
+  }
+}

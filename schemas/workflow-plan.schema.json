@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/workflow-plan.schema.json",
+  "title": "Workflow Plan 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "ok", "plan_id", "step_order", "steps"],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "ok": {"const": true},
+    "plan_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "step_order": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "steps": {"type": "array", "items": {"$ref": "project-workflow-manifest.schema.json#/$defs/step"}}
+  }
+}

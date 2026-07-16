@@ -1,0 +1,10 @@
+{
+  "schema_version": "1.0",
+  "kind": "engine-overlay",
+  "id": "unity",
+  "description": "Minimal synthetic Unity project markers.",
+  "expected_paths": [
+    "ProjectSettings/ProjectVersion.txt",
+    "Assets/Fixture.Runtime.asmdef"
+  ]
+}

@@ -6,6 +6,47 @@
 
 ## 快速开始
 
+### Windows / Codex
+
+```powershell
+$env:CCGS_PYTHON = "C:\path\to\python.exe" # only needed when Python is not on PATH
+.\ccgs.cmd doctor
+.\ccgs.cmd doctor --project-root D:\path\to\consumer --json
+.\ccgs.cmd policy --project-root D:\path\to\consumer --target src\Game.cs
+```
+
+`doctor` and `policy` are read-only. Framework development belongs in this
+repository; a consumer game repository is changed only by an explicit future
+bootstrap or upgrade command.
+
+The repository safety policy is engine-agnostic: only CCGS-owned data and AI
+entry paths are writable. Unity, Godot, Cocos Creator, and other engine-specific
+paths are covered by the same default-deny rule.
+
+Batch 2 provides synthetic lifecycle fixtures and engine overlays under
+tests/fixtures. Tests materialize them in disposable operating-system temporary
+directories:
+
+    python tests/run_tests.py
+
+Batch 3A adds a bounded Context Pack command. Preview is read-only; dry-run
+validates a target; write mode persists one Markdown pack under the consumer
+CCGS production/context directory:
+
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --dry-run
+    .\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --write
+
+Batch 3B adds a project-local Codex Bridge. Inspect the write list first, then
+apply it explicitly:
+
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --dry-run
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --dry-run --json
+    .\ccgs.cmd bootstrap --project-root D:\path\to\consumer --codex --write
+
+The bridge preserves consumer-owned AGENTS.md content and manages only its
+delimited block plus .agents/skills/ccgs-context and ccgs-workflow.
+
 ```bash
 # 1. 克隆框架
 git clone https://github.com/Kinzca/CCGS_Universal_Version.git my-game
@@ -99,7 +140,7 @@ python3 .ccgs-core/scripts/workflow/ccgs-context-router.py "当前任务"
 执行 Story 前可生成专属 context pack：
 
 ```bash
-python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/epics/<epic>/<story>.md --write
+.\ccgs.cmd context-pack --project-root D:\path\to\consumer --story ccgs-data\production\epics\<epic>\<story>.md --write
 ```
 
 生成文件位于 `ccgs-data/production/context/`，默认不加 `--write` 时只输出到终端。
@@ -120,3 +161,72 @@ python3 .ccgs-core/scripts/workflow/ccgs-story-context.py ccgs-data/production/e
 A special and heartfelt thanks to **[Donchitos/Claude-Code-Game-Studios](https://github.com/Donchitos/Claude-Code-Game-Studios)**.
 
 While this universal version features a significantly diverged structure to support data-driven decoupling, the original repository served as the foundational inspiration and conceptual origin for this framework. We are deeply grateful for the groundbreaking work that made this possible.
+
+## Batch 4 Story Automation
+
+Batch 4 adds an engine-agnostic Story state machine and machine-readable
+evidence contract. Inspect transitions and closeouts before applying them:
+
+    .\ccgs.cmd story-advance --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --to in-progress --dry-run
+    .\ccgs.cmd evidence-validate --project-root D:\path\to\consumer --evidence ccgs-data\production\qa\evidence\story-001.json
+    .\ccgs.cmd closeout --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --dry-run
+    .\ccgs.cmd closeout --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --write
+
+A passing closeout advances review to done. A failing write preserves the Story
+state and updates only the CCGS-managed closeout block with stable failure
+reasons. The evidence schema is schemas/evidence.schema.json.
+
+## Batch 5A Windmill Adapter
+
+The Windmill integration under integrations/windmill exposes read-only Story
+checks and automatic Closeout through the stable ccgs.cmd interface. Windmill
+does not parse CCGS documents or edit game source. Business failures are
+returned as structured reports; only marked transport failures are retried.
+
+See integrations/windmill/README.md for worker requirements, sync configuration,
+Flow input, retry behavior, and the result contract.
+## Batch 5B Allure Adapter
+
+The Allure integration under `integrations/allure` combines normalized JSON or
+JUnit XML automation results with machine-readable Closeout Evidence through the
+stable `ccgs.cmd allure-export` interface. Preview the exact file manifest, then
+create one immutable result directory:
+
+    .\ccgs.cmd allure-export --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --test-result ccgs-data\production\qa\test-results\logic.json --run-id build-001 --dry-run
+    .\ccgs.cmd allure-export --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --test-result ccgs-data\production\qa\test-results\logic.json --run-id build-001 --write
+
+The adapter never executes tests or reads game source. See
+`integrations/allure/README.md` for the input contract, JUnit support, stable
+history identifiers, output files, and HTML generation command.
+## Batch 5C Qdrant Adapter
+
+The Qdrant integration under `integrations/qdrant` creates an incremental,
+project-scoped semantic index for Story, GDD, ADR, Evidence, and Context Pack
+documents. Dry-run is offline and read-only; write mode embeds only changed
+chunks, upserts before pruning stale points, and never scans game source.
+
+    .\ccgs.cmd qdrant-index --project-root D:\path\to\consumer --project-id my-game --dry-run
+    .\ccgs.cmd qdrant-index --project-root D:\path\to\consumer --project-id my-game --write
+    .\ccgs.cmd qdrant-query --project-root D:\path\to\consumer --project-id my-game --query "current Story constraints" --limit 10
+
+See `integrations/qdrant/README.md` for FastEmbed/Qdrant setup, source roots,
+incremental behavior, security boundaries, and query output.
+## Batch 5D Langfuse Adapter
+
+The Langfuse integration under `integrations/langfuse` exports bounded CCGS
+workflow events through the current OpenTelemetry endpoint. It traces Context
+Pack, retrieval, Story, Closeout, Evidence, and failure decisions without
+pretending to capture private Codex prompts, tokens, or costs.
+
+    .\ccgs.cmd workflow-observe --project-root D:\path\to\consumer --story ccgs-data\production\epics\sample\story-001.md --evidence ccgs-data\production\qa\evidence\story-001.json --project-id my-project --event-id story-001-run-001 --trace-key story-001-workflow --session-id sprint-001 --status passed --write
+    .\ccgs.cmd langfuse-export --project-root D:\path\to\consumer --event ccgs-data\production\observability\events\story-closeout.json --dry-run
+    .\ccgs.cmd langfuse-export --project-root D:\path\to\consumer --event ccgs-data\production\observability\events\story-closeout.json --send
+
+See `integrations/langfuse/README.md` for the Event Schema, OpenTelemetry
+dependencies, credentials, Score behavior, retry semantics, and privacy policy.
+
+The observed Windmill Flow `f/ccgs/story_observed_closeout` now composes the
+full `Qdrant query -> Story/Evidence Closeout -> workflow event -> Langfuse
+Trace and Scores` path. It forwards project-relative references rather than
+retrieved document text, reuses `event_id` for retries, and treats CLI exit code
+3 as transient while permanent validation failures are not retried.

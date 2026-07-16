@@ -1,0 +1,79 @@
+{
+  "summary": "Close out a CCGS Story",
+  "description": "Checks evidence, advances passing Stories, and persists failure reasons through the stable CCGS CLI.",
+  "lock": "",
+  "kind": "script",
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "order": [
+      "framework_root",
+      "project_root",
+      "story",
+      "evidence",
+      "data_dir",
+      "project_id",
+      "request_id",
+      "max_attempts",
+      "retry_delay_seconds",
+      "timeout_seconds"
+    ],
+    "properties": {
+      "framework_root": {
+        "type": "string",
+        "description": "Mounted CCGS framework repository containing ccgs.cmd and ccgs.sh."
+      },
+      "project_root": {
+        "type": "string",
+        "description": "Explicit consumer project root mounted on the worker."
+      },
+      "story": {
+        "type": "string",
+        "description": "Project-relative Story path under the configured production/epics tree."
+      },
+      "evidence": {
+        "type": "string",
+        "description": "Optional project-relative Evidence JSON path.",
+        "default": ""
+      },
+      "data_dir": {
+        "type": "string",
+        "description": "Trusted worker configuration naming the consumer data directory.",
+        "default": "ccgs-data"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Stable identifier used by Integration Port Request 1.0.",
+        "default": "windmill-project"
+      },
+      "request_id": {
+        "type": "string",
+        "description": "Optional stable request identifier; empty derives a deterministic retry key.",
+        "default": ""
+      },
+      "max_attempts": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 5,
+        "default": 3
+      },
+      "retry_delay_seconds": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 60,
+        "default": 1
+      },
+      "timeout_seconds": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 3600,
+        "default": 120
+      }
+    },
+    "required": [
+      "framework_root",
+      "project_root",
+      "story"
+    ]
+  }
+}

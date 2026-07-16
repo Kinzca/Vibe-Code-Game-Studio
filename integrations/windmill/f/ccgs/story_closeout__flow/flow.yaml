@@ -1,0 +1,130 @@
+{
+  "summary": "CCGS Story Closeout",
+  "description": "Runs the repository-safe CCGS closeout adapter. Business failures are returned as structured reports; only marked transport errors are retried.",
+  "value": {
+    "modules": [
+      {
+        "id": "ccgs_story_closeout",
+        "summary": "Check and close out Story",
+        "value": {
+          "type": "script",
+          "path": "f/ccgs/story_closeout",
+          "input_transforms": {
+            "framework_root": {
+              "type": "javascript",
+              "expr": "flow_input.framework_root"
+            },
+            "project_root": {
+              "type": "javascript",
+              "expr": "flow_input.project_root"
+            },
+            "story": {
+              "type": "javascript",
+              "expr": "flow_input.story"
+            },
+            "evidence": {
+              "type": "javascript",
+              "expr": "flow_input.evidence"
+            },
+            "data_dir": {
+              "type": "javascript",
+              "expr": "flow_input.data_dir"
+            },
+            "project_id": {
+              "type": "javascript",
+              "expr": "flow_input.project_id"
+            },
+            "request_id": {
+              "type": "javascript",
+              "expr": "flow_input.request_id"
+            },
+            "max_attempts": {
+              "type": "static",
+              "value": 1
+            },
+            "retry_delay_seconds": {
+              "type": "static",
+              "value": 0
+            },
+            "timeout_seconds": {
+              "type": "javascript",
+              "expr": "flow_input.timeout_seconds"
+            }
+          }
+        },
+        "retry": {
+          "constant": {
+            "attempts": 2,
+            "seconds": 5
+          },
+          "retry_if": {
+            "expr": "error.message.includes('[CCGS_RETRYABLE]')"
+          }
+        }
+      }
+    ],
+    "same_worker": true
+  },
+  "schema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "order": [
+      "framework_root",
+      "project_root",
+      "story",
+      "evidence",
+      "data_dir",
+      "project_id",
+      "request_id",
+      "timeout_seconds"
+    ],
+    "properties": {
+      "framework_root": {
+        "type": "string",
+        "description": "Mounted CCGS framework repository containing ccgs.cmd and ccgs.sh."
+      },
+      "project_root": {
+        "type": "string",
+        "description": "Explicit consumer project root mounted on the worker."
+      },
+      "story": {
+        "type": "string",
+        "description": "Project-relative Story path under the configured production/epics tree."
+      },
+      "evidence": {
+        "type": "string",
+        "description": "Optional project-relative Evidence JSON path.",
+        "default": ""
+      },
+      "data_dir": {
+        "type": "string",
+        "description": "Trusted worker configuration naming the consumer data directory.",
+        "default": "ccgs-data"
+      },
+      "project_id": {
+        "type": "string",
+        "description": "Stable identifier used by Integration Port Request 1.0.",
+        "default": "windmill-project"
+      },
+      "request_id": {
+        "type": "string",
+        "description": "Optional stable request identifier; empty derives a deterministic retry key.",
+        "default": ""
+      },
+      "timeout_seconds": {
+        "type": "number",
+        "minimum": 1,
+        "maximum": 3600,
+        "default": 120
+      }
+    },
+    "required": [
+      "framework_root",
+      "project_root",
+      "story",
+      "data_dir",
+      "project_id"
+    ]
+  },
+  "ws_error_handler_muted": false
+}

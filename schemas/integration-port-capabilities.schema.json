@@ -1,0 +1,159 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/integration-port-capabilities.schema.json",
+  "title": "Integration Port Capability Document Contract 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "adapter_id",
+    "capabilities"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "1.0"
+    },
+    "adapter_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/capabilityEntry"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "port": {
+      "enum": [
+        "orchestration",
+        "retrieval",
+        "observability",
+        "reporting"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "trigger",
+        "retrieve",
+        "export_trace",
+        "export_report"
+      ]
+    },
+    "capabilityEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "port",
+        "operation",
+        "capability",
+        "contract_versions"
+      ],
+      "properties": {
+        "port": {
+          "$ref": "#/$defs/port"
+        },
+        "operation": {
+          "$ref": "#/$defs/operation"
+        },
+        "capability": {
+          "$ref": "#/$defs/identifier"
+        },
+        "contract_versions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "const": "1.0"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "port": {
+                "const": "orchestration"
+              }
+            },
+            "required": [
+              "port"
+            ]
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "const": "trigger"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "port": {
+                "const": "retrieval"
+              }
+            },
+            "required": [
+              "port"
+            ]
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "const": "retrieve"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "port": {
+                "const": "observability"
+              }
+            },
+            "required": [
+              "port"
+            ]
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "const": "export_trace"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "port": {
+                "const": "reporting"
+              }
+            },
+            "required": [
+              "port"
+            ]
+          },
+          "then": {
+            "properties": {
+              "operation": {
+                "const": "export_report"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

@@ -8,3 +8,7 @@ AGENTS.md
 
 # Dashboard 运行时产物（项目专属数据快照，禁止入库）
 .ccgs-core/scripts/dashboard/data.json
+
+# Python workflow cache
+__pycache__/
+*.py[cod]

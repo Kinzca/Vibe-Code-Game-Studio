@@ -1,0 +1,289 @@
+name: Cross-platform contract
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  PYTHONUTF8: "1"
+
+jobs:
+  native-contract:
+    name: ${{ matrix.platform }} / ${{ matrix.required_entries }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux
+            runner: ubuntu-latest
+            architecture: x64
+            required_entries: ./ccgs.sh
+          - platform: macos
+            runner: macos-latest
+            architecture: arm64
+            required_entries: ./ccgs.sh
+          - platform: windows
+            runner: windows-11-arm
+            architecture: arm64
+            required_entries: ccgs.cmd,ccgs.ps1
+
+    steps:
+      - name: Check out framework
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          architecture: ${{ matrix.architecture }}
+
+      - name: Run required native contract tests
+        id: contract
+        shell: python {0}
+        env:
+          CCGS_CROSS_PLATFORM_NATIVE_REQUIRED: "1"
+          CCGS_CROSS_PLATFORM_EXPECTED_OS: ${{ matrix.platform }}
+          CCGS_CROSS_PLATFORM_REQUIRED_ENTRIES: ${{ matrix.required_entries }}
+        run: |
+          import os
+          import subprocess
+          import sys
+          import tempfile
+          from pathlib import Path
+
+          test_file = Path(
+              "tests/integration/universal-workflow-automation/"
+              "cross_platform_contract_test.py"
+          )
+          output_dir = Path(".ci-artifacts")
+          output_dir.mkdir(exist_ok=True)
+          log_file = output_dir / "contract-test.log"
+          command = [sys.executable, str(test_file), "-v"]
+          limit = 1_048_576
+          chunks = []
+          stored = 0
+          truncated = False
+
+          process = subprocess.Popen(
+              command,
+              stdout=subprocess.PIPE,
+              stderr=subprocess.STDOUT,
+              text=True,
+              errors="replace",
+              bufsize=1,
+          )
+          assert process.stdout is not None
+          for line in process.stdout:
+              if stored < limit:
+                  remaining = limit - stored
+                  chunks.append(line[:remaining])
+                  stored += len(line[:remaining])
+                  truncated = truncated or len(line) > remaining
+              else:
+                  truncated = True
+          return_code = process.wait()
+
+          log = "".join(chunks)
+          if truncated:
+              log += "\n[contract log truncated at 1048576 characters]\n"
+
+          replacements = (
+              (os.environ.get("GITHUB_WORKSPACE"), "<framework_root>"),
+              (str(Path.cwd()), "<framework_root>"),
+              (os.environ.get("RUNNER_TEMP"), "<runner_temp>"),
+              (os.environ.get("RUNNER_TOOL_CACHE"), "<tool_cache>"),
+              (os.environ.get("USERPROFILE"), "<runner_home>"),
+              (os.environ.get("HOME"), "<runner_home>"),
+              (tempfile.gettempdir(), "<system_temp>"),
+          )
+          for raw, replacement in replacements:
+              if raw:
+                  log = log.replace(raw, replacement)
+                  log = log.replace(raw.replace("\\", "/"), replacement)
+
+          log_file.write_text(log, encoding="utf-8", newline="\n")
+          print(log, end="" if log.endswith("\n") else "\n")
+          raise SystemExit(return_code)
+
+      - name: Build auditable matrix summary
+        if: always()
+        shell: python {0}
+        env:
+          TEST_OUTCOME: ${{ steps.contract.outcome }}
+          MATRIX_PLATFORM: ${{ matrix.platform }}
+          MATRIX_RUNNER: ${{ matrix.runner }}
+          MATRIX_ENTRIES: ${{ matrix.required_entries }}
+        run: |
+          import json
+          import os
+          import platform
+          import re
+          from pathlib import Path
+
+          output_dir = Path(".ci-artifacts")
+          output_dir.mkdir(exist_ok=True)
+          log_file = output_dir / "contract-test.log"
+          log = log_file.read_text(encoding="utf-8") if log_file.exists() else ""
+
+          test_lines = re.findall(
+              r"^(test_[A-Za-z0-9_]+) \([^\r\n]+\) \.\.\. "
+              r"(ok|FAIL|ERROR|skipped(?:\s+['\"].*?['\"])?|expected failure|unexpected success)$",
+              log,
+              flags=re.MULTILINE,
+          )
+          required_tests = {
+              "test_ac1_launchers_share_one_core_and_preserve_arguments",
+              "test_ac2_success_json_and_exit_code_match_public_schema",
+              "test_ac3_failures_have_stable_json_retry_and_launcher_contracts",
+              "test_ac4_unicode_paths_empty_values_and_non_utf8_output_are_normalized",
+              "test_ac5_dry_run_atomic_capability_and_process_tree_are_safe",
+              "test_ac6_native_matrix_requires_every_declared_entry_without_skips",
+          }
+          evidence_matches = re.findall(
+              r"^NATIVE_EVIDENCE os=(\S+) python=(\S+) entry=(\S+) "
+              r"scenario=(\S+) result=(\S+)$",
+              log,
+              flags=re.MULTILINE,
+          )
+          entry_evidence = [
+              {
+                  "os": os_name,
+                  "python": python_version,
+                  "entry": entry,
+                  "scenario": scenario,
+                  "result": result,
+              }
+              for os_name, python_version, entry, scenario, result in evidence_matches
+          ]
+          required_scenarios = {
+              "argument-passthrough",
+              "success-contracts",
+              "failure-contracts",
+              "path-encoding",
+              "process-file-safety",
+              "launcher-smoke",
+          }
+          required_entries = os.environ["MATRIX_ENTRIES"].split(",")
+          observed_pairs = {
+              (item["entry"], item["scenario"])
+              for item in entry_evidence
+              if item["result"] == "pass"
+          }
+          required_pairs = {
+              (entry, scenario)
+              for entry in required_entries
+              for scenario in required_scenarios
+          }
+          ran_match = re.search(r"^Ran (\d+) tests?", log, flags=re.MULTILINE)
+          tests_run = int(ran_match.group(1)) if ran_match else 0
+          scenarios = [
+              {"name": name, "result": result}
+              for name, result in test_lines
+          ]
+          passed = sum(result == "ok" for _, result in test_lines)
+          failed = sum(result in {"FAIL", "ERROR", "unexpected success"} for _, result in test_lines)
+          skipped = sum(result.startswith("skipped") for _, result in test_lines)
+          expected_failures = sum(result == "expected failure" for _, result in test_lines)
+          outcome = os.environ.get("TEST_OUTCOME", "unknown")
+          observed_tests = {name for name, _result in test_lines}
+          complete = (
+              tests_run == len(required_tests)
+              and len(test_lines) == tests_run
+              and observed_tests == required_tests
+              and observed_pairs == required_pairs
+          )
+          gate_passed = (
+              outcome == "success"
+              and complete
+              and failed == 0
+              and skipped == 0
+              and expected_failures == 0
+          )
+
+          summary = {
+              "schema_version": 1,
+              "platform": os.environ["MATRIX_PLATFORM"],
+              "runner": os.environ["MATRIX_RUNNER"],
+              "os": platform.system(),
+              "os_release": platform.release(),
+              "python_version": platform.python_version(),
+              "required_entries": required_entries,
+              "command": (
+                  "python tests/integration/universal-workflow-automation/"
+                  "cross_platform_contract_test.py -v"
+              ),
+              "result": "passed" if gate_passed else "failed",
+              "counts": {
+                  "run": tests_run,
+                  "passed": passed,
+                  "failed": failed,
+                  "skipped": skipped,
+                  "expected_failures": expected_failures,
+              },
+              "scenarios": scenarios,
+              "entry_evidence": entry_evidence,
+          }
+          summary_file = output_dir / "matrix-summary.json"
+          summary_file.write_text(
+              json.dumps(summary, ensure_ascii=False, indent=2) + "\n",
+              encoding="utf-8",
+              newline="\n",
+          )
+
+          step_summary = Path(os.environ["GITHUB_STEP_SUMMARY"])
+          with step_summary.open("a", encoding="utf-8", newline="\n") as handle:
+              handle.write(f"## Cross-platform contract: {summary['platform']}\n\n")
+              handle.write(f"- Runner: `{summary['runner']}`\n")
+              handle.write(f"- OS: `{summary['os']} {summary['os_release']}`\n")
+              handle.write(f"- Python: `{summary['python_version']}`\n")
+              handle.write(f"- Required entries: `{', '.join(summary['required_entries'])}`\n")
+              handle.write(f"- Command: `{summary['command']}`\n")
+              handle.write(
+                  "- Counts: "
+                  f"run={tests_run}, passed={passed}, failed={failed}, "
+                  f"skipped={skipped}, expected_failures={expected_failures}\n"
+              )
+              handle.write(f"- Result: **{summary['result'].upper()}**\n")
+              handle.write("\n### Entry evidence\n\n")
+              for item in entry_evidence:
+                  handle.write(
+                      f"- `{item['entry']}` / `{item['scenario']}`: "
+                      f"**{item['result'].upper()}**\n"
+                  )
+
+      - name: Upload sanitized matrix evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-platform-contract-${{ matrix.platform }}
+          path: .ci-artifacts/matrix-summary.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Enforce complete native evidence
+        if: always()
+        shell: python {0}
+        run: |
+          import json
+          from pathlib import Path
+
+          summary = json.loads(
+              Path(".ci-artifacts/matrix-summary.json").read_text(encoding="utf-8")
+          )
+          if summary["result"] != "passed":
+              counts = summary["counts"]
+              raise SystemExit(
+                  "native contract evidence incomplete: "
+                  f"run={counts['run']} passed={counts['passed']} "
+                  f"failed={counts['failed']} skipped={counts['skipped']} "
+                  f"expected_failures={counts['expected_failures']}"
+              )

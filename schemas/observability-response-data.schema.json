@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/observability-response-data.schema.json",
+  "title": "Observability Response Data 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version", "outcome", "event_ref", "event_id", "trace_id",
+    "span_id", "exported", "metric_count", "failures"
+  ],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "outcome": {"enum": ["exported", "failed"]},
+    "event_ref": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*/production/observability/events/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.json$"},
+    "event_id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+    "trace_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "span_id": {"type": "string", "pattern": "^[0-9a-f]{16}$"},
+    "exported": {"type": "boolean"},
+    "metric_count": {"type": "integer", "minimum": 0, "maximum": 20},
+    "failures": {
+      "type": "array",
+      "maxItems": 50,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "message", "retryable"],
+        "properties": {
+          "code": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"},
+          "message": {"type": "string", "minLength": 1, "maxLength": 512},
+          "retryable": {"type": "boolean"}
+        }
+      }
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"outcome": {"const": "exported"}}}, "then": {"properties": {"exported": {"const": true}, "failures": {"maxItems": 0}}}},
+    {"if": {"properties": {"outcome": {"const": "failed"}}}, "then": {"properties": {"exported": {"const": false}}}}
+  ]
+}
