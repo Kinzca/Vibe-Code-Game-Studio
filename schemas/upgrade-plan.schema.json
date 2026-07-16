@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/upgrade-plan.schema.json",
+  "title": "Upgrade Plan 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "plan_id", "mode", "current", "target", "compatibility", "migrations", "writes", "conflicts", "doctor_required"],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "plan_id": {"$ref": "#/$defs/sha256"},
+    "mode": {"const": "dry-run"},
+    "current": {"$ref": "#/$defs/versions"},
+    "target": {"$ref": "#/$defs/versions"},
+    "compatibility": {"enum": ["compatible", "migration-required", "incompatible", "untracked"]},
+    "migrations": {"type": "array", "maxItems": 100, "uniqueItems": true, "items": {"$ref": "#/$defs/migration"}},
+    "writes": {"type": "array", "maxItems": 1000, "uniqueItems": true, "items": {"$ref": "#/$defs/write"}},
+    "conflicts": {"type": "array", "maxItems": 1000, "uniqueItems": true, "items": {"$ref": "#/$defs/conflict"}},
+    "doctor_required": {"const": true}
+  },
+  "$defs": {
+    "identifier": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._+-]{0,127}$"},
+    "version_or_untracked": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^(?:untracked|[A-Za-z0-9][A-Za-z0-9._+-]{0,127})$"},
+    "path": {"type": "string", "minLength": 1, "maxLength": 512, "pattern": "^(?!.*(?:^|/)\\.{1,2}(?:/|$))[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "versions": {
+      "type": "object", "additionalProperties": false,
+      "required": ["framework_version", "bridge_version", "manifest_schema_version"],
+      "properties": {
+        "framework_version": {"$ref": "#/$defs/version_or_untracked"},
+        "bridge_version": {"$ref": "#/$defs/version_or_untracked"},
+        "manifest_schema_version": {"$ref": "#/$defs/version_or_untracked"}
+      }
+    },
+    "migration": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "component", "from_version", "to_version", "reversible"],
+      "properties": {
+        "id": {"$ref": "#/$defs/identifier"}, "component": {"$ref": "#/$defs/identifier"},
+        "from_version": {"$ref": "#/$defs/identifier"}, "to_version": {"$ref": "#/$defs/identifier"},
+        "reversible": {"type": "boolean"}
+      }
+    },
+    "write": {
+      "type": "object", "additionalProperties": false,
+      "required": ["path", "action", "before_sha256", "after_sha256"],
+      "properties": {
+        "path": {"$ref": "#/$defs/path"}, "action": {"enum": ["create", "update", "unchanged", "delete"]},
+        "before_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "after_sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+      }
+    },
+    "conflict": {
+      "type": "object", "additionalProperties": false, "required": ["path", "code"],
+      "properties": {"path": {"$ref": "#/$defs/path"}, "code": {"$ref": "#/$defs/identifier"}}
+    }
+  }
+}

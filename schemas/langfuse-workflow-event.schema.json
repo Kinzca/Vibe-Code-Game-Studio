@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ccgs.dev/schemas/langfuse-workflow-event.schema.json",
+  "title": "CCGS Langfuse Workflow Event",
+  "description": "Compatibility-only local Workflow Event 1.0. Remote export requires the neutral Observability Request Data 1.0 projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "trace_key",
+    "timestamp",
+    "project_id",
+    "operation",
+    "status",
+    "environment",
+    "surface",
+    "input",
+    "output"
+  ],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "event_id": { "$ref": "#/$defs/identifier" },
+    "trace_key": { "$ref": "#/$defs/identifier" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "end_timestamp": { "type": "string", "format": "date-time" },
+    "project_id": { "$ref": "#/$defs/identifier" },
+    "operation": { "$ref": "#/$defs/identifier" },
+    "status": { "enum": ["pass", "fail", "blocked", "error", "unknown"] },
+    "environment": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "session_id": { "$ref": "#/$defs/identifier" },
+    "story_id": { "$ref": "#/$defs/identifier" },
+    "surface": { "$ref": "#/$defs/identifier" },
+    "workflow_version": { "$ref": "#/$defs/identifier" },
+    "tags": {
+      "type": "array",
+      "maxItems": 20,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/identifier" }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "query": { "type": "string", "maxLength": 4000 },
+        "references": {
+          "type": "array",
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1, "maxLength": 512 }
+        },
+        "context_manifest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "decision"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "decision": { "enum": ["pass", "fail", "blocked", "unknown"] },
+        "failure_reasons": {
+          "type": "array",
+          "maxItems": 50,
+          "items": { "type": "string", "minLength": 1, "maxLength": 500 }
+        }
+      }
+    },
+    "metadata": { "$ref": "#/$defs/metadata" },
+    "scores": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "value", "data_type"],
+        "properties": {
+          "name": { "$ref": "#/$defs/identifier" },
+          "value": {
+            "oneOf": [
+              { "type": "number" },
+              { "type": "string", "minLength": 1, "maxLength": 500 },
+              { "type": "boolean" }
+            ]
+          },
+          "data_type": { "enum": ["NUMERIC", "BOOLEAN", "CATEGORICAL", "TEXT"] },
+          "comment": { "type": "string", "maxLength": 500 },
+          "metadata": { "$ref": "#/$defs/metadata" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "metadata": {
+      "type": "object",
+      "maxProperties": 32,
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z0-9._-]{0,63}$"
+      },
+      "additionalProperties": {
+        "oneOf": [
+          { "type": "string", "maxLength": 512 },
+          { "type": "number" },
+          { "type": "boolean" }
+        ]
+      }
+    }
+  }
+}

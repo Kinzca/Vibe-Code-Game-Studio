@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/workflow-execution-result.schema.json",
+  "title": "Workflow Execution Result 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "ok", "plan_id", "step_id", "status", "exit_category", "exit_code", "duration_ms", "retryable", "stdout", "stderr", "artifacts"],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "ok": {"type": "boolean"},
+    "plan_id": {"oneOf": [{"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, {"type": "null"}]},
+    "step_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["passed", "failed", "cancelled"]},
+    "exit_category": {"enum": ["success", "command_failed", "start_failed", "timed_out", "cancelled", "policy_rejected"]},
+    "exit_code": {"oneOf": [{"type": "integer"}, {"type": "null"}]},
+    "duration_ms": {"type": "integer", "minimum": 0},
+    "retryable": {"const": false},
+    "stdout": {"$ref": "#/$defs/stream"},
+    "stderr": {"$ref": "#/$defs/stream"},
+    "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}},
+    "error": {"$ref": "#/$defs/error"}
+  },
+  "$defs": {
+    "stream": {
+      "type": "object", "additionalProperties": false,
+      "required": ["text", "byte_count", "truncated"],
+      "properties": {"text": {"type": "string"}, "byte_count": {"type": "integer", "minimum": 0}, "truncated": {"type": "boolean"}}
+    },
+    "artifact": {
+      "type": "object", "additionalProperties": false,
+      "required": ["artifact_id", "path", "present"],
+      "properties": {"artifact_id": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}, "path": {"type": "string", "minLength": 1}, "present": {"type": "boolean"}}
+    },
+    "error": {
+      "type": "object", "additionalProperties": false,
+      "required": ["code", "message", "details"],
+      "properties": {"code": {"type": "string", "minLength": 1}, "message": {"type": "string", "minLength": 1}, "details": {"type": "object"}}
+    }
+  }
+}

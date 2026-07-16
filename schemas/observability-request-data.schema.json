@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/observability-request-data.schema.json",
+  "title": "Observability Request Data 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "event_ref", "event"],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "event_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*/production/observability/events/[A-Za-z0-9_-][A-Za-z0-9._-]*\\.json$"
+    },
+    "event": {"$ref": "#/$defs/event"}
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "reference": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*(/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value", "data_type"],
+      "properties": {
+        "name": {"$ref": "#/$defs/identifier"},
+        "value": {
+          "oneOf": [
+            {"type": "number"},
+            {"type": "boolean"},
+            {"type": "string", "minLength": 1, "maxLength": 500}
+          ]
+        },
+        "data_type": {"enum": ["NUMERIC", "BOOLEAN", "CATEGORICAL", "TEXT"]}
+      },
+      "allOf": [
+        {"if": {"properties": {"data_type": {"const": "NUMERIC"}}}, "then": {"properties": {"value": {"type": "number"}}}},
+        {"if": {"properties": {"data_type": {"const": "BOOLEAN"}}}, "then": {"properties": {"value": {"type": "boolean"}}}},
+        {"if": {"properties": {"data_type": {"enum": ["CATEGORICAL", "TEXT"]}}}, "then": {"properties": {"value": {"type": "string", "minLength": 1, "maxLength": 500}}}}
+      ]
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version", "event_id", "trace_key", "timestamp", "end_timestamp",
+        "project_id", "operation", "status", "environment", "surface",
+        "references", "context_manifest", "failure_codes", "metrics"
+      ],
+      "properties": {
+        "schema_version": {"const": "1.0"},
+        "event_id": {"$ref": "#/$defs/identifier"},
+        "trace_key": {"$ref": "#/$defs/identifier"},
+        "timestamp": {"type": "string", "minLength": 1, "maxLength": 64, "format": "date-time"},
+        "end_timestamp": {"type": "string", "minLength": 1, "maxLength": 64, "format": "date-time"},
+        "project_id": {"$ref": "#/$defs/identifier"},
+        "operation": {"$ref": "#/$defs/identifier"},
+        "status": {"enum": ["pass", "fail", "blocked", "error", "unknown"]},
+        "environment": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[a-z0-9][a-z0-9_-]*$"},
+        "surface": {"$ref": "#/$defs/identifier"},
+        "references": {"type": "array", "maxItems": 50, "uniqueItems": true, "items": {"$ref": "#/$defs/reference"}},
+        "context_manifest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "failure_codes": {"type": "array", "maxItems": 50, "uniqueItems": true, "items": {"$ref": "#/$defs/identifier"}},
+        "metrics": {"type": "array", "maxItems": 20, "items": {"$ref": "#/$defs/metric"}},
+        "session_id": {"$ref": "#/$defs/identifier"},
+        "story_id": {"$ref": "#/$defs/identifier"},
+        "workflow_version": {"$ref": "#/$defs/identifier"},
+        "tags": {"type": "array", "maxItems": 20, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "maxLength": 64, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"}}
+      }
+    }
+  }
+}

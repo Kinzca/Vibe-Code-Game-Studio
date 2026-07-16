@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "tests": [
+    {
+      "id": "fixture.context-pack.preview",
+      "name": "Context Pack preview is bounded",
+      "suite": "CCGS Fixture",
+      "package": "ccgs.fixture.context",
+      "status": "passed",
+      "duration_ms": 40,
+      "start_ms": 1783728000000,
+      "stdout": "Selected five bounded fixture sources."
+    },
+    {
+      "id": "fixture.repository.boundary",
+      "name": "Repository boundary rejects source writes",
+      "suite": "CCGS Fixture",
+      "package": "ccgs.fixture.boundary",
+      "status": "passed",
+      "duration_ms": 25,
+      "start_ms": 1783728000040
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/doctor-result.schema.json",
+  "title": "Doctor Result 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "cli_version", "framework_root", "project_root", "framework_git_root", "project_git_root", "data_dir", "read_only", "write_policy", "engine_agnostic", "summary", "checks", "root_contract_version", "repository_mode", "roots"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "cli_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "framework_root": {"type": "string"},
+    "project_root": {"type": "string"},
+    "framework_git_root": {"type": "string"},
+    "project_git_root": {"type": "string"},
+    "data_dir": {"type": "string", "minLength": 1},
+    "read_only": {"const": true},
+    "write_policy": {"const": "allowlist"},
+    "engine_agnostic": {"const": true},
+    "root_contract_version": {"const": "1.0"},
+    "repository_mode": {"enum": ["standalone", "embedded-submodule", "external"]},
+    "roots": {
+      "type": "object", "additionalProperties": false,
+      "required": ["project", "framework"],
+      "properties": {
+        "project": {"$ref": "#/$defs/root"},
+        "framework": {"$ref": "#/$defs/root"}
+      }
+    },
+    "summary": {
+      "type": "object", "additionalProperties": false,
+      "required": ["pass", "warn", "error", "info"],
+      "properties": {"pass": {"type": "integer", "minimum": 0}, "warn": {"type": "integer", "minimum": 0}, "error": {"type": "integer", "minimum": 0}, "info": {"type": "integer", "minimum": 0}}
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["key", "status", "message", "path"],
+        "properties": {"key": {"type": "string", "minLength": 1}, "status": {"enum": ["pass", "warn", "error", "info"]}, "message": {"type": "string"}, "path": {"type": "string"}}
+      }
+    }
+  },
+  "$defs": {
+    "root": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "location"],
+      "properties": {
+        "name": {"enum": ["project", "framework"]},
+        "location": {"type": "string"}
+      }
+    }
+  }
+}

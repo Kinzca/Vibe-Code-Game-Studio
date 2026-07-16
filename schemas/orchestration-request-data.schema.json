@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/orchestration-request-data.schema.json",
+  "title": "Orchestration Request Data 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "action", "story"],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "action": {"enum": ["story_check", "story_closeout"]},
+    "story": {"$ref": "#/$defs/story"},
+    "evidence": {"$ref": "#/$defs/evidence"}
+  },
+  "$defs": {
+    "safe_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?![Ff][Ii][Ll][Ee]:)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*\\\\)(?!.*[&|<>^%!\\\"'`$;(){}\\[\\]])[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+    },
+    "story": {
+      "allOf": [
+        {"$ref": "#/$defs/safe_path"},
+        {"pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*/production/epics/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\\.md$"}
+      ]
+    },
+    "evidence": {
+      "allOf": [
+        {"$ref": "#/$defs/safe_path"},
+        {"pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*/production/qa/evidence/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\\.json$"}
+      ]
+    }
+  }
+}

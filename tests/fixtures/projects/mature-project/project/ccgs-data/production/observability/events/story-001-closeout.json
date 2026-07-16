@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "event_id": "story-001-closeout-001",
+  "trace_key": "story-001-workflow",
+  "timestamp": "2026-07-11T08:00:00.000Z",
+  "end_timestamp": "2026-07-11T08:00:02.500Z",
+  "project_id": "fixture-project",
+  "operation": "story-closeout",
+  "status": "pass",
+  "environment": "fixture",
+  "session_id": "fixture-session-001",
+  "story_id": "STORY-001",
+  "surface": "codex-client",
+  "workflow_version": "0.7.0",
+  "tags": ["closeout", "synthetic"],
+  "input": {
+    "summary": "Evaluate STORY-001 against bounded Context Pack and Closeout Evidence.",
+    "query": "Is STORY-001 ready to close?",
+    "references": [
+      "ccgs-data/production/epics/sample/story-001.md",
+      "ccgs-data/design/gdd/core-loop.md",
+      "ccgs-data/project-docs/architecture/ADR-0001-deterministic-loop.md",
+      "ccgs-data/production/qa/evidence/story-001.json"
+    ],
+    "context_manifest": "554f315ddb4719e190af1f2e8da7dd207daacd77ae7a177782e56a6a57fbaa3d"
+  },
+  "output": {
+    "summary": "All acceptance criteria and automated checks passed.",
+    "decision": "pass",
+    "failure_reasons": []
+  },
+  "metadata": {
+    "engine": "agnostic",
+    "context_source": "qdrant",
+    "evidence_schema": "1.0"
+  },
+  "scores": [
+    {
+      "name": "closeout_pass",
+      "value": true,
+      "data_type": "BOOLEAN",
+      "comment": "Closeout verdict matched the synthetic Evidence."
+    },
+    {
+      "name": "evidence_coverage",
+      "value": 1.0,
+      "data_type": "NUMERIC",
+      "comment": "Every Story acceptance criterion had passing Evidence."
+    }
+  ]
+}

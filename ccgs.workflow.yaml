@@ -1,0 +1,349 @@
+schema_version: 1
+
+framework:
+  core_dir: .ccgs-core
+  data_dir: ccgs-data
+  minimum_python: "3.10"
+
+repository_boundary:
+  framework_source: framework-repository
+  consumer_project: explicit-project-root
+  default_mode: read-only
+  write_policy: allowlist
+  engine_agnostic: true
+  allowed_project_write_roots:
+    - ccgs-data
+    - .agents
+    - AGENTS.md
+    - CLAUDE.md
+    - GEMINI.md
+    - .cursorrules
+    - vibe-workflow.json
+
+commands:
+  manifest-load:
+    mutates_project: false
+    requires_project_root: true
+    machine_readable_output: true
+    allows_empty_steps: true
+  workflow-request:
+    mutates_project: false
+    requires_project_root: true
+    machine_readable_output: true
+    starts_processes: false
+  workflow-plan:
+    mutates_project: false
+    requires_project_root: true
+    machine_readable_output: true
+    result_schema: schemas/workflow-plan.schema.json
+    starts_processes: false
+  workflow-execute:
+    mutates_project: declared-workflow-step
+    requires_project_root: true
+    machine_readable_output: true
+    result_schema: schemas/workflow-execution-result.schema.json
+    supports_timeout: true
+    supports_cancellation: true
+    starts_processes: true
+  upgrade:
+    mutates_project: explicit-apply-only
+    requires_project_root: true
+    supports_dry_run: true
+    requires_expected_plan_id_for_apply: true
+    machine_readable_output: true
+    starts_processes: false
+  doctor:
+    mutates_project: false
+    result_schema: schemas/doctor-result.schema.json
+  policy:
+    mutates_project: false
+  context-pack:
+    default_mode: preview
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+  bootstrap:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+    bridges:
+      - codex
+  story-advance:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+  evidence-validate:
+    mutates_project: false
+    requires_project_root: true
+  closeout:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+  allure-export:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+    machine_readable_output: true
+  qdrant-index:
+    mutates_project: false
+    mutates_external: explicit-write-only
+    requires_project_root: true
+    requires_project_id: true
+    supports_dry_run: true
+    machine_readable_output: true
+  qdrant-query:
+    mutates_project: false
+    mutates_external: false
+    requires_project_root: true
+    requires_project_id: true
+    machine_readable_output: true
+  workflow-observe:
+    mutates_project: explicit-write-only
+    requires_project_root: true
+    supports_dry_run: true
+    machine_readable_output: true
+    idempotency_key: event-id
+  langfuse-export:
+    mutates_project: false
+    mutates_external: explicit-send-only
+    requires_project_root: true
+    supports_dry_run: true
+    machine_readable_output: true
+
+automation:
+  require_explicit_project_root_for_writes: true
+  require_dry_run_support: true
+  require_machine_readable_output: true
+
+project_workflow_manifest:
+  schema_version: "1.0"
+  schema: schemas/project-workflow-manifest.schema.json
+  load_result_schema: schemas/manifest-load-result.schema.json
+  plan_result_schema: schemas/workflow-plan.schema.json
+  execution_result_schema: schemas/workflow-execution-result.schema.json
+  canonical_consumer_path: vibe-workflow.json
+  serialization: utf-8-json
+  supported_versions:
+    - "1.0"
+  diagnostic_allows_empty_steps: true
+  execution_requires_declared_steps: true
+  compatibility_manifest: ccgs.workflow.yaml
+
+testing:
+  fixture_root: tests/fixtures
+  materialization: temporary-directory
+  cleanup: automatic
+  lifecycle_fixtures:
+    - empty-project
+    - minimal-project
+    - mature-project
+    - malformed-project
+  engine_overlays:
+    - unity
+    - godot
+    - cocos
+  repository_layouts:
+    - standalone
+    - embedded-submodule
+    - external
+
+context_pack:
+  schema_version: "1.0"
+  output_root: "{data_dir}/production/context"
+  default_output: "{data_dir}/production/context/packs/{story_stem}-context-pack.md"
+  reference_sources:
+    - frontmatter
+    - body-paths
+    - adr-ids
+  selection_order:
+    - story
+    - gdd
+    - adr
+    - evidence
+    - session
+  limits:
+    max_files: 8
+    max_chars_per_file: 6000
+    max_total_chars: 24000
+  missing_references: block-write
+
+codex_bridge:
+  schema_version: "1.0"
+  bridge_version: "1.0"
+  template_root: templates/codex
+  framework_resolution:
+    - standalone
+    - embedded-submodule
+    - external-environment
+  managed_targets:
+    - AGENTS.md
+    - .agents/skills/ccgs-context/SKILL.md
+    - .agents/skills/ccgs-workflow/SKILL.md
+  agents_strategy: managed-block
+  skill_collision: refuse-unmanaged
+  updates: atomic-and-hash-verified
+  unchanged_files: preserve
+
+distribution_upgrade:
+  contract_version: "1.0"
+  installation_receipt: "{data_dir}/production/upgrade/installation.json"
+  plan_schema: schemas/upgrade-plan.schema.json
+  result_schema: schemas/upgrade-result.schema.json
+  receipt_schema: schemas/installation-receipt.schema.json
+  managed_targets_source: codex_bridge.managed_targets
+  preview: deterministic-and-read-only
+  apply: expected-plan-id-and-transactional
+  doctor: before-and-after
+  updates_framework_reference: false
+
+story_workflow:
+  schema_version: "1.0"
+  states:
+    - draft
+    - ready
+    - in-progress
+    - review
+    - blocked
+    - done
+  story_root: "{data_dir}/production/epics"
+  successful_closeout: review-to-done
+  failed_closeout: preserve-state-and-write-reasons
+  updates: atomic-and-idempotent
+
+evidence:
+  schema: schemas/evidence.schema.json
+  schema_version: "1.0"
+  root: "{data_dir}/production/qa/evidence"
+  format: json
+  requires_acceptance_coverage: true
+  requires_passing_checks: true
+
+windmill:
+  schema_version: "1.0"
+  adapter_root: integrations/windmill
+  worker_platform: windows
+  entrypoint: ccgs.cmd
+  allowed_commands:
+    - doctor
+    - evidence-validate
+    - closeout
+    - qdrant-query
+    - workflow-observe
+    - langfuse-export
+  direct_project_reads: false
+  direct_game_source_writes: false
+  business_failures_retryable: false
+  transport_failures_retryable: true
+  sync_root: integrations/windmill/f
+  sync_secrets: false
+  flow: f/ccgs/story_observed_closeout
+  legacy_closeout_flow: f/ccgs/story_closeout
+
+allure:
+  schema_version: "1.0"
+  adapter_root: integrations/allure
+  automated_test_schema: schemas/automated-test-results.schema.json
+  input_roots:
+    story: "{data_dir}/production/epics"
+    evidence: "{data_dir}/production/qa/evidence"
+    test_results: "{data_dir}/production/qa/test-results"
+  output_root: "{data_dir}/production/qa/allure-results/{run_id}"
+  supported_inputs:
+    - normalized-json
+    - junit-xml
+  closeout_evidence_result: true
+  stable_history_ids: true
+  run_unique_uuids: true
+  immutable_runs: true
+  updates: atomic-and-idempotent
+  executes_tests: false
+  direct_game_source_reads: false
+  direct_game_source_writes: false
+qdrant:
+  schema_version: "1.0"
+  adapter_root: integrations/qdrant
+  point_schema: schemas/semantic-index-point.schema.json
+  collection: ccgs-context
+  project_namespace: required-project-id
+  sources:
+    story: "{data_dir}/production/epics/**/*.md"
+    gdd: "{data_dir}/design/gdd/**/*.md"
+    adr: "{data_dir}/project-docs/**/ADR-*.md"
+    evidence:
+      - "{data_dir}/production/qa/evidence/**/*.md"
+      - "{data_dir}/production/qa/evidence/**/*.json"
+    context_pack: "{data_dir}/production/context/**/*.md"
+  chunking:
+    strategy: heading-aware-bounded-overlap
+    default_max_chars: 2400
+    default_overlap: 240
+  embedding:
+    provider: fastembed
+    default_model: sentence-transformers/all-MiniLM-L6-v2
+    dry_run_loads_model: false
+  incremental:
+    point_id: uuid5-project-path-index
+    compare: record-hash
+    upsert_before_delete: true
+    prune_scope: project-id
+    unchanged_work: zero
+  transport: qdrant-rest
+  remote_http_requires_opt_in: true
+  api_key_source: environment-only
+  direct_game_source_reads: false
+  direct_game_source_writes: false
+langfuse:
+  schema_version: "1.0"
+  adapter_root: integrations/langfuse
+  event_schema: schemas/langfuse-workflow-event.schema.json
+  event_root: "{data_dir}/production/observability/events"
+  trace_transport:
+    protocol: opentelemetry-otlp-http
+    endpoint: /api/public/otel/v1/traces
+    ingestion_version: "4"
+  score_transport:
+    protocol: public-score-post
+    endpoint: /api/public/scores
+    compatibility_status: legacy-current
+  identity:
+    trace_id: deterministic-project-trace-key
+    span_id: deterministic-project-event-id
+    score_id: deterministic-project-event-name
+  content_policy:
+    mode: bounded-summary-only
+    raw_prompt: forbidden
+    raw_completion: forbidden
+    fabricated_token_usage: forbidden
+    fabricated_cost: forbidden
+    absolute_paths: forbidden
+    secret_metadata: forbidden
+  credentials:
+    source: environment-only
+    public_key_env: LANGFUSE_PUBLIC_KEY
+    secret_key_env: LANGFUSE_SECRET_KEY
+  event_generation:
+    command: workflow-observe
+    inputs:
+      - story
+      - evidence
+      - context-pack
+      - qdrant-references
+      - closeout-result
+    first_write_wins: true
+    retry_reuses_event_id: true
+  ordering:
+    qdrant_before_closeout: true
+    closeout_before_event: true
+    event_before_trace: true
+    trace_before_scores: true
+    negative_trace_ack_blocks_scores: true
+  transport_exit_codes:
+    retryable: 3
+    permanent: 2
+  optional_dependencies:
+    - opentelemetry-sdk
+    - opentelemetry-exporter-otlp-proto-http
+  dry_run_loads_dependencies: false
+  dry_run_uses_network: false
+  direct_game_source_reads: false
+  direct_game_source_writes: false

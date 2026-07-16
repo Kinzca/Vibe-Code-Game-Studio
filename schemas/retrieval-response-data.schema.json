@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/retrieval-response-data.schema.json",
+  "title": "Retrieval Response Data Contract 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "results"],
+  "properties": {
+    "contract_version": { "const": "1.0" },
+    "results": {
+      "type": "array", "maxItems": 50,
+      "items": { "$ref": "#/$defs/result" }
+    }
+  },
+  "$defs": {
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["result_id", "score", "source_id", "source_path", "heading", "chunk_index", "text"],
+      "properties": {
+        "result_id": { "type": "string", "minLength": 1, "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$" },
+        "score": { "type": "number", "minimum": -1, "maximum": 1 },
+        "source_id": { "type": "string", "minLength": 1, "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$" },
+        "source_path": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "heading": { "type": "string", "maxLength": 512 },
+        "chunk_index": { "type": "integer", "minimum": 0 },
+        "text": { "type": "string", "maxLength": 2400 }
+      }
+    }
+  },
+  "x-vibe-runtime-validation": {
+    "finite_scores": true,
+    "request_limit_and_min_score": true,
+    "declared_source_mapping": true,
+    "stable_sort": "score-desc,source_id,source_path,chunk_index,result_id",
+    "max_canonical_utf8_bytes": 1048576,
+    "sensitive_payload_rules": "1.0"
+  }
+}

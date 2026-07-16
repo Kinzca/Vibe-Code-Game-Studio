@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/orchestration-response-data.schema.json",
+  "title": "Orchestration Response Data 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version", "action", "outcome", "story", "evidence",
+    "checks", "closeout_applied", "failures"
+  ],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "action": {"enum": ["story_check", "story_closeout"]},
+    "outcome": {"enum": ["passed", "failed", "error"]},
+    "story": {"$ref": "#/$defs/story"},
+    "evidence": {"$ref": "#/$defs/evidence"},
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "items": {"$ref": "#/$defs/check"}
+    },
+    "closeout_applied": {"type": "boolean"},
+    "failures": {
+      "type": "array",
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/failure"}
+    }
+  },
+  "$defs": {
+    "safe_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1024,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?![Ff][Ii][Ll][Ee]:)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*\\\\)(?!.*[&|<>^%!\\\"'`$;(){}\\[\\]])[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+    },
+    "story": {
+      "allOf": [
+        {"$ref": "#/$defs/safe_path"},
+        {"pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*/production/epics/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\\.md$"}
+      ]
+    },
+    "evidence": {
+      "allOf": [
+        {"$ref": "#/$defs/safe_path"},
+        {"pattern": "^[A-Za-z0-9_-][A-Za-z0-9._-]*/production/qa/evidence/(?:[A-Za-z0-9_-][A-Za-z0-9._-]*/)*[A-Za-z0-9_-][A-Za-z0-9._-]*\\.json$"}
+      ]
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "status", "attempt_count", "summary"],
+      "properties": {
+        "name": {"enum": ["doctor", "evidence_validate", "closeout_dry_run", "closeout_write"]},
+        "status": {"enum": ["passed", "failed", "error"]},
+        "attempt_count": {"type": "integer", "minimum": 1, "maximum": 5},
+        "summary": {
+          "type": "object",
+          "maxProperties": 8,
+          "additionalProperties": false,
+          "properties": {
+            "pass": {"type": "integer", "minimum": 0},
+            "warn": {"type": "integer", "minimum": 0},
+            "error": {"type": "integer", "minimum": 0},
+            "info": {"type": "integer", "minimum": 0},
+            "read_only": {"type": "boolean"},
+            "engine_agnostic": {"type": "boolean"},
+            "valid": {"type": "boolean"},
+            "error_count": {"type": "integer", "minimum": 0},
+            "verdict": {"enum": ["pass", "fail"]},
+            "failure_count": {"type": "integer", "minimum": 0},
+            "written": {"type": "boolean"}
+          }
+        }
+      }
+    },
+    "failure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"},
+        "message": {"type": "string", "minLength": 1, "maxLength": 512},
+        "retryable": {"type": "boolean"}
+      }
+    }
+  }
+}

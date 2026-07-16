@@ -1,0 +1,484 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/integration-port-response.schema.json",
+  "title": "Integration Port Response Contract 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "request_id",
+    "project_id",
+    "port",
+    "operation",
+    "capability",
+    "ok",
+    "status",
+    "action",
+    "called",
+    "data",
+    "error"
+  ],
+  "properties": {
+    "contract_version": {
+      "const": "1.0"
+    },
+    "request_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "project_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "port": {
+      "$ref": "#/$defs/port"
+    },
+    "operation": {
+      "$ref": "#/$defs/operation"
+    },
+    "capability": {
+      "$ref": "#/$defs/identifier"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "status": {
+      "enum": [
+        "success",
+        "degraded",
+        "rejected"
+      ]
+    },
+    "action": {
+      "enum": [
+        "invoke",
+        "validate",
+        "degraded",
+        "reject"
+      ]
+    },
+    "called": {
+      "type": "boolean"
+    },
+    "data": {
+      "type": "object",
+      "x-vibe-runtime-validation": {
+        "finite_json": true,
+        "max_canonical_utf8_bytes": 1048576,
+        "max_depth": 64,
+        "sensitive_payload_rules": "1.0"
+      }
+    },
+    "error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/error"
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "success"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "ok": {
+            "const": true
+          },
+          "action": {
+            "enum": [
+              "invoke",
+              "validate"
+            ]
+          },
+          "error": {
+            "type": "null"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "ok": {
+            "const": false
+          },
+          "error": {
+            "$ref": "#/$defs/error"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "invoke"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "called": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "action": {
+            "const": "validate"
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "then": {
+        "properties": {
+          "called": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "degraded"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "action": {
+            "const": "degraded"
+          },
+          "error": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/error"
+              },
+              {
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "PORT_CAPABILITY_UNAVAILABLE",
+                      "PORT_ADAPTER_UNAVAILABLE",
+                      "PORT_ADAPTER_TIMEOUT",
+                      "PORT_ADAPTER_FAILED"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "rejected"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "action": {
+            "const": "reject"
+          },
+          "error": {
+            "allOf": [
+              {
+                "$ref": "#/$defs/error"
+              },
+              {
+                "properties": {
+                  "code": {
+                    "enum": [
+                      "PORT_VERSION_UNSUPPORTED",
+                      "PORT_REQUEST_INVALID",
+                      "PORT_PROTOCOL_INVALID",
+                      "PORT_PAYLOAD_UNSAFE"
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "enum": [
+                  "PORT_REQUEST_INVALID",
+                  "PORT_CAPABILITY_UNAVAILABLE"
+                ]
+              }
+            },
+            "required": [
+              "code"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "called": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "enum": [
+                  "PORT_ADAPTER_UNAVAILABLE",
+                  "PORT_ADAPTER_TIMEOUT",
+                  "PORT_ADAPTER_FAILED"
+                ]
+              }
+            },
+            "required": [
+              "code"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "called": {
+            "const": true
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "orchestration"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "trigger"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "retrieval"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "retrieve"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "observability"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "export_trace"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "port": {
+            "const": "reporting"
+          }
+        },
+        "required": [
+          "port"
+        ]
+      },
+      "then": {
+        "properties": {
+          "operation": {
+            "const": "export_report"
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "port": {
+      "enum": [
+        "orchestration",
+        "retrieval",
+        "observability",
+        "reporting"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "trigger",
+        "retrieve",
+        "export_trace",
+        "export_report"
+      ]
+    },
+    "error": {
+      "type": "object",
+      "x-vibe-runtime-validation": {
+        "fields": [
+          "message",
+          "details"
+        ],
+        "sensitive_payload_rules": "1.0"
+      },
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "message",
+        "retryable",
+        "details"
+      ],
+      "properties": {
+        "code": {
+          "enum": [
+            "PORT_VERSION_UNSUPPORTED",
+            "PORT_REQUEST_INVALID",
+            "PORT_CAPABILITY_UNAVAILABLE",
+            "PORT_ADAPTER_UNAVAILABLE",
+            "PORT_ADAPTER_TIMEOUT",
+            "PORT_ADAPTER_FAILED",
+            "PORT_PROTOCOL_INVALID",
+            "PORT_PAYLOAD_UNSAFE"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "retryable": {
+          "type": "boolean"
+        },
+        "details": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+          },
+          "additionalProperties": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "string",
+                "maxLength": 512
+              }
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "code": {
+                "enum": [
+                  "PORT_ADAPTER_UNAVAILABLE",
+                  "PORT_ADAPTER_TIMEOUT"
+                ]
+              }
+            },
+            "required": [
+              "code"
+            ]
+          },
+          "then": {
+            "properties": {
+              "retryable": {
+                "const": true
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "retryable": {
+                "const": false
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

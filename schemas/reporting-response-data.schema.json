@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/reporting-response-data.schema.json",
+  "title": "Reporting Response Data 1.0",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_version", "outcome", "report_id", "output_ref", "artifact_refs",
+    "total_results", "status_counts", "reused", "failures"
+  ],
+  "properties": {
+    "contract_version": {"const": "1.0"},
+    "outcome": {"enum": ["generated", "failed"]},
+    "report_id": {"$ref": "#/$defs/identifier"},
+    "output_ref": {"$ref": "#/$defs/reference"},
+    "artifact_refs": {
+      "type": "array", "maxItems": 10000, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/reference"}
+    },
+    "total_results": {"type": "integer", "minimum": 2, "maximum": 5000},
+    "status_counts": {
+      "type": "object", "additionalProperties": false,
+      "required": ["passed", "failed", "broken", "skipped", "unknown"],
+      "properties": {
+        "passed": {"type": "integer", "minimum": 0},
+        "failed": {"type": "integer", "minimum": 0},
+        "broken": {"type": "integer", "minimum": 0},
+        "skipped": {"type": "integer", "minimum": 0},
+        "unknown": {"type": "integer", "minimum": 0}
+      }
+    },
+    "reused": {"type": "boolean"},
+    "failures": {
+      "type": "array", "maxItems": 50, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/failure"}
+    }
+  },
+  "x-vibe-runtime-validation": {
+    "max_canonical_utf8_bytes": 1048576,
+    "enforcement": "runtime",
+    "$comment": "Draft 2020-12 cannot express canonical serialized byte length; the versioned runtime validator enforces this bound.",
+    "request_identity_binding": true,
+    "artifact_output_binding": true,
+    "status_count_sum_equals_total_results": true
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string", "minLength": 1, "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "reference": {
+      "type": "string", "minLength": 1, "maxLength": 512,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*//)(?!.*\\\\)[A-Za-z0-9_-][A-Za-z0-9._-]*(?:/[A-Za-z0-9_-][A-Za-z0-9._-]*)*$"
+    },
+    "failure": {
+      "type": "object", "additionalProperties": false,
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": {"$ref": "#/$defs/identifier"},
+        "message": {"type": "string", "minLength": 1, "maxLength": 512},
+        "retryable": {"type": "boolean"}
+      }
+    }
+  }
+}

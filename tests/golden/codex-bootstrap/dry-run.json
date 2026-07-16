@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "bridge": "codex",
+  "bridge_version": "1.0",
+  "mode": "dry-run",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "action": "create",
+      "sha256": "aacd3bf5de7098076b189582fa8edc18e9343cb979fc289c58396043f03c7f47"
+    },
+    {
+      "path": ".agents/skills/ccgs-context/SKILL.md",
+      "action": "create",
+      "sha256": "65bcd59a92ebe3f73e6eb495c18e6a6dd79e282590f7f2f5f6a0b9469252e1dd"
+    },
+    {
+      "path": ".agents/skills/ccgs-workflow/SKILL.md",
+      "action": "create",
+      "sha256": "8adfdffc7503edb75cb0eb034fa7251426b840926a3b9a82a9285252463946fc"
+    }
+  ],
+  "summary": {
+    "create": 3,
+    "update": 0,
+    "unchanged": 0
+  },
+  "would_write": true,
+  "root_contract_version": "1.0",
+  "repository_mode": "external",
+  "roots": {
+    "project": {
+      "name": "project",
+      "location": "."
+    },
+    "framework": {
+      "name": "framework",
+      "location": "<external>"
+    }
+  },
+  "validation": {
+    "valid": true,
+    "error_code": null
+  },
+  "planned_writes": [
+    {
+      "path": "AGENTS.md",
+      "action": "create",
+      "sha256": "aacd3bf5de7098076b189582fa8edc18e9343cb979fc289c58396043f03c7f47"
+    },
+    {
+      "path": ".agents/skills/ccgs-context/SKILL.md",
+      "action": "create",
+      "sha256": "65bcd59a92ebe3f73e6eb495c18e6a6dd79e282590f7f2f5f6a0b9469252e1dd"
+    },
+    {
+      "path": ".agents/skills/ccgs-workflow/SKILL.md",
+      "action": "create",
+      "sha256": "8adfdffc7503edb75cb0eb034fa7251426b840926a3b9a82a9285252463946fc"
+    }
+  ],
+  "written": false
+}

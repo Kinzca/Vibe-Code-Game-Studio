@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://vibe-code-game-studio.dev/schemas/project-workflow-manifest.schema.json",
+  "title": "Project Workflow Manifest",
+  "description": "Engine-, language-, and project-neutral workflow declaration consumed by Vibe Code Game Studio.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "steps"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "retrieval": {
+      "$ref": "#/$defs/retrieval"
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "uniqueStringList": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/nonEmptyString"
+      },
+      "uniqueItems": true
+    },
+    "retrieval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "sources"],
+      "properties": {
+        "contract_version": { "const": "1.0" },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": { "$ref": "#/$defs/retrievalSource" }
+        }
+      }
+    },
+    "retrievalSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "path", "media_type"],
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024,
+          "x-vibe-runtime-validation": "project-relative-posix-source-path-1.0"
+        },
+        "media_type": {
+          "enum": ["text/markdown", "application/json", "text/plain"]
+        }
+      }
+    },
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "argv"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "argv": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "depends_on": {
+          "$ref": "#/$defs/uniqueStringList"
+        },
+        "working_directory": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "artifacts": {
+          "$ref": "#/$defs/uniqueStringList"
+        },
+        "acceptance_mapping": {
+          "$ref": "#/$defs/uniqueStringList"
+        }
+      }
+    }
+  }
+}

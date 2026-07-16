@@ -1,0 +1,21 @@
+{
+  "defaultTs": "bun",
+  "includes": [
+    "f/**"
+  ],
+  "excludes": [],
+  "skipVariables": true,
+  "skipResources": true,
+  "skipResourceTypes": true,
+  "skipSecrets": true,
+  "skipApps": true,
+  "includeSchedules": false,
+  "includeTriggers": false,
+  "includeUsers": false,
+  "includeGroups": false,
+  "includeSettings": false,
+  "includeKey": false,
+  "locksRequired": false,
+  "nonDottedPaths": true,
+  "syncBehavior": "v1"
+}
